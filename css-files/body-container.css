@@ -1,0 +1,194 @@
+.body-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.banner-section{
+    flex: 1fr;
+    background-image: url("../images/istockphoto-1277009188-2048x2048.jpg"); 
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 620px;
+    width: 100%;
+    overflow:hidden;
+    margin: 0px;
+    padding: 0px;
+
+    
+
+}
+
+.content-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome h2{
+    font-family: "Poppins";
+    font-size: 26px;
+    font-weight: 700;
+    padding-left: 500px;
+    padding-right: 500px;
+    margin-top: 100px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.welcome div{
+    padding-left: 50px;
+    padding-right: 50px;
+    text-align: center;
+}
+.make-it-bold{
+    font-weight: bold;
+    font-size: large;
+}
+.courses-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 50px;
+
+}
+
+.course{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    width: 400px;
+    background-color: lightblue;
+    margin: 10px 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.241);
+}
+
+.image-section{
+    flex: 1fr;
+    margin-bottom: -1px;
+    background-color: lightblue;
+}
+
+.course-thumbnail{
+    width: 400px;
+    /* height: 228px; */
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.detail-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: lightblue;
+    padding-left: 35px;
+    padding-right: 35px;
+    margin-top: -1px;
+    height: 200px;
+}
+
+.course-name{
+    flex: 1fr;
+}
+
+.duration{
+    flex: 1fr;
+}
+
+.enrrole-section{
+    flex:1fr ;
+    margin-bottom: 50px;
+}
+.enrrole-button{
+    padding: 10px 120px;
+    background-color: aquamarine;
+    border-radius: 26px;
+}
+
+
+
+
+/* partner's section*/
+
+.partners-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+    margin-top: 70px;
+}
+
+.partnership-discription{
+    flex: 1fr;
+    padding: 50px 350px;
+    
+}
+
+.partnership-discription h2{
+    font-family: "Poppins";
+    font-size: 26;
+    text-align: center;
+}
+
+.become-apartner{
+    flex: 1fr;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* justify-content: space-between; */
+    padding: 0px 10px;
+    position: relative;
+    /* background-color: aqua; */
+    
+}
+
+.grants{
+    width: 400px;
+    text-align: center;
+    margin-left: 50px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.179);
+}
+.partner-button{
+    background-color: darkcyan;
+    padding: 8px 25px;
+}
+
+.partner-button-section{
+    margin-left: 30px;
+}
+
+.grants .partner-details{
+    width: 300px;
+    font-family:"Open+Sans" ;
+    text-align: center;
+    padding-left: 30px;
+    padding-bottom: 30px;
+}
+
+.partnership-details{
+    position: absolute;
+    width: 400px;
+    right: 0px;
+    top: -80px;
+    /* bottom: -1px; */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.384);
+
+    
+}
+
+.partnership-details #header-partnership{
+    font-size: large;
+    text-align: center; 
+    margin-left: 10px
+    ;
+}
+
+.partnership-details .body-partnership{
+    /* text-align: center; */
+    width: 250px;
+    margin-bottom: 15px;
+    font-family: "Open+Sans";
+    padding:0px 70px;
+}
