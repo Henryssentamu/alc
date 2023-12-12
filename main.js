@@ -18,7 +18,8 @@ window.addEventListener('scroll',()=>{
     var element = document.getElementById("header");
     if (scrolosition >= 80){
         element.classList.add("smaller")
-        console.log("it worked")
+        // console.log("it worked")
+        // alert("ittttt");
     }
     else{
         element.classList.remove("smaller")

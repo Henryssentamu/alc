@@ -1,0 +1,53 @@
+.footer-section{
+    display: flex;
+    flex-direction: row;
+    background-color: #002b56;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 100px;
+    padding: 100px 200px;
+    flex-wrap: wrap;
+    left: 0px;
+    right: 0px;
+    font-family: "OPen+sans";
+    position: relative;
+}
+.abrief-about-alc{
+    width: 200px;
+    
+}
+
+.about-alc-section{
+    flex: 1fr;
+}
+
+
+.resources-section{
+    flex: 1fr;
+}
+
+.get-in-touch-section{
+    flex: 1fr;
+}
+
+.copyrigt-section{
+    position: absolute;
+    bottom: 5px;
+    left: 650px;
+}
+.social-media{
+    position: absolute;
+    bottom: 5px;
+    display: flex;
+    /* flex-direction: row; */
+    justify-content: space-between;
+}
+
+.icon-section{
+    margin-left: 15px;
+}
+
+.social-media-icons{
+    width: 40px;
+}

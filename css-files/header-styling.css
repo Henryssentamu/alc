@@ -9,11 +9,18 @@
     height: 79px;
     left: 0px;
     right: 0px;
+    top: 0px;
     background-color: transparent;
     z-index: 3;
 }
 
 .header-section header.smaller {
+    background-color: #0d0a2c;
+    /* z-index: 5px; */
+    /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.15); */
+}
+
+.smaller {
     background-color: #0d0a2c;
     /* z-index: 5px; */
     /* box-shadow: 0 0 15px rgba(0, 0, 0, 0.15); */

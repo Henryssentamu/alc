@@ -19,6 +19,8 @@
 
 }
 
+/* content section */
+
 .content-section{
     flex: 1fr;
     display: flex;
@@ -59,7 +61,7 @@
     justify-content: space-between;
     border-radius: 10px;
     width: 400px;
-    background-color: lightblue;
+    background-color: #002b56;
     margin: 10px 50px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.241);
 }
@@ -67,7 +69,7 @@
 .image-section{
     flex: 1fr;
     margin-bottom: -1px;
-    background-color: lightblue;
+    background-color: #002b56;
 }
 
 .course-thumbnail{
@@ -83,11 +85,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    background-color: lightblue;
+    background-color: #002b56;
     padding-left: 35px;
     padding-right: 35px;
     margin-top: -1px;
     height: 200px;
+    color: white;
+    font-family: "Open+Sans";
 }
 
 .course-name{
@@ -104,14 +108,17 @@
 }
 .enrrole-button{
     padding: 10px 120px;
-    background-color: aquamarine;
+    background-color: darkorange;
     border-radius: 26px;
+    color: white;
+    font-weight: bold;
+    font-size: large;
 }
 
 
 
 
-/* partner's section*/
+/* partner description section*/
 
 .partners-section{
     flex: 1fr;
@@ -140,7 +147,6 @@
     /* justify-content: space-between; */
     padding: 0px 10px;
     position: relative;
-    /* background-color: aqua; */
     
 }
 
@@ -192,3 +198,47 @@
     font-family: "Open+Sans";
     padding:0px 70px;
 }
+
+
+/* section that display partners */
+
+.our-partner-display-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+    margin-top: 85px;
+    align-items: center;
+}
+.our-partner-display-heading{
+    flex: 1fr;
+    margin-top: 50px;
+    
+}
+#partner-tagline{
+    margin-left: -100px;
+}
+
+
+
+.presentation {
+    flex: 1fr;
+    width: 80%;
+
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    background-color: #0d0a2c;
+    color: white;
+}  
+.slides-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+} 
+.slide {
+    padding: 65px 20px;
+    width: 100%;
+    text-align: center;
+    /* padding: 20px; */
+    box-sizing: border-box;
+}  
+
