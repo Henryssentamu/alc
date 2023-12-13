@@ -5,11 +5,11 @@
     color: white;
     justify-content: space-between;
     align-items: center;
-    margin-top: 100px;
-    padding: 100px 200px;
+    margin-top: 400px;
+    padding: 180px 200px;
     flex-wrap: wrap;
-    left: 0px;
-    right: 0px;
+    /* left: 0px;
+    right: 0px; */
     font-family: "OPen+sans";
     position: relative;
 }
@@ -50,4 +50,31 @@
 
 .social-media-icons{
     width: 40px;
+}
+
+.register{
+    position: absolute;
+    background-color:#0d0a2c;
+    top: -65px;
+    right: 250px;
+    left: 250px;
+    display: block;
+    padding: 50px 200px;
+    font-family: "Poppins";
+    font-size: 16px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.467);
+    
+}
+
+#register-button{
+    margin-left: 250px;
+    
+}
+
+#registration-button{
+    padding: 5px 35px;
+    background-color: aqua;
+    color: #0d0a2c;
+    border: 1px solid white ;
+
 }

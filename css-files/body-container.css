@@ -5,6 +5,7 @@
 
 .banner-section{
     flex: 1fr;
+    position: relative;
     background-image: url("../images/istockphoto-1277009188-2048x2048.jpg"); 
     background-position: center;
     background-size: cover;
@@ -17,6 +18,38 @@
 
     
 
+}
+
+.banner-details-containr{
+    position: absolute;
+    top: 140px;
+    left: 100px;
+    
+}
+#banner-details{
+    font-family: "Poppins";
+    font-weight: bolder;
+    font-size: 40px;
+    color: white;
+
+}
+
+#banner-details-register{
+    font-family: "Open+Sans";
+    font-size: 26px;
+    font-weight: 500;
+    color: white;
+}
+
+.banner-details-button-section{
+    margin-left: 130px;
+    margin-top: 20px;
+}
+
+#banner-details-button{
+    padding: 5px 45px;
+    border-radius: 20px;
+    border: 1px solid white;
 }
 
 /* content section */
@@ -108,11 +141,12 @@
 }
 .enrrole-button{
     padding: 10px 120px;
-    background-color: darkorange;
+    background-color: white;
     border-radius: 26px;
-    color: white;
+    color:#0d0a2c;
     font-weight: bold;
     font-size: large;
+    border: 1px solid white ;
 }
 
 
@@ -129,7 +163,7 @@
 
 .partnership-discription{
     flex: 1fr;
-    padding: 50px 350px;
+    padding: 80px 350px;
     
 }
 
@@ -157,8 +191,10 @@
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.179);
 }
 .partner-button{
-    background-color: darkcyan;
+    background-color: rgb(36, 155, 155);
+    border: 1px solid white ;
     padding: 8px 25px;
+    margin-left: 40px;
 }
 
 .partner-button-section{
@@ -176,8 +212,8 @@
 .partnership-details{
     position: absolute;
     width: 400px;
-    right: 0px;
-    top: -80px;
+    right: 50px;
+    top: -70px;
     /* bottom: -1px; */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.384);
 
