@@ -1,0 +1,244 @@
+.school-body{
+
+}
+
+
+/* school banner section */
+
+.school-banner-section{
+    background-image: url("../images/istockphoto-1307635270-2048x2048\ \(1\).jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 620px;
+    width: auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.introduction-to-school{
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.434);
+    width: 500px;
+    top: 250px;
+    left: 100px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    padding: 15px 10px;
+}
+
+.school-title{
+    font-family: "Poppins";
+    font-weight: bolder;
+    font-size:xx-large;
+    margin-bottom: 10px;
+}
+
+.school-apply-button-section{
+    margin-top: 10px;
+}
+
+.school-apply-button{
+    padding: 5px 20px;
+    color: darkorange;
+    font-size: large;
+    font-weight: bold;
+}
+
+
+
+/* main welcome to school sction */
+
+.introduction-to-programe{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding:100px 50px;
+}
+
+.school-image-or-video-section{
+    flex: 1fr;
+}
+
+.school-image-or-video{
+    width: 550px;
+}
+
+.about-the-school{
+    flex: 1fr;
+}
+
+.school-name{
+    text-align: center;
+}
+.message{
+    padding: 10px 100px;
+    text-align: center;
+    font-size: large;
+    font-weight: 500;
+    line-height: normal;
+}
+.school-coordinator-section{
+    margin-left: 80px;
+    display: flex;
+    flex-direction: row;
+}
+
+.school-coordinator-image{
+    width: 50px;
+    border-radius: 25px;
+}
+
+.school-coordinator-name-details{
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+.coordinator-title{
+    font-weight: bold;
+}
+
+
+/* intake calender section */
+
+.intake-slides{
+    width: 85%;
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    color: white;
+    background-color: #0d0a2c;
+    margin: 0px 100px;
+    margin-bottom: 120px;
+
+}
+
+.intake-calender{
+    text-align: center;
+    font-size: x-large;
+    color: white;
+    font-weight: bold;
+    font-family: "Poppins";
+    padding-top: 10px;
+}
+
+.intake-slide-container{
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    
+}
+
+.intake-slide{
+    padding: 50px 60px;
+}
+
+.intake-registration-button{
+    padding: 6px 25px;
+    font-family: "Poppins";
+    font-weight: 600;
+    font-size: large;
+}
+
+/* courses under a school section */
+
+.courses-under-school{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background-color: #002b5631;
+    padding: 100px 10px;
+
+}
+
+.program-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    width: 400px;
+    background-color: #002b56;
+    margin: 10px 50px;
+    box-shadow: 0px 0px 10px rgb(0, 0, 0);
+    margin-bottom: 70px;
+}
+
+.progam-image-section{
+    flex: 1fr;
+    margin-bottom: -1px;
+    background-color: #002b56;
+}
+
+.program-thumbnail{
+    width: 400px;
+    /* height: 228px; */
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.program-detail-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #002b56;
+    padding-left: 35px;
+    padding-right: 35px;
+    margin-top: -1px;
+    height: 200px;
+    color: white;
+    font-family: "Open+Sans";
+}
+
+.program-course-name{
+    flex: 1fr;
+}
+
+.program-duration{
+    flex: 1fr;
+}
+
+.program-enrrole-section{
+    flex:1fr ;
+    margin-bottom: 50px;
+}
+
+.programe-enrrole-button{
+    padding: 10px 100px;
+    background-color: white;
+    border-radius: 26px;
+    color:#0d0a2c;
+    font-weight: bold;
+    font-size: large;
+    border: 1px solid white ;
+    cursor: pointer;
+}
+
+.scholarship-section{
+    margin: 100px 20px;
+    display: flex;
+    flex-direction: row;
+    padding: 0px 100px;
+}
+
+.scholarship-details{
+    margin-top: 70px;
+    text-align: center;
+}
+
+.details-on-scholarship{
+    width: 600px;
+    margin-right: 50px;
+    text-align: center;
+}
+
+.scholarship-image{
+    width: 600px;
+}
+
+/* .apply-for-scholarship-buttion{
+    margin-top: 30px;
+} */
