@@ -1,0 +1,129 @@
+.actual-banner{
+    background-image: url("../images/istockphoto-1307635270-2048x2048\ \(1\).jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 620px;
+    overflow: hidden;
+}
+
+.content-section{
+    display: flex;
+    flex-direction: column;
+    margin-top: 120px;
+    
+
+}
+
+.intoduction-to-course-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+
+}
+
+.video-section{
+    flex: 1fr;
+    width: 650px;
+}
+
+.video-section img{
+    width: inherit;
+}
+
+.video-content{
+    flex: 1fr;
+    text-align: justify;
+    padding: 10px 80px;
+}
+
+
+/* admission requirements section */
+
+.admission-reqiurements{
+    margin-top: 120px;
+    flex: 1fr;
+    background-color:#0d0a2c ;
+    color: white;
+    align-items: center;
+    padding: 100px 80px;
+}
+
+.requirments{
+    background-color: #002b56;
+    padding: 20px 50px;
+    margin-top: 30px;
+    border-radius: 10px;
+}
+
+.sub-titles{
+    font-size: 26px;
+    font-weight: bold;
+    padding: 15px 0px;
+}
+
+.requirments-details{
+    font-size: large;
+}
+
+/* course curriculum */
+
+.course-curriculum{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 150px 20px;
+}
+.curriculu-details{
+    text-align: center;
+    padding: 5px 45px;
+}
+
+.actual-curriculum-image{
+    width: 700px;
+}
+
+/* course cost section */
+
+.course-cost-section{
+    background-color: rgb(230, 240, 254);
+    margin: 100px 5px;
+    padding: 120px 0px;
+    padding-left: 220px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+}
+
+.registration{
+    width: 300px;
+    padding: 20px 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.56);
+}
+
+.cost-cancled{
+    text-decoration: line-through;
+}
+
+.course-register-button-section{
+    position: absolute;
+    width: 800px;
+    left: 220px;
+    right: 200px;
+    bottom: -75px;
+    background-color: #0d0a2c;
+    padding: 50px 100px;
+    border-radius: 3px;
+}
+.course-register-button button{
+    padding: 15px 40px;
+    margin-left: 320px;
+    border: 1.3px solid darkorange;
+
+}
+
