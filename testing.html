@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .flip-container {
+      width: 200px;
+      height: 200px;
+      perspective: 1000px; /* Optional: adds a perspective effect */
+    }
+
+    .element {
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .front,
+    .back {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .front {
+      background-image: url('./images/istockphoto-1307635270-2048x2048\ \(1\).jpg'); /* Set front background image */
+      background-size: cover;
+      color: white; /* Text color to be visible on the front background */
+    }
+
+    .back {
+      background-image: url('./images/istockphoto-1277009188-2048x2048.jpg'); /* Set back background image */
+      background-size: cover;
+      color: black; /* Text color to be visible on the back background */
+      transform: rotateY(180deg);
+    }
+
+    .flip-container:hover .element {
+      transform: rotateY(180deg);
+    }
+  </style>
+  <title>Flip on Hover with Different Content</title>
+</head>
+<body>
+  <div class="flip-container">
+    <div class="element">
+      <div class="front">Front Content</div>
+      <div class="back">Back Content</div>
+    </div>
+  </div>
+</body>
+</html>

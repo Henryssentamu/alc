@@ -147,9 +147,20 @@
 .courses-under-school{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    background-color: #002b5631;
+    /* background-color: #002b5631; */
+    background: linear-gradient( to bottom, #d4e7ff 0%, #e8ffff 100%);
     padding: 100px 10px;
+    position: relative;
 
+}
+
+.courses-under-school-heading{
+    position: absolute;
+    font-size: 26px;
+    font-family: "Poppins";
+    font-weight: bold;
+    left: 650px;
+    top: 20px;
 }
 
 .program-container{
@@ -216,7 +227,79 @@
     border: 1px solid white ;
     cursor: pointer;
 }
+/* coming up courses  section*/
 
+.coming-up-courses-section{
+    display: flex;
+    flex-direction: row;
+    margin: 50px 0px;
+    background-color: #0d0a2c;
+    padding: 67px 50px;
+    position: relative;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.coming-up-courses-details{
+    position: absolute;
+    top: -10px;
+    color: white;
+    left: 640px;
+}
+
+.coming-up-course-container{
+    flex: 1fr;
+    width: 200px;
+    height: 200px;
+    perspective: 1000px;
+    
+}
+
+.coming-up-courses{
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease-in-out;
+}
+
+.course-font-side,
+.course-backend-side{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+}
+
+.course-font-side{
+    background-image: url("../images/istockphoto-1277009188-2048x2048.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    text-align: center;
+    border-radius: 7px;
+    
+}
+
+.aline-text{
+    padding: 80px 0px;
+    font-size: x-large;
+    font-weight: bold;
+    font-family: "Poppins";
+    color: white;
+}
+
+.course-backend-side{
+    background-color: #002b56;
+    color: white;
+    transform: rotateY(180deg);
+    text-align: center;
+}
+
+.coming-up-course-container:hover .coming-up-courses{
+    transform: rotateY(180deg);
+}
+
+/* scholarship section */
 .scholarship-section{
     margin: 100px 20px;
     display: flex;

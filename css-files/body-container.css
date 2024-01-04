@@ -141,7 +141,7 @@
     margin-bottom: 50px;
 }
 .enrrole-button{
-    padding: 10px 120px;
+    padding: 10px 100px;
     background-color: white;
     border-radius: 26px;
     color:#0d0a2c;
@@ -151,6 +151,78 @@
 }
 
 
+/* coming soon section */
+
+.comming-soon-details{
+    padding: 50px 500px;
+    text-align: center;
+}
+
+.comming-soon-heading{
+    /* padding: 50px 0px;  */
+}
+
+.comming_soon{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px 150px;
+    background-color: rgb(230, 240, 254);
+    /* position: relative; */
+}
+
+
+.coming-soon-school-container{
+    flex: 1fr;
+    width: 200px;
+    height: 200px;
+    perspective: 1000px;
+    
+}
+
+.coming-soon-school-element{
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease-in-out;
+}
+
+.back-side,
+.front-side{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    color: white;
+    font-family: "Poppins";
+    font-weight: bold;
+    
+}
+
+.front-side{
+    background-image: url("../images/istockphoto-1277009188-2048x2048.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: x-large;
+    text-align: center;
+}
+.back-side{
+    background-image: url("../images/istockphoto-1307635270-2048x2048\ \(1\).jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: rotateY(180deg);
+}
+
+.coming-soon-school-container:hover .coming-soon-school-element{
+    transform: rotateY(180deg);
+}
 
 
 /* partner description section*/
