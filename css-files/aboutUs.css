@@ -1,0 +1,132 @@
+.about-us-block-containers{
+    background-image: linear-gradient(to right, #101f3c,#101f3cb9),url("../images/databaseImage.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 200px 100px;
+    color: white;
+}
+
+.about-us-real-content{
+    width: 600px;
+    line-height: 31px;
+    font-size: 20px;
+}
+
+
+.about-us-sections{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* margin-top: 150px; */
+    padding: 150px 0px;
+
+}
+
+.aboutUs-image-sections{
+    flex: 1fr;
+    margin-right: 150px;
+}
+
+.about-us-images{
+    width: 600px;
+    border-radius: 29px;
+}
+
+.aboutUs-content-sections{
+    flex: 1fr;
+    text-align: right;
+    padding: 0px 50px;
+    line-height: 26.3px;
+    font-size: large;
+
+}
+
+.aboutUs-subheading{
+    color: #0d0a2c;
+    font-size: larger;
+    font-weight: bold;
+    padding: 20px 0px;
+
+}
+
+.actual-statements{
+    color: #0d0a2c;
+}
+
+/* value section */
+
+.value-section{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 125px 100px;
+    position: relative;
+}
+
+.value-title{
+    position: absolute;
+    top: -189px;
+    left: 250px;
+    right: 250px;
+    text-align: center;
+
+}
+
+
+.our-value-container{
+    flex: 1fr;
+}
+
+.value-image-section{
+    width: 300px;
+}
+
+.value-image{
+    width: 100%;
+    border-radius: 12px;
+}
+
+.value-details{
+    width: 300px;
+    text-align: center;
+    margin-top: 0px;
+}
+.value-statements{
+    margin: 0px;
+    color: #0d0a2c
+}
+
+.underlining-headings{
+    width: 5%;
+    height: 5px;
+    background: #767676;
+    left: 210px;
+    border-radius: 3px;
+    position: absolute;
+    /* top: 25px; */
+    left: 1390px;
+    overflow: hidden;
+}
+
+.underlining-headings span{
+    width: 10px;
+    height: 70%;
+    background:darkorange;
+    border-radius: 3px;
+    position: absolute;
+    top: 0;
+    left: 10px;
+    animation: moving 2s linear infinite;
+
+}
+@keyframes moving{
+    0%{
+        left: -20px;
+    }
+
+    100%{
+        left: 100px;
+    }
+}
+
