@@ -1,0 +1,353 @@
+.body-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.banner-section{
+    flex: 1fr;
+    position: relative;
+    background-image: url("./images/istockphoto-1277009188-2048x2048.jpg"); 
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 620px;
+    width: 100%;
+    overflow:hidden;
+    margin: 0px;
+    padding: 0px;
+
+    
+
+}
+
+.banner-details-containr{
+    position: absolute;
+    top: 140px;
+    left: 100px;
+    
+}
+#banner-details{
+    font-family: "Poppins";
+    font-weight: bolder;
+    font-size: 40px;
+    color: white;
+
+}
+
+#banner-details-register{
+    font-family: "Open+Sans";
+    font-size: 26px;
+    font-weight: 500;
+    color: white;
+}
+
+.banner-details-button-section{
+    margin-left: 130px;
+    margin-top: 20px;
+}
+
+#banner-details-button{
+    padding: 5px 45px;
+    border-radius: 20px;
+    border: 1px solid white;
+}
+
+/* content section */
+
+.content-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome h2{
+    font-family: "Poppins";
+    font-size: 26px;
+    font-weight: 700;
+    padding-left: 500px;
+    padding-right: 500px;
+    margin-top: 100px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.welcome div{
+    padding-left: 50px;
+    padding-right: 50px;
+    text-align: center;
+}
+.make-it-bold{
+    font-weight: bold;
+    font-size: large;
+}
+.courses-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 50px;
+
+}
+
+.course{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    width: 400px;
+    background-color: #002b56;
+    margin: 10px 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.241);
+    margin-bottom: 70px;
+}
+
+.image-section{
+    flex: 1fr;
+    margin-bottom: -1px;
+    background-color: #002b56;
+}
+
+.course-thumbnail{
+    width: 400px;
+    /* height: 228px; */
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.detail-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #002b56;
+    padding-left: 35px;
+    padding-right: 35px;
+    margin-top: -1px;
+    height: 200px;
+    color: white;
+    font-family: "Open+Sans";
+}
+
+.course-name{
+    flex: 1fr;
+}
+
+.duration{
+    flex: 1fr;
+}
+
+.enrrole-section{
+    flex:1fr ;
+    margin-bottom: 50px;
+}
+.enrrole-button{
+    padding: 10px 100px;
+    background-color: white;
+    border-radius: 26px;
+    color:#0d0a2c;
+    font-weight: bold;
+    font-size: large;
+    border: 1px solid white ;
+}
+
+
+/* coming soon section */
+
+.comming-soon-details{
+    padding: 50px 500px;
+    text-align: center;
+}
+
+/* .comming-soon-heading{
+    /* padding: 50px 0px;  *
+} */
+
+.comming_soon{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 50px 150px;
+    background-color: rgb(230, 240, 254);
+    /* position: relative; */
+}
+
+
+.coming-soon-school-container{
+    flex: 1fr;
+    width: 200px;
+    height: 200px;
+    perspective: 1000px;
+    
+}
+
+.coming-soon-school-element{
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease-in-out;
+}
+
+.back-side,
+.front-side{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    color: white;
+    font-family: "Poppins";
+    font-weight: bold;
+    
+}
+
+.front-side{
+    background-image: url("./images/istockphoto-1277009188-2048x2048.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-size: x-large;
+    text-align: center;
+}
+.back-side{
+    background-image: url("./images/istockphoto-1307635270-2048x2048\ \(1\).jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: rotateY(180deg);
+}
+
+.coming-soon-school-container:hover .coming-soon-school-element{
+    transform: rotateY(180deg);
+}
+
+
+/* partner description section*/
+
+.partners-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+    margin-top: 70px;
+}
+
+.partnership-discription{
+    flex: 1fr;
+    padding: 80px 350px;
+    
+}
+
+.partnership-discription h2{
+    font-family: "Poppins";
+    font-size: 26;
+    text-align: center;
+}
+
+.become-apartner{
+    flex: 1fr;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* justify-content: space-between; */
+    padding: 0px 10px;
+    position: relative;
+    
+}
+
+.grants{
+    width: 400px;
+    text-align: center;
+    margin-left: 50px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.179);
+}
+.partner-button{
+    background-color: rgb(36, 155, 155);
+    border: 1px solid white ;
+    padding: 8px 25px;
+    margin-left: 40px;
+}
+
+.partner-button-section{
+    margin-left: 30px;
+}
+
+.grants .partner-details{
+    width: 300px;
+    font-family:"Open+Sans" ;
+    text-align: center;
+    padding-left: 30px;
+    padding-bottom: 30px;
+}
+
+.partnership-details{
+    position: absolute;
+    width: 400px;
+    right: 50px;
+    top: -70px;
+    /* bottom: -1px; */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.384);
+
+    
+}
+
+.partnership-details #header-partnership{
+    font-size: large;
+    text-align: center; 
+    margin-left: 10px
+    ;
+}
+
+.partnership-details .body-partnership{
+    /* text-align: center; */
+    width: 250px;
+    margin-bottom: 15px;
+    font-family: "Open+Sans";
+    padding:0px 70px;
+}
+
+
+/* section that display partners */
+
+.our-partner-display-section{
+    flex: 1fr;
+    display: flex;
+    flex-direction: column;
+    margin-top: 85px;
+    align-items: center;
+}
+.our-partner-display-heading{
+    flex: 1fr;
+    margin-top: 50px;
+    
+}
+#partner-tagline{
+    margin-left: -100px;
+}
+
+
+
+.presentation {
+    flex: 1fr;
+    width: 80%;
+
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    background-color:#0d0a2c;
+    color: white;
+}  
+.slides-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+} 
+.slide {
+    padding: 65px 20px;
+    width: 100%;
+    text-align: center;
+    /* padding: 20px; */
+    box-sizing: border-box;
+}  
+

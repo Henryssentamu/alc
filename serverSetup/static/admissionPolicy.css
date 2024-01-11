@@ -1,0 +1,24 @@
+.admission-policy-heading{
+    font-weight: bold;
+    font-size: large;
+    color: #181212;
+    margin: 10px 250px;
+}
+
+.contentofThePolicy{
+    margin: 20px 250px;
+}
+
+.admission-policy-subheading{
+    color: #002b56;
+}
+
+.admission-policy-make-it-bold{
+    font-weight: bold;
+    color: #002b56;
+}
+
+body{
+    background-color: rgb(230, 240, 254);
+    line-height: 31.89px;
+}
