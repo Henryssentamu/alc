@@ -9,6 +9,13 @@
 	<link rel="stylesheet" href="../static/header-styling.css">
 	<link rel="stylesheet" href="../static/footer-css.css">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
+
+	<!-- page css -->
+	<link rel="stylesheet" href="../static//admissionPolicy.css">
+	<link rel="stylesheet" href="../static/allSchool-css.css">
+	<link rel="stylesheet" href="../static/aboutUs.css">
+	<!-- end of page css -->
+
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 
@@ -20,9 +27,10 @@
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
 </head>
 <body>
+
 	<header id="header" class="header-section">
 		<div class="logo-section">
-			<a href="{{url_for('homePage')}}">alc</a>
+			<a href="{{url_for('registrationPage')}}">alc</a>
 		</div>
 		<div class="page-section">
 			<div class="page">
@@ -54,7 +62,7 @@
 
 		</div>
 	</header>
-
+	{% block body %}
 	<main class="body-container">
 		<section class="banner-section">
 			<section class="banner-details-containr">
@@ -66,7 +74,7 @@
 						Transform your future – Register now<br> for upcoming intake.
 					</div>
 					<div class="banner-details-button-section">
-						<a href="{{url_for('homePage')}}">
+						<a href="{{url_for('registrationPage')}}">
 							<button id="banner-details-button">Register</button>
 						</a>
 						
@@ -100,7 +108,7 @@
 							Duration 6 months
 						</div>
 						<div class="enrrole-section">
-							<a href="./courseIntroductionToPrograming.html">
+							<a href="{{url_for('introductionToPrograming')}}">
 								<button class="enrrole-button">
 									Read More
 								</button>
@@ -125,7 +133,7 @@
 						</div>
 
 						<div class="enrrole-section">
-							<a href="./courseSqlDatabase.htm">
+							<a href="{{url_for('databaseManagementCourse')}}">
 								<button class="enrrole-button">
 									Read More
 								</button>
@@ -154,7 +162,7 @@
 						</div>
 
 						<div class="enrrole-section">
-							<a href="./coursePython.html">
+							<a href="{{url_for('pythonCourse')}}">
 								<button class="enrrole-button">
 									Read More
 								</button>
@@ -412,6 +420,7 @@
 
 
 	</main>
+	{% endblock %}
 
 	<footer class="footer-section">
 		<section class="about-alc-section">
@@ -483,7 +492,7 @@
 				Embark on a transformative educational journey in our upcoming <span class="make-it-bold"> in-take </span>, designed for diverse skills and interests. Join us to enhance your abilities and explore new horizons.
 			</div>
 			<div id="register-button">
-				<a href="{{url_for('homePage')}}">
+				<a href="{{url_for('registrationPage')}}">
 					<button id="registration-button">Register</button>
 				</a>
 				
@@ -493,5 +502,7 @@
 	</footer>
 	<script src="../static/jsFiles/main.js"></script>
 	<script src="../static/jsFiles/run_partner_slides.js"></script>
+	<script src="../static/jsFiles/run_intake_slides.js"></script>
+	<!-- <script src="../static/jsFiles/run_intake_slides.js"></script> -->
 </body>
 </html>

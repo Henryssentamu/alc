@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../static/allSchool-css.css">
-</head>
-<body>
+
+{% extends "homePage.html" %}
+
+{% block body %}
     <main class="school-body">
         <section class="school-banner-section">
             <div class="introduction-to-school">
@@ -17,7 +12,7 @@
                     This program serves as your gateway to unraveling the intricacies of software engineering, where algorithms, coding, and statistical principles converge to uncover valuable insights and facilitate informed decision-making.
                 </div>
                 <div class="school-apply-button-section">
-                    <a href="url_for('homePage')">
+                    <a href="{{url_for('registrationPage')}}">
                         <button class="school-apply-button">Register</button>
                     </a>
                 </div>
@@ -100,7 +95,7 @@
                     </div>
 
                     <div class="program-enrrole-section">
-                        <a href="./coursePython.html">
+                        <a href="{{url_for('pythonCourse')}}">
                             <button class="programe-enrrole-button">
                                 Read More
                             </button>
@@ -130,7 +125,7 @@
                     </div>
 
                     <div class="program-enrrole-section">
-                        <a href="./courseSqlDatabase.htm">
+                        <a href="{{url_for('databaseManagementCourse')}}">
                             <button class="programe-enrrole-button">
                                 Read More
                             </button>
@@ -159,7 +154,7 @@
                     </div>
 
                     <div class="program-enrrole-section">
-                        <a href="./courseIntroductionToPrograming.html">
+                        <a href="{{url_for('introductionToPrograming')}}">
                             <button class="programe-enrrole-button">
                                 Read More
                             </button>
@@ -248,6 +243,4 @@
 
     </main>
 
-    <script src="../static/jsFiles/run_intake_slides.js"></script>
-</body>
-</html>
+{% endblock %}

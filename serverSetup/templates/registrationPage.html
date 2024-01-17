@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet", href="../static/formss.css">
+
+</head>
+<body>
+    <section class="form-body">
+        <div class="logo-section">alc</div>
+        <div class="form-section">
+            <form method="POST" action="url_for('registrationPage')" class="form-container">
+                {{RegForm.hidden_tag()}}
+                <label class="form-labels">{{RegForm.firstName.label}}</label>
+                
+                {{RegForm.firstName(class="form-input")}}
+                
+                <label class="form-labels">{{RegForm.sirName.label}}</label>
+                {{RegForm.sirName(class="form-input")}}
+        
+                <label class="form-labels">{{RegForm.gender.label}}</label>
+                {{RegForm.gender(class="form-input")}}
+        
+                <label class="form-labels">{{RegForm.country.label}}</label>
+                {{RegForm.country(class="form-input")}}
+        
+                <label class="form-labels" >{{RegForm.phoneNumber.label}}</label>
+                {{RegForm.phoneNumber(class="form-input")}}
+        
+                <label class="form-labels">{{RegForm.email.label}}</label>
+                {{RegForm.email(class="form-input")}}
+        
+                <label class="form-labels">{{RegForm.password.label}}</label>
+                {{RegForm.password(class="form-input")}}
+        
+                <label class="form-labels">{{RegForm.comfirmPassword.label}}</label>
+                {{RegForm.comfirmPassword(class="form-input")}}
+        
+                {{RegForm.submit(class="form-submit")}}
+            </form>
+        </div>
+        
+    </section>
+    
+</body>
+</html>
