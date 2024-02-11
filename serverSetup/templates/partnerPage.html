@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet", href="../static/formss.css">
+    <link rel="stylesheet" href="../static/partners.css">
+    <title>Document</title>
+</head>
+<body>
+    <header class=" form-header">
+        <a class="back-tohome" href="{{url_for('homePage')}}">
+            ALX
+        </a>
+    </header>
+
+    <form action="{{url_for('registerPartners')}}" method="POST" class="form-container form-partner">
+        {{form.hidden_tag()}}
+
+        <div class="form-devissions">
+            <div class="divission-one">
+                <label class="form-labels">{{form.firstName.label}}</label>
+                {{form.firstName(class="form-input")}}
+    
+                <label class="form-labels">{{form.sirName.label}}</label>
+                {{form.sirName(class="form-input")}}
+    
+                <label class="form-labels">{{form.phoneNumber.label}}</label>
+                {{form.phoneNumber(class="form-input")}}
+    
+                <label class="form-labels">{{form.email.label}}</label>
+                {{form.email(class="form-input")}}
+    
+                <label class="form-labels">{{form.country.label}}</label>
+                {{form.country(class="form-input")}}
+    
+                <label class="form-labels">{{form.current_affriation.label}}</label>
+                {{form.current_affriation(class="form-input")}}
+    
+            </div>
+
+            <div class="divission-two">
+                <label class="form-labels">{{form.investment_amount.label}}</label>
+                {{form.investment_amount(class="form-input")}}
+
+                <label class="form-labels">{{form.type_of_partnernship.label}} </label>
+                {{form.type_of_partnernship(class="form-input")}}
+
+                <label class="form-labels">{{form.purpose_of_partnership.label}}</label>
+                {{form.purpose_of_partnership(class="form-input")}}
+
+                <label class="form-labels">{{form.expection_from_partnership.label}}</label>
+                {{form.expection_from_partnership(class="form-input")}}
+
+                <label class="form-labels">{{form.more_info.label}}</label>
+                {{form.more_info(class="form-input")}}
+
+                {{form.submit(class="form-submit")}}
+            </div>
+        </div>
+
+        
+        
+        
+
+
+    </form>
+</body>
+</html>

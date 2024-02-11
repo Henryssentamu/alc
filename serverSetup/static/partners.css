@@ -1,0 +1,27 @@
+.form-header{
+    
+    display: block;
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    height: 100px;
+    background-color: #0d0a2c;
+    z-index: 100px;
+
+}
+
+.back-tohome{
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    font-size: 47px;
+    font-weight: bolder;
+    padding:0px 700px;
+    font-family: sans-serif;
+
+}
+
+.form-partner{
+    margin-top: 150px;
+}

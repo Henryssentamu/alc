@@ -1,22 +1,53 @@
 .form-body{
     display: grid;
     grid-template-columns: 500px 1fr;
+    /* align-items: center; */
 }
 
 .logo-section{
     
     color: #0d0a2c;
-    font-size: xx-large;
+    font-size: 71px;
     font-weight: bolder;
+    position: relative;
 
+}
+.reg-form{
+    font-size: 31px;
+    position: absolute;
+    left: 150px;
+    top: 150px;
+}
+.home-links-in-forms{
+    text-decoration: none;
+    color: #0d0a2c;
+    position: absolute;
+    left: 210px;
+    top: 320px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0px 0px 3px 0.015px rgba(0, 0, 0, 0.395);;
+}
+.form-section{
+    margin-top: 150px;
 }
 
 .form-container {
-    max-width: 400px;
+    max-width: 800px;
     margin: auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
+}
+
+.form-devissions{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* justify-content: space-between; */
+}
+
+.divission-one{
+    margin-right: 50px;
 }
 
 .form-labels {
@@ -37,10 +68,12 @@
 .form-submit {
     background-color: #0d0a2c;
     color: #fff;
-    padding: 10px 20px;
+    padding: 10px 40px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-left: 150px;
+    margin-top: 30px;
 }
 
 .form-submit:hover{

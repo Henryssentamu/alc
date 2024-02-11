@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALC Online School - Contact Us</title>
+    <style>
+        a{
+            text-decoration: none;
+            color: white;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: rgb(13, 10, 44);
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            color: #555;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color:rgb(13, 10, 44);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: rgba(13, 10, 44, 0.405);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>
+            <a href="{{url_for('homePage')}}">
+                ALC
+            </a>
+        </h1>
+    </header>
+    <main>
+        <h2>Contact Us</h2>
+        <p>If you have any questions or concerns, feel free to reach out to us using the contact form below:</p>
+        <p>For immediate assistance, you can also contact us via phone or email:</p>
+        <p><strong>Office Number:</strong> +2567981066</p>
+        <p><strong>Admin's Webmail:</strong> admin@alcschool.edu</p>
+        <form action="url_for('contactPage')" method="post">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="phone">Your Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="message">Your Message:</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+</body>
+</html>

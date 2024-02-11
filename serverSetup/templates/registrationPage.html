@@ -9,36 +9,58 @@
 </head>
 <body>
     <section class="form-body">
-        <div class="logo-section">alc</div>
+        <div class="logo-section">
+            <div class="reg-form">Registration Form</div>
+            <a class="home-links-in-forms" href="{{url_for('homePage')}}">
+                alc
+            </a>
+        </div>
         <div class="form-section">
-            <form method="POST" action="url_for('registrationPage')" class="form-container">
+            <form method="POST" action="{{url_for('registrationPage')}}" class="form-container">
+                
                 {{RegForm.hidden_tag()}}
-                <label class="form-labels">{{RegForm.firstName.label}}</label>
+                <div class="form-devissions">
+                    <div class="divission-one">
+                        <label class="form-labels">{{RegForm.firstName.label}}</label>
+                    
+                        {{RegForm.firstName(class="form-input")}}
+                        
+                        <label class="form-labels" >{{RegForm.phoneNumber.label}}</label>
+                        {{RegForm.phoneNumber(class="form-input")}}
+
+                        <label class="form-labels">{{RegForm.gender.label}}</label>
+
+                        {{RegForm.gender(class="form-input")}}
+
+                        <label class="form-labels">{{RegForm.password.label}}</label>
+                        {{RegForm.password(class="form-input")}}
+                        <label class="form-labels">{{RegForm.comfirmPassword.label}}</label>
+                        {{RegForm.comfirmPassword(class="form-input")}}
+
                 
-                {{RegForm.firstName(class="form-input")}}
+                    </div>
+    
+                    <div class="divission-two">
+                        <label class="form-labels">{{RegForm.sirName.label}}</label>
+
+                        {{RegForm.sirName(class="form-input")}}
                 
-                <label class="form-labels">{{RegForm.sirName.label}}</label>
-                {{RegForm.sirName(class="form-input")}}
-        
-                <label class="form-labels">{{RegForm.gender.label}}</label>
-                {{RegForm.gender(class="form-input")}}
-        
-                <label class="form-labels">{{RegForm.country.label}}</label>
-                {{RegForm.country(class="form-input")}}
-        
-                <label class="form-labels" >{{RegForm.phoneNumber.label}}</label>
-                {{RegForm.phoneNumber(class="form-input")}}
-        
-                <label class="form-labels">{{RegForm.email.label}}</label>
-                {{RegForm.email(class="form-input")}}
-        
-                <label class="form-labels">{{RegForm.password.label}}</label>
-                {{RegForm.password(class="form-input")}}
-        
-                <label class="form-labels">{{RegForm.comfirmPassword.label}}</label>
-                {{RegForm.comfirmPassword(class="form-input")}}
-        
-                {{RegForm.submit(class="form-submit")}}
+                        <label class="form-labels">{{RegForm.email.label}}</label>
+                        {{RegForm.email(class="form-input")}}
+
+                        <label class="form-labels">{{RegForm.country.label}}</label>
+                        {{RegForm.country(class="form-input")}}
+
+                        <label class="form-labels">{{RegForm.schools.label}}</label>
+                        {{RegForm.schools(class="form-input")}}
+                        
+                        <label class="form-labels">{{RegForm.intake.label}}</label>
+                        {{RegForm.intake(class="form-input")}}
+                        
+                
+                        {{RegForm.submit(class="form-submit")}}
+                    </div>
+                </div>
             </form>
         </div>
         

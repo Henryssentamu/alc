@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet", href="../static/formss.css">
+</head>
+<body>
+
+        <form method="POST" action="{{url_for('payment')}}">
+                {{form.hidden_tag()}}
+                {{form.fullNames.label}}
+                {{form.fullNames()}}
+
+                {{form.studentId.label}}
+                {{form.studentId()}}
+
+                {{form.PhoneNumber.label}}
+                {{form.PhoneNumber()}}
+
+                {{form.email.label}}
+                {{form.email()}}
+
+                {{form.submit(class="paymentButton")}}
+        </form>
+
+        <script src="../static/jsFiles/payment.js"></script>
+</body>
+</html>
