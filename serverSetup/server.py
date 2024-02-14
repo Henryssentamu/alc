@@ -1,8 +1,10 @@
+
 from flask import Flask, render_template,request,redirect,url_for,jsonify,flash
 from flask_wtf import FlaskForm
+from flask_socketio import SocketIO
 from wtforms import SelectField,StringField,SubmitField,EmailField,PasswordField
 from wtforms.validators import DataRequired, ValidationError
-import pycountry, os,sqlite3
+import pycountry, os,sqlite3,time
 from databases import StudentDatabases,CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
@@ -12,12 +14,17 @@ from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 
 
 
+
+
 app = Flask("__name__")
+socketio = SocketIO(app)
 
 try:
     security = os.environ["ALC_SECURITY"]
     app.config["SECRET_KEY"] = security
-    app.config['strip_publick'] = "ttydxs65ddde"
+
+    # flutter_secratKey = os.environ["FLUTTER_KEY"]
+
 except ValueError as error:
     print(f"set App secrat key:{error} ")
 except Exception as error:
@@ -68,8 +75,6 @@ class CoursePaymentDetails(FlaskForm):
     email = EmailField(label="Your Email addres",validators=[DataRequired(message="invaled eamil addres")])
     submit = SubmitField(label= "Submit")
 
-
-payment_templary_data = {}
 
 
 @app.route("/")
@@ -246,16 +251,14 @@ def registerPartners():
 
 
 @app.route("/payments",methods=["POST","GET"])
-def payment():
-    global payment_templary_data 
-    form = CoursePaymentDetails()
-    full_name = None
-    studentidNumber = None
-    phone_number = None
-    Email = None
-    refrenceNumber = None
+def payment():        
     try:
-        
+        form = CoursePaymentDetails()
+        full_name = None
+        studentidNumber = None
+        phone_number = None
+        Email = None
+        refrenceNumber = None
         if form.validate_on_submit():
             studentNames = form.fullNames.data
             studentId = form.studentId.data
@@ -266,45 +269,34 @@ def payment():
             studentidNumber = studentId
             phone_number = phoneNumber
             Email = email
+            if studentId and studentNames and phoneNumber and email:
+                studentNames = ""
+                studentId = ""
+                phoneNumber = ""
+                email = ""
+                try:
+                    """creating refrence number object """
+                    refrence = GenerateCoursePaymentRefrenceNumber(studentId=studentidNumber)
+                    refrenceNumber = refrence.makeRefrence()
+                    if refrenceNumber:
+                        payment = CoursePaymentsDataDase(studentId= studentidNumber,studentName= full_name,phoneNumber=phone_number,email=Email,refrenceNumber= refrenceNumber)
 
-            studentNames = ""
-            studentId = ""
-            phoneNumber = ""
-            email = ""
-            try:
-                """creating refrence number object """
-                refrence = GenerateCoursePaymentRefrenceNumber(studentId=studentidNumber)
-                refrenceNumber = refrence.makeRefrence()
-                if refrenceNumber:
-                    
-
-                    """ insert details to course payment database"""
-                    # create course payment database 
-                    payment_templary_data  = {
-                            "fullName":full_name,
-                            "studentId": studentId,
-                            "phoneNumber": phone_number,
-                            "email": Email,
-                            "referenceNumber":refrenceNumber
-                        }
-                    payment = CoursePaymentsDataDase(studentId= studentidNumber,studentName= full_name,phoneNumber=phone_number,email=Email,refrenceNumber= refrenceNumber)
-
-                    # create tables
-                    payment.createTables()
-                    #insert into created tables
-                    payment.insertIntoTables()
-                else:
-                    print("refrence number wasn't generated")
-            except ValueError as error:
-                print(f"it is possible that the course payment database wasn't created.  check error:{error}")
-            except Exception as error:
-                print(f"check out this error from course payment data payment:{error} ")
+                        # create tables
+                        payment.createTables()
+                        #insert into created tables
+                        payment.insertIntoTables()
+                        return redirect(url_for('handlePayments'))
+                        
+                    else:
+                        print("refrence number wasn't generated")
+                except ValueError as error:
+                    print(f"it is possible that the course payment database wasn't created.  check error:{error}")
+                except Exception as error:
+                    print(f"check out this error from course payment data payment:{error} ")
     except ValueError as error:
         print(f" your course payment form did work! check it out:{error}")
     except Exception as anotherError:
         print(f"check out this error from your payment form:{anotherError}")
-
-
 
     return render_template("payment.html", form=form)
 
@@ -314,11 +306,11 @@ def payment():
 def fetchPaymentDetails():
     if request.method == "GET":
         try:
-            with sqlite3.connect("coursePayment.db") as db:
+            with sqlite3.connect("coursePaymentDetails.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
                     SELECT
-                        s.Date, s.StudentFullName,r.ReferenceNumber, p.phoneNumber,  e.Email
+                        s.StudentId, s.StudentFullName,r.ReferenceNumber, p.phoneNumber,  e.Email
                     FROM
                         studentPaymentDetails as s
                     JOIN
@@ -331,16 +323,22 @@ def fetchPaymentDetails():
                     LIMIT 1
                 """)
                 data = cursor.fetchall()
-                print(f"the fetched data got printed here:{data}")
+                data = data[0]
+                payment_data = {"studentId":data[0],"fullName":data[1],"refNo":data[2],"phoneNo":data[3],"email":data[4]}
+                
+
+                print(f"the fetched data got printed here:{payment_data}")
                 
         except sqlite3.Error as error:
             print(f"There is apossibility sqlit failed to connect to database.investigate the error:{error}")
-    return data
+        return jsonify(payment_data)
         
-
-
+@app.route("/handlePayments")
+def handlePayments():
+    return render_template("continueToPayment.html")
 
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+    # socketio.run(app, debug=True)
