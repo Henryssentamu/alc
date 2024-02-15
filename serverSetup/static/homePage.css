@@ -6,7 +6,7 @@
 .banner-section{
     flex: 1fr;
     position: relative;
-    background-image: url("./images/istockphoto-1277009188-2048x2048.jpg"); 
+    background-image: url("./images/newimages/istockphoto-1224500457-2048x2048.jpg"); 
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -205,7 +205,7 @@
 }
 
 .front-side{
-    background-image: url("./images/istockphoto-1277009188-2048x2048.jpg");
+    background-image: url("./images/newimages/istockphoto-1291189438-2048x2048-transformed.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -213,7 +213,7 @@
     text-align: center;
 }
 .back-side{
-    background-image: url("./images/istockphoto-1307635270-2048x2048\ \(1\).jpg");
+    background-image: url("./images/newimages/istockphoto-1224500457-2048x2048.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
