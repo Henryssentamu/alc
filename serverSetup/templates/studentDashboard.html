@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/studentportal.css">
+    
+</head>
+<body>
+    <header class="student-dashboard-header-section">
+            <div class="logo-section">
+                <a href="{{url_for('studentDashboard')}}">alc</a>
+            </div>
+            <div class="academic-status">
+                <div class="title">
+                    Academic status:
+                </div>
+                <div class="value">
+                    normal
+                </div>
+            </div>
+
+            <div class="dropdown-meanu">
+                <img class="dropdown-icon" src="../static/icons/icons8-expand-arrow-26.png">
+                <div class="dropdown-container">
+                    <div class="dropdown-details">
+                        <div class="student-details">
+                            Hi
+                        </div>
+                        <div class="stdent-name">
+                            name here
+                        </div>
+                        <img class="student-image" src="../static/images/codes.avif">
+                        <img class="arrow-icon" alt="arrow" src="../static/icons/icons8-chevron-right-50.png">
+                    </div>
+                    <div class="logout-section">
+                        <button class="logout-buttion">
+                            <img id="logout-image" alt="logout" src="../static/icons/icons8-logout-64.png">
+                            <div id="logout-title">log out</div>
+                        </button>
+                    </div>
+    
+                </div>
+            </div>
+    </header>
+</body>
+</html>

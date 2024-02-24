@@ -1,0 +1,65 @@
+.student-dashboard-header-section{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.logo-section{
+    color: black;
+}
+
+.dropdown-meanu{
+    position: relative;
+    display: inline-block;
+
+}
+.dropdown-icon{
+    width: 20px;
+}
+.dropdown-container{
+    display: none;
+    position: absolute;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.dropdown-details{
+    display: flex;
+    flex-direction: row;
+}
+.student-details{
+    color: black;
+    padding-right: 5px;
+}
+.stdent-name{
+    color: black;
+}
+
+.student-image{
+    width: 50px;
+    border-radius: 25px;
+
+}
+.arrow-icon{
+    width: 30px;
+    color: black;
+}
+
+.logout-section{
+
+}
+
+.logout-buttion{
+
+}
+
+.logout-image{
+    width: 40px;
+    color: red;
+}
+.logout-title{
+    color: red;
+}
+
+.dropdown-meanu:hover .dropdown-container{
+    display: block;
+}

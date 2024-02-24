@@ -1,14 +1,16 @@
-
-from flask import Flask, render_template,request,redirect,url_for,jsonify,flash
+from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
-from flask_socketio import SocketIO
+from flask_login import LoginManager, UserMixin,login_user,login_required,logout_user,current_user
 from wtforms import SelectField,StringField,SubmitField,EmailField,PasswordField
-from wtforms.validators import DataRequired, ValidationError
-import pycountry, os,sqlite3,time
+from wtforms.validators import DataRequired
+import pycountry
+import os
+import sqlite3
 from databases import StudentDatabases,CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
-
+from authentication import GetStudent
+import stripe
 
 
 
@@ -17,7 +19,17 @@ from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 
 
 app = Flask("__name__")
-socketio = SocketIO(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+YOUR_DOMAIN = 'http://127.0.0.1:5000'
+stripe.api_key = "sk_test_51OfIo5FEzGEPgpDS70hh7vTU0HSCG6Kp3J8dX9Nc3eVDYGPSKEfIzqDdjIm4GHBQzUOgBvCXrmKxUC1mnYAI8DVU00ax0FyfUa"
+# stripe.Product.create(name="database")
+# stripe.Price.create(
+#   product='{{PRODUCT_ID}}',
+#   unit_amount=2000,
+#   currency="usd",
+# )
 
 try:
     security = os.environ["ALC_SECURITY"]
@@ -49,6 +61,10 @@ class RegistrationFormStructure(FlaskForm):
     intake = SelectField(label="Choose the in-take", choices=intake_list)
     submit = SubmitField(label= "Submit")
 
+class StudentLoginForm(FlaskForm):
+    studentId = StringField(label=" Your Student Id", validators=[DataRequired(message="It's a must")])
+    password = PasswordField(label="Your Password",validators=[DataRequired(message="you should provide this")])
+    submit = SubmitField()
 
 class PartnerForm(FlaskForm):
     firstName = StringField(label="First Name",validators=[DataRequired(message="fill in your First Name")])
@@ -74,6 +90,36 @@ class CoursePaymentDetails(FlaskForm):
     PhoneNumber = StringField(label="Phone Number",validators=[DataRequired(message="Provide your phone number")])
     email = EmailField(label="Your Email addres",validators=[DataRequired(message="invaled eamil addres")])
     submit = SubmitField(label= "Submit")
+
+
+
+class User(UserMixin):
+    def __init__(self,id):
+        super().__init__()
+        self.id = id
+    # def get(self,user_id):
+    #     with sqlite3.connect("StudentDetails.db") as db:
+    #             cursor = db.cursor()
+    #             cursor.execute("""
+    #                 SELECT
+    #                     s.studentId,
+    #                     p.password
+    #                 FROM
+    #                     studentDetails as s
+    #                 JOIN
+    #                     studentPasswords as p ON s.studentId == p.studentId
+    #                 WHERE
+    #                     s.studentId == ?
+    #             """,(user_id))
+    #             student = cursor.fetchone()
+    #             if student:
+    #                 return student
+    #             return None
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
 
 
 
@@ -117,6 +163,7 @@ def databaseManagementCourse():
 @app.route("/rProgramming")
 def rProgrammingCourse():
     return render_template("courseRPrograming.html")
+
 
 @app.route("/registrationPage", methods=["GET","POST"])
 def registrationPage():
@@ -184,6 +231,7 @@ def registrationPage():
                     studentDataBase.createTables()
                     """inserting values into the created tables"""
                     studentDataBase.insertIntoTables()
+                    return redirect(url_for('login'))
                 else:
                     return redirect(url_for('registrationPage'))
             except ValueError as error:
@@ -250,88 +298,205 @@ def registerPartners():
     return render_template("partnerPage.html", form=form)
 
 
-@app.route("/payments",methods=["POST","GET"])
-def payment():        
+@app.route("/login", methods=["GET","POST"])
+def login():
+    form = StudentLoginForm()
+
     try:
-        form = CoursePaymentDetails()
-        full_name = None
-        studentidNumber = None
-        phone_number = None
-        Email = None
-        refrenceNumber = None
         if form.validate_on_submit():
-            studentNames = form.fullNames.data
             studentId = form.studentId.data
-            phoneNumber = form.PhoneNumber.data
-            email = form.email.data
-            """updating the  asigned none variable"""
-            full_name = studentNames
-            studentidNumber = studentId
-            phone_number = phoneNumber
-            Email = email
-            if studentId and studentNames and phoneNumber and email:
-                studentNames = ""
-                studentId = ""
-                phoneNumber = ""
-                email = ""
-                try:
-                    """creating refrence number object """
-                    refrence = GenerateCoursePaymentRefrenceNumber(studentId=studentidNumber)
-                    refrenceNumber = refrence.makeRefrence()
-                    if refrenceNumber:
-                        payment = CoursePaymentsDataDase(studentId= studentidNumber,studentName= full_name,phoneNumber=phone_number,email=Email,refrenceNumber= refrenceNumber)
+            password = form.password.data
+        #    Getstudent is a class that returns TRue if the provided student credentials are correct 
+            checkCredentials = GetStudent(studentId= studentId, password=password)
+            is_student = checkCredentials.is_authenticated()
+            if is_student:
+                user = User(studentId)
+                login_user(user=user)
+                if request.referrer and "/payment" in request.referrer:
+                    return redirect(url_for('payment'))
+                return redirect(url_for('studentDashboard'))
+            return redirect(url_for('login'))
+    except Exception as error:
+        print(f"possibility that student login class didnt work:{error}")
+    return render_template("studentLogin.html",form=form)
 
-                        # create tables
-                        payment.createTables()
-                        #insert into created tables
-                        payment.insertIntoTables()
-                        return redirect(url_for('handlePayments'))
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+@login_required
+@app.route("/studentDashboard")
+def studentDashboard():
+    return render_template("studentDashboard.html")
+
+
+@app.route("/payments",methods=["POST","GET"])
+def payment():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))        
+    # try:
+    #     form = CoursePaymentDetails()
+    #     full_name = None
+    #     studentidNumber = None
+    #     phone_number = None
+    #     Email = None
+    #     refrenceNumber = None
+    #     if form.validate_on_submit():
+    #         studentNames = form.fullNames.data
+    #         studentId = form.studentId.data
+    #         phoneNumber = form.PhoneNumber.data
+    #         email = form.email.data
+    #         """updating the  asigned none variable"""
+    #         full_name = studentNames
+    #         studentidNumber = studentId
+    #         phone_number = phoneNumber
+    #         Email = email
+    #         if studentId and studentNames and phoneNumber and email:
+    #             studentNames = ""
+    #             studentId = ""
+    #             phoneNumber = ""
+    #             email = ""
+    #             try:
+    #                 """creating refrence number object """
+    #                 refrence = GenerateCoursePaymentRefrenceNumber(studentId=studentidNumber)
+    #                 refrenceNumber = refrence.makeRefrence()
+    #                 if refrenceNumber:
+    #                     payment = CoursePaymentsDataDase(studentId= studentidNumber,studentName= full_name,phoneNumber=phone_number,email=Email,refrenceNumber= refrenceNumber)
+
+    #                     # create tables
+    #                     payment.createTables()
+    #                     #insert into created tables
+    #                     payment.insertIntoTables()
+    #                     return redirect(url_for('handlePayments'))
                         
-                    else:
-                        print("refrence number wasn't generated")
-                except ValueError as error:
-                    print(f"it is possible that the course payment database wasn't created.  check error:{error}")
-                except Exception as error:
-                    print(f"check out this error from course payment data payment:{error} ")
-    except ValueError as error:
-        print(f" your course payment form did work! check it out:{error}")
-    except Exception as anotherError:
-        print(f"check out this error from your payment form:{anotherError}")
+    #                 else:
+    #                     print("refrence number wasn't generated")
+    #             except ValueError as error:
+    #                 print(f"it is possible that the course payment database wasn't created.  check error:{error}")
+    #             except Exception as error:
+    #                 print(f"check out this error from course payment data payment:{error} ")
+    # except ValueError as error:
+    #     print(f" your course payment form did work! check it out:{error}")
+    # except Exception as anotherError:
+    #     print(f"check out this error from your payment form:{anotherError}")
 
-    return render_template("payment.html", form=form)
-
-
-
-@app.route("/fetchPaymentDetails", methods=["GET"])
-def fetchPaymentDetails():
-    if request.method == "GET":
+    # return render_template("payment.html", form=form)
+    try:
+        priceId = session.get("fetched_course_pirce_details")
+        # print(f"price details here:{courseDetails}")
+        # id = courseDetails["priceId"]
+        # amount = courseDetails["price"]
         try:
-            with sqlite3.connect("coursePaymentDetails.db") as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    SELECT
-                        s.StudentId, s.StudentFullName,r.ReferenceNumber, p.phoneNumber,  e.Email
-                    FROM
-                        studentPaymentDetails as s
-                    JOIN
-                        phoneNumberOnPayment as p on p.StudentId == s.StudentId 
-                    JOIN
-                        paymentReferenceNumber as r on r.StudentId == s.StudentId
-                    JOIN
-                        emailsOnPayment as e on e.StudentId == s.StudentId
-                    ORDER by s.Date DESC
-                    LIMIT 1
-                """)
-                data = cursor.fetchall()
-                data = data[0]
-                payment_data = {"studentId":data[0],"fullName":data[1],"refNo":data[2],"phoneNo":data[3],"email":data[4]}
+            checkout_session = stripe.checkout.Session.create(
+                line_items=[
+                    {
+                        # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                        'price': priceId,
+                        'quantity': 1,
+                    },
+                ],
+                mode='payment',
+                success_url=YOUR_DOMAIN + '/studentDashboard',
+                cancel_url=YOUR_DOMAIN + '/login'
+            )
+        except Exception as e:
+            return str(e)
+    except Exception as error:
+        print(f"course details not found in session:{error}")
+        return jsonify({"course details not found in session"}),400
+    
+    
+
+    return redirect(checkout_session.url,code=303)
+
+
+
+@app.route("/fetchCourseDetails",methods=["POST","GET"])
+def fetchCourseDetails():
+    try:
+        if request.method == "POST":
+            data = request.json
+            # print(f"recieved data:{data}")
+            course_id = data.get("send_courseId")
+            if course_id:
+                # print(f"course id captured from the front end:{course_id}")
+                # Store course ID in session for later retrieval in GET request
+                session["course_id"] = course_id
+                return jsonify({"message": "Course ID received successfully"}), 200
+            else:
+                return jsonify({"error": "No course ID provided in the request"}), 400
+        elif request.method == "GET":
+            course_id = session.get("course_id")
+            # print(f"course id retrived from the session:{course_id}")
+            if course_id:
+                try:
+                    with sqlite3.connect("courseDatabase.db") as db:
+                        cursor = db.cursor()
+                        cursor.execute("""
+                            select
+                                c.courseName,i.courseImageLink, p.coursePrice,p.coursePriceIds
+                            FROM
+                                courseDetails AS c
+                            JOIN
+                                courseImageLinks AS i ON c.courseId == i.courseId
+                            JOIN
+                                coursePriceIdDetails AS P ON c.courseId == p.courseId
+                            WHERE
+                                c.courseId == ?
+                        """,(course_id,))
+                        course_details = cursor.fetchone()
+                        if course_details:
+                            courseName,imageLink,price,priceId = course_details
+                            # print(f"price id here:{priceId} \n")
+                            session["fetched_course_pirce_details"] = priceId
+                            return jsonify({"courseName":courseName,"imageLink":imageLink}),200
+                        return jsonify({"error":"course not found"}),400
+
+                except Exception as error:
+                    print(f"failed to retrive data from course Database:{error}"),400
+            else:
+                return jsonify({"error":"no course id in the session"}),400
+    except Exception as error:
+        print(f"it is possible that server didnt recieve course id from the client server:{error}"),400
+
+
+
+# @app.route("/fetchPaymentDetails", methods=["GET"])
+# def fetchPaymentDetails():
+#     if request.method == "GET":
+#         try:
+#             with sqlite3.connect("coursePaymentDetails.db") as db:
+#                 cursor = db.cursor()
+#                 cursor.execute("""
+#                     SELECT
+#                         s.StudentId, s.StudentFullName,r.ReferenceNumber, p.phoneNumber,  e.Email
+#                     FROM
+#                         studentPaymentDetails as s
+#                     JOIN
+#                         phoneNumberOnPayment as p on p.StudentId == s.StudentId 
+#                     JOIN
+#                         paymentReferenceNumber as r on r.StudentId == s.StudentId
+#                     JOIN
+#                         emailsOnPayment as e on e.StudentId == s.StudentId
+#                     ORDER by s.Date DESC
+#                     LIMIT 1
+#                 """)
+#                 data = cursor.fetchall()
+#                 data = data[0]
+#                 payment_data = {"studentId":data[0],"fullName":data[1],"refNo":data[2],"phoneNo":data[3],"email":data[4]}
                 
 
-                print(f"the fetched data got printed here:{payment_data}")
+#                 print(f"the fetched data got printed here:{payment_data}")
                 
-        except sqlite3.Error as error:
-            print(f"There is apossibility sqlit failed to connect to database.investigate the error:{error}")
-        return jsonify(payment_data)
+#         except sqlite3.Error as error:
+#             print(f"There is apossibility sqlit failed to connect to database.investigate the error:{error}")
+#         return jsonify(payment_data)
+    
+
+    
         
 @app.route("/handlePayments")
 def handlePayments():

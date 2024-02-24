@@ -52,10 +52,11 @@
     <div class="container">
         <h1>ALC Payment Section</h1>
         <p>You're about to make a payment.</p>
-        <button class="submit">Click to continue</button>
+        <form action="{{url_for('payment')}}" method="POST">
+            <button type="submit" class="submit">Click to continue</button>
+        </form>
+        
     </div>
-
-    <script src="../static/jsFiles/paymentform.js"></script>
-    <script src="https://checkout.flutterwave.com/v3.js"></script>
+    <script src="../static/jsFiles/get_course_details.js"></script>
 </body>
 </html>

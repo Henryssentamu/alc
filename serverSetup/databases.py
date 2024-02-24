@@ -257,3 +257,100 @@ class CoursePaymentsDataDase:
                 """,(self.studentId,self.email))
         except sqlite3.Error as error:
             print(f"investigate this table mentioned here: {error}")
+
+
+class Courses:
+    def __init__(self, courseId,courseName,coursePrice,coursePriceId, courseImageLink,courseDiscription) -> None:
+        self.courseId = courseId
+        self.courseName = courseName
+        self.coursePrice = coursePrice
+        self.coursePriceId = coursePriceId
+        self.courseImageLink = courseImageLink
+        self.courseDiscription = courseDiscription
+    def createTables(self):
+        try:
+
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS courseDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        courseId TEXT PRIMARY KEY,
+                        courseName VARCHAR(200)
+                    )
+                """)
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS coursePriceIdDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        coursePriceIds TEXT PRIMARY KEY,
+                        courseId TEXT,
+                        coursePrice INTERGER,
+                        FOREIGN KEY (courseId) REFERENCES courseDetails(courseId)   
+                    )
+                """)
+
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS courseImageLinks(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        courseImageLink TEXT,
+                        courseId TEXT,
+                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
+                    )
+                """)
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS courseDiscription(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        courseId TEXT,
+                        courseDiscription TEXT,
+                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
+                    )
+                """)
+        except Exception as error:
+            print(f"somthing happened in creating course detail database: {error}")
+    def insertIntoTables(self):
+        try:
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO courseDetails(
+                        courseID,
+                        courseName
+                    ) VALUES(?,?)
+                """,(self.courseId,self.courseName))
+                db.commit()
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO coursePriceIdDetails(
+                        coursePriceIds,
+                        courseId,
+                        coursePrice  
+                    )  VALUES(?,?,?)
+                """,(self.coursePriceId,self.courseId,self.coursePrice))
+                db.commit()
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO courseImageLinks(
+                        courseImageLink,
+                        courseId 
+                    ) VALUES(?,?)
+                """,(self.courseImageLink, self.courseId))
+                db.commit()
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO courseDiscription(
+                        courseId,
+                        courseDiscription
+                    ) VALUES(?,?)
+                """,(self.courseId,self.courseDiscription))
+                db.commit()
+        except Exception as error:
+            print(f"faced chalenge in inserting data into course details. {error}")

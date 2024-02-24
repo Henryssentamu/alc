@@ -1,66 +1,66 @@
 
 
 
-var socket = io.connect('http://127.0.0.1:5000');
+// var socket = io.connect('http://127.0.0.1:5000');
 
-async function getSocketAlert(){
-    const response = await fetch("http://127.0.0.1:5000/payments")
-    .then(response =>{
-        if(!response.ok){
-            throw new Error("socketio event was not sent to the client server")
-        }
-        return response
-    })
-    .then(data =>{
-        return data
-    })
-    .catch(error=>{
-        console.log(error)
-    })
-    return response
+// async function getSocketAlert(){
+//     const response = await fetch("http://127.0.0.1:5000/payments")
+//     .then(response =>{
+//         if(!response.ok){
+//             throw new Error("socketio event was not sent to the client server")
+//         }
+//         return response
+//     })
+//     .then(data =>{
+//         return data
+//     })
+//     .catch(error=>{
+//         console.log(error)
+//     })
+//     return response
 
-}
-
-
-async function getStudentPaymentDetails(){
-    const dataResponse = await fetch(my_endpoint)
-        .then(response =>{
-            if(! response.ok){
-                throw new Error("get resquest did not fetch data from the backend")
-            }
-            return response.json()
-        })
-        .then(data =>{
-            // console.log("we recieved this:",data)
-            // alert("DATA HERE",data)
-            return data
-        })
-        .catch(error =>{
-            console.log("faced this error while fetching data from the backend")
-        })
-        return dataResponse
+// }
 
 
-}
+// async function getStudentPaymentDetails(){
+//     const dataResponse = await fetch(my_endpoint)
+//         .then(response =>{
+//             if(! response.ok){
+//                 throw new Error("get resquest did not fetch data from the backend")
+//             }
+//             return response.json()
+//         })
+//         .then(data =>{
+//             // console.log("we recieved this:",data)
+//             // alert("DATA HERE",data)
+//             return data
+//         })
+//         .catch(error =>{
+//             console.log("faced this error while fetching data from the backend")
+//         })
+//         return dataResponse
 
-function threadOfOperations(){
-    document.querySelector(".paymentButton")
-        .addEventListener("click", async ()=>{
-            try{
-                await getSocketAlert()
-                const recieved_dta = getStudentPaymentDetails()
-                alert(`here: ${recieved_dta}`)
-                console.log(`data recevied is here: ${recieved_dta}`)
-            }
-            catch(Error){
-                console.log("if failed")
-            }
-        })
 
-}
+// }
+
+// function threadOfOperations(){
+//     document.querySelector(".paymentButton")
+//         .addEventListener("click", async ()=>{
+//             try{
+//                 await getSocketAlert()
+//                 const recieved_dta = getStudentPaymentDetails()
+//                 alert(`here: ${recieved_dta}`)
+//                 console.log(`data recevied is here: ${recieved_dta}`)
+//             }
+//             catch(Error){
+//                 console.log("if failed")
+//             }
+//         })
+
+// }
 
 
-threadOfOperations()
+// threadOfOperations()
 
 
 
@@ -150,27 +150,27 @@ threadOfOperations()
 
 
 
-function makePayment() {
-    FlutterwaveCheckout({
-        public_key: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
-        tx_ref: "titanic-48981487343MDI0NzMx",
-        amount: 54600,
-        currency: "NGN",
-        payment_options: "card, mobilemoneyghana, ussd",
-        redirect_url: "https://glaciers.titanic.com/handle-flutterwave-payment",
-        meta: {
-        consumer_id: 23,
-            consumer_mac: "92a3-912ba-1192a",
-        },
-        customer: {
-        email: "rose@unsinkableship.com",
-        phone_number: "08102909304",
-        name: "Rose DeWitt Bukater",
-        },
-        customizations: {
-        title: "The Titanic Store",
-        description: "Payment for an awesome cruise",
-        logo: "https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg",
-        },
-    });
-    }
+// function makePayment() {
+//     FlutterwaveCheckout({
+//         public_key: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
+//         tx_ref: "titanic-48981487343MDI0NzMx",
+//         amount: 54600,
+//         currency: "NGN",
+//         payment_options: "card, mobilemoneyghana, ussd",
+//         redirect_url: "https://glaciers.titanic.com/handle-flutterwave-payment",
+//         meta: {
+//         consumer_id: 23,
+//             consumer_mac: "92a3-912ba-1192a",
+//         },
+//         customer: {
+//         email: "rose@unsinkableship.com",
+//         phone_number: "08102909304",
+//         name: "Rose DeWitt Bukater",
+//         },
+//         customizations: {
+//         title: "The Titanic Store",
+//         description: "Payment for an awesome cruise",
+//         logo: "https://www.logolynx.com/images/logolynx/22/2239ca38f5505fbfce7e55bbc0604386.jpeg",
+//         },
+//     });
+//     }
