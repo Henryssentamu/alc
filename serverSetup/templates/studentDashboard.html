@@ -29,7 +29,7 @@
                             Hi
                         </div>
                         <div class="stdent-name">
-                            name here
+                            {{Student}}
                         </div>
                         <img class="student-image" src="../static/images/codes.avif">
                         <img class="arrow-icon" alt="arrow" src="../static/icons/icons8-chevron-right-50.png">
@@ -37,7 +37,9 @@
                     <div class="logout-section">
                         <button class="logout-buttion">
                             <img id="logout-image" alt="logout" src="../static/icons/icons8-logout-64.png">
-                            <div id="logout-title">log out</div>
+                            <div id="logout-title">
+                                <a href="{{url_for('logout')}}">log out</a>
+                            </div>
                         </button>
                     </div>
     

@@ -312,9 +312,12 @@ def login():
             if is_student:
                 user = User(studentId)
                 login_user(user=user)
-                if request.referrer and "/payment" in request.referrer:
+                next_url = session.pop("payment_url", None)
+                # if request.referrer and "/payments" in request.referrer:
+                if next_url and "/payments" in next_url:
                     return redirect(url_for('payment'))
-                return redirect(url_for('studentDashboard'))
+                else:
+                    return redirect(url_for('studentDashboard'))
             return redirect(url_for('login'))
     except Exception as error:
         print(f"possibility that student login class didnt work:{error}")
@@ -325,17 +328,19 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('homePage'))
 
 @login_required
 @app.route("/studentDashboard")
 def studentDashboard():
-    return render_template("studentDashboard.html")
+    studeent = current_user.id
+    return render_template("studentDashboard.html",studeent = studeent)
 
 
 @app.route("/payments",methods=["POST","GET"])
 def payment():
     if not current_user.is_authenticated:
+        session["payment_url"] = request.url
         return redirect(url_for('login'))        
     # try:
     #     form = CoursePaymentDetails()
