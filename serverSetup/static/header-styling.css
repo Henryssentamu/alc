@@ -54,10 +54,13 @@
     color: white;
 }
 
+
 .page .account-login-section{
     color: darkorange;
     font-weight: bold;
+    
 }
+
 
 .dropdown-menu{
     display: none;

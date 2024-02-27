@@ -16,7 +16,7 @@ window.addEventListener('scroll',()=>{
 
 
     var element = document.getElementById("header");
-    if (scrolosition >= 80){
+    if (scrolosition >= 90){
         element.classList.add("smaller")
         // console.log("it worked")
         // alert("ittttt");
@@ -26,6 +26,9 @@ window.addEventListener('scroll',()=>{
     }
 
 })
+
+
+
 
 // window.onscroll = function(){
 //     add_margic()

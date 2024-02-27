@@ -1,65 +1,149 @@
-.student-dashboard-header-section{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-.logo-section{
-    color: black;
-}
+.student-dashboard-body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
 
-.dropdown-meanu{
+
+  .logout-icon{
+    width: 30px;
+    color: darkred;
+  }
+
+  .logout-text {
+    position: absolute;
+    margin-top: 7px;
+    color: darkred;
+    
+  }
+  
+  header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .logo-section img {
+    height: 50px;
+  }
+  
+  .student-profile-section {
     position: relative;
-    display: inline-block;
-
-}
-.dropdown-icon{
-    width: 20px;
-}
-.dropdown-container{
+  }
+  
+  .profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .dropdown-content {
     display: none;
     position: absolute;
-    align-items: center;
-    justify-content: space-between;
-
-}
-
-.dropdown-details{
-    display: flex;
-    flex-direction: row;
-}
-.student-details{
+    background-color: #f9f9f9;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    
     color: black;
-    padding-right: 5px;
-}
-.stdent-name{
-    color: black;
-}
-
-.student-image{
-    width: 50px;
-    border-radius: 25px;
-
-}
-.arrow-icon{
-    width: 30px;
-    color: black;
-}
-
-.logout-section{
-
-}
-
-.logout-buttion{
-
-}
-
-.logout-image{
-    width: 40px;
-    color: red;
-}
-.logout-title{
-    color: red;
-}
-
-.dropdown-meanu:hover .dropdown-container{
+    padding: 12px 16px;
+    text-decoration: none;
     display: block;
-}
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .student-profile-section:hover .dropdown-content {
+    display: block;
+    align-items: center;
+  }
+  
+  .main {
+    padding: 20px;
+    display: grid;
+    grid-template-rows: 1fr 4fr;
+    position: relative;
+    justify-content: space-between;
+  }
+
+  .side-bar-section{
+    position: absolute;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    margin-right: 250px;
+    background-color: black;
+    top: 70px;
+    bottom: 0px;
+    left: 0px;
+    padding: 15px 10px;
+    color: white;
+
+  }
+
+  .main-body-section{
+    margin-left: 150px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  
+  .course-cards {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    border: solid 1px gray;
+    
+    border-top-left-radius: calc(0.5rem - 1px);
+    border-top-right-radius: calc(0.5rem - 1px);
+    border-bottom-left-radius: calc(0.5rem - 1px);
+    border-bottom-right-radius: calc(0.5rem - 1px)
+    
+  }
+  .course-cards a{
+    text-decoration: none;
+    color: green;
+    
+  }
+  .course-backgroud-image-section{
+    padding: 40px   0.001px;
+    background-color: gray;
+    width: 100%;
+    margin-top: 2px;
+    margin-left: 2px;
+   
+
+    border-top-left-radius: calc(0.5rem - 1px);
+    border-top-right-radius: calc(0.5rem - 1px);
+    border-bottom-left-radius: calc(0.5rem - 1px);
+    border-bottom-right-radius: calc(0.5rem - 1px)
+
+    
+
+  }
+
+  /* .course-image{
+    width: 50%;
+    border-radius: 12px;
+    /* height: 120px; */
+  /* } */ */
+
+  .course-details-section{
+    flex: 1fr;
+  }
+  .course-name{
+    width: 300px;
+  }
+  
+  
+  
+  

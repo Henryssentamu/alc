@@ -1,50 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../static/studentportal.css">
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal</title>
+  <link rel="stylesheet" href="../static/studentportal.css">
 </head>
-<body>
-    <header class="student-dashboard-header-section">
-            <div class="logo-section">
-                <a href="{{url_for('studentDashboard')}}">alc</a>
-            </div>
-            <div class="academic-status">
-                <div class="title">
-                    Academic status:
-                </div>
-                <div class="value">
-                    normal
-                </div>
-            </div>
-
-            <div class="dropdown-meanu">
-                <img class="dropdown-icon" src="../static/icons/icons8-expand-arrow-26.png">
-                <div class="dropdown-container">
-                    <div class="dropdown-details">
-                        <div class="student-details">
-                            Hi
-                        </div>
-                        <div class="stdent-name">
-                            {{Student}}
-                        </div>
-                        <img class="student-image" src="../static/images/codes.avif">
-                        <img class="arrow-icon" alt="arrow" src="../static/icons/icons8-chevron-right-50.png">
-                    </div>
-                    <div class="logout-section">
-                        <button class="logout-buttion">
-                            <img id="logout-image" alt="logout" src="../static/icons/icons8-logout-64.png">
-                            <div id="logout-title">
-                                <a href="{{url_for('logout')}}">log out</a>
-                            </div>
-                        </button>
-                    </div>
+<body class="student-dashboard-body">
+  <header>
+    <div class="logo-section">
+      <img src="logo.png" alt="University Logo">
+    </div>
+    <div class="academic-status-section">
+      <!-- Academic status information goes here -->
+      <p>Welcome, John Doe!</p>
+    </div>
+    <div class="student-profile-section">
+      <img src="student.jpg" alt="Student Image" class="profile-image">
+      <div class="dropdown-content">
+        <a href="{{url_for('studentProfile')}}">Profile</a>
+        <a href="{{url_for('logout')}}">
     
-                </div>
-            </div>
-    </header>
+            <img class="logout-icon"  src="../static/icons/icons8-logout-64.png">
+            <span class="logout-text"> Logout</span>
+        </a>
+      </div>
+    </div>
+  </header>
+  
+  <main>
+    <div class="side-bar-section">
+        <div class="course-resources">
+          <a>Resources</a>
+        </div>
+        <div class="recordings">
+          <a>
+            Recordings
+          </a>
+        </div>
+        <div class="live-classes">
+          <a>
+            live
+          </a>
+        </div>
+    </div>
+    <div class="main-body-section">
+      
+    </div>
+  </main>
+
+  <script type="module" src="../static/jsFiles/load-course-student-dashboard.js"></script>
 </body>
 </html>

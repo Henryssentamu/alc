@@ -35,8 +35,6 @@ try:
     security = os.environ["ALC_SECURITY"]
     app.config["SECRET_KEY"] = security
 
-    # flutter_secratKey = os.environ["FLUTTER_KEY"]
-
 except ValueError as error:
     print(f"set App secrat key:{error} ")
 except Exception as error:
@@ -97,24 +95,6 @@ class User(UserMixin):
     def __init__(self,id):
         super().__init__()
         self.id = id
-    # def get(self,user_id):
-    #     with sqlite3.connect("StudentDetails.db") as db:
-    #             cursor = db.cursor()
-    #             cursor.execute("""
-    #                 SELECT
-    #                     s.studentId,
-    #                     p.password
-    #                 FROM
-    #                     studentDetails as s
-    #                 JOIN
-    #                     studentPasswords as p ON s.studentId == p.studentId
-    #                 WHERE
-    #                     s.studentId == ?
-    #             """,(user_id))
-    #             student = cursor.fetchone()
-    #             if student:
-    #                 return student
-    #             return None
 
 
 @login_manager.user_loader
@@ -342,53 +322,6 @@ def payment():
     if not current_user.is_authenticated:
         session["payment_url"] = request.url
         return redirect(url_for('login'))        
-    # try:
-    #     form = CoursePaymentDetails()
-    #     full_name = None
-    #     studentidNumber = None
-    #     phone_number = None
-    #     Email = None
-    #     refrenceNumber = None
-    #     if form.validate_on_submit():
-    #         studentNames = form.fullNames.data
-    #         studentId = form.studentId.data
-    #         phoneNumber = form.PhoneNumber.data
-    #         email = form.email.data
-    #         """updating the  asigned none variable"""
-    #         full_name = studentNames
-    #         studentidNumber = studentId
-    #         phone_number = phoneNumber
-    #         Email = email
-    #         if studentId and studentNames and phoneNumber and email:
-    #             studentNames = ""
-    #             studentId = ""
-    #             phoneNumber = ""
-    #             email = ""
-    #             try:
-    #                 """creating refrence number object """
-    #                 refrence = GenerateCoursePaymentRefrenceNumber(studentId=studentidNumber)
-    #                 refrenceNumber = refrence.makeRefrence()
-    #                 if refrenceNumber:
-    #                     payment = CoursePaymentsDataDase(studentId= studentidNumber,studentName= full_name,phoneNumber=phone_number,email=Email,refrenceNumber= refrenceNumber)
-
-    #                     # create tables
-    #                     payment.createTables()
-    #                     #insert into created tables
-    #                     payment.insertIntoTables()
-    #                     return redirect(url_for('handlePayments'))
-                        
-    #                 else:
-    #                     print("refrence number wasn't generated")
-    #             except ValueError as error:
-    #                 print(f"it is possible that the course payment database wasn't created.  check error:{error}")
-    #             except Exception as error:
-    #                 print(f"check out this error from course payment data payment:{error} ")
-    # except ValueError as error:
-    #     print(f" your course payment form did work! check it out:{error}")
-    # except Exception as anotherError:
-    #     print(f"check out this error from your payment form:{anotherError}")
-
-    # return render_template("payment.html", form=form)
     try:
         priceId = session.get("fetched_course_pirce_details")
         # print(f"price details here:{courseDetails}")
@@ -469,36 +402,6 @@ def fetchCourseDetails():
 
 
 
-# @app.route("/fetchPaymentDetails", methods=["GET"])
-# def fetchPaymentDetails():
-#     if request.method == "GET":
-#         try:
-#             with sqlite3.connect("coursePaymentDetails.db") as db:
-#                 cursor = db.cursor()
-#                 cursor.execute("""
-#                     SELECT
-#                         s.StudentId, s.StudentFullName,r.ReferenceNumber, p.phoneNumber,  e.Email
-#                     FROM
-#                         studentPaymentDetails as s
-#                     JOIN
-#                         phoneNumberOnPayment as p on p.StudentId == s.StudentId 
-#                     JOIN
-#                         paymentReferenceNumber as r on r.StudentId == s.StudentId
-#                     JOIN
-#                         emailsOnPayment as e on e.StudentId == s.StudentId
-#                     ORDER by s.Date DESC
-#                     LIMIT 1
-#                 """)
-#                 data = cursor.fetchall()
-#                 data = data[0]
-#                 payment_data = {"studentId":data[0],"fullName":data[1],"refNo":data[2],"phoneNo":data[3],"email":data[4]}
-                
-
-#                 print(f"the fetched data got printed here:{payment_data}")
-                
-#         except sqlite3.Error as error:
-#             print(f"There is apossibility sqlit failed to connect to database.investigate the error:{error}")
-#         return jsonify(payment_data)
     
 
     
@@ -506,6 +409,10 @@ def fetchCourseDetails():
 @app.route("/handlePayments")
 def handlePayments():
     return render_template("continueToPayment.html")
+
+@app.route("/studentProfile")
+def studentProfile():
+    return render_template("studentProfile.html")
 
 
 
