@@ -13,10 +13,10 @@
     </div>
     <div class="academic-status-section">
       <!-- Academic status information goes here -->
-      <p>Welcome, John Doe!</p>
+      <p>Welcome!</p>
     </div>
     <div class="student-profile-section">
-      <img src="student.jpg" alt="Student Image" class="profile-image">
+      <img src="../static/images/newimages/istockphoto-1224500457-2048x2048.jpg" alt="Student Image" class="profile-image">
       <div class="dropdown-content">
         <a href="{{url_for('studentProfile')}}">Profile</a>
         <a href="{{url_for('logout')}}">
@@ -30,18 +30,25 @@
   
   <main>
     <div class="side-bar-section">
-        <div class="course-resources">
+        <!-- <div class="course-resources">
           <a>Resources</a>
         </div>
         <div class="recordings">
           <a>
             Recordings
           </a>
-        </div>
+        </div> -->
         <div class="live-classes">
-          <a>
-            live
+          <a target="_blank" href="https://meet.google.com/rit-tkcd-bec">
+            live class
           </a>
+        </div>
+        <div class="logout-section-2">
+          <a href="{{url_for('logout')}}">
+    
+            <img class="logout-icon"  src="../static/icons/icons8-logout-64.png">
+            <span class="logout-text-2 logout-text"> Logout</span>
+        </a>
         </div>
     </div>
     <div class="main-body-section">
@@ -49,6 +56,6 @@
     </div>
   </main>
 
-  <script type="module" src="../static/jsFiles/load-course-student-dashboard.js"></script>
+  <script type="module" src="../static/jsFiles/sendPaidcourseAndStudentDetails.js"></script>
 </body>
 </html>

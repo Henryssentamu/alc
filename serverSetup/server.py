@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin,login_user,login_required,logout_user,current_user
@@ -6,7 +7,7 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import StudentDatabases,CoursePaymentsDataDase
+from databases import StudentDatabases, PurchasedCourseDetails, CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
@@ -295,6 +296,7 @@ def login():
                 next_url = session.pop("payment_url", None)
                 # if request.referrer and "/payments" in request.referrer:
                 if next_url and "/payments" in next_url:
+
                     return redirect(url_for('payment'))
                 else:
                     return redirect(url_for('studentDashboard'))
@@ -311,8 +313,12 @@ def logout():
     return redirect(url_for('homePage'))
 
 @login_required
-@app.route("/studentDashboard")
+@app.route("/studentDashboard", methods = ["POST","GET"])
 def studentDashboard():
+    # if request.method == "POST":
+    #     data = request.json
+        # print(f"course purchase details sent ")
+
     studeent = current_user.id
     return render_template("studentDashboard.html",studeent = studeent)
 
@@ -327,6 +333,10 @@ def payment():
         # print(f"price details here:{courseDetails}")
         # id = courseDetails["priceId"]
         # amount = courseDetails["price"]
+        # print(f"price id:{priceId}")
+    
+        session["current_student"] = current_user.id
+        
         try:
             checkout_session = stripe.checkout.Session.create(
                 line_items=[
@@ -375,11 +385,9 @@ def fetchCourseDetails():
                         cursor = db.cursor()
                         cursor.execute("""
                             select
-                                c.courseName,i.courseImageLink, p.coursePrice,p.coursePriceIds
+                                c.courseId,p.coursePriceIds
                             FROM
                                 courseDetails AS c
-                            JOIN
-                                courseImageLinks AS i ON c.courseId == i.courseId
                             JOIN
                                 coursePriceIdDetails AS P ON c.courseId == p.courseId
                             WHERE
@@ -387,10 +395,11 @@ def fetchCourseDetails():
                         """,(course_id,))
                         course_details = cursor.fetchone()
                         if course_details:
-                            courseName,imageLink,price,priceId = course_details
-                            # print(f"price id here:{priceId} \n")
+                            courseId,priceId = course_details
+                            print(f"courseID id here:{courseId} \n")
                             session["fetched_course_pirce_details"] = priceId
-                            return jsonify({"courseName":courseName,"imageLink":imageLink}),200
+                            current_student = session.get("current_student")
+                            return jsonify({"studentId":current_student, "courseId":courseId, }),200
                         return jsonify({"error":"course not found"}),400
 
                 except Exception as error:
@@ -410,8 +419,22 @@ def fetchCourseDetails():
 def handlePayments():
     return render_template("continueToPayment.html")
 
+@app.route("/studentPaidCourseRecords",methods=["GET","POST"])
+def paymentRecieved():
+    if request.method == "POST":
+        data = request.json
+        if data:
+            student = data["studentId"]
+            course = data["courseId"]
+            paymentData = PurchasedCourseDetails(studentId= student, courseId= course)
+            paymentData.createTables()
+            paymentData.insertIntoTables()
+    return render_template("continueToDashboard.html")
+
+
 @app.route("/studentProfile")
 def studentProfile():
+
     return render_template("studentProfile.html")
 
 

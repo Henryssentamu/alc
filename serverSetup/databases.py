@@ -354,3 +354,60 @@ class Courses:
                 db.commit()
         except Exception as error:
             print(f"faced chalenge in inserting data into course details. {error}")
+
+class PurchasedCourseDetails:
+    def __init__(self,studentId, courseId) -> None:
+        self.studentId = studentId
+        self.courseId = courseId
+    def createTables(self):
+        try:
+            with sqlite3.connect("purchasedCourseDetails.db") as db:
+                cursur = db.cursor()
+                cursur.execute("""
+                    CREATE TABLE IF NOT EXISTS studentDetails(
+                            Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            PurchaseId INTEGER PRIMARY KEY AUTOINCREMENT,
+                            StudentId VARCHAR(300)
+                    )
+                """)
+            with sqlite3.connect("purchasedCourseDetails.db") as db:
+                cursur = db.cursor()
+                cursur.execute("""
+                    CREATE TABLE IF NOT EXISTS purchasedCourse(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        CourseId TEXT,
+                        StudentId VARCHAR(300),
+                        FOREIGN KEY (StudentId) REFERENCES studentDetails(StudentId)
+                    )
+                """)
+        except sqlite3.Error as e:
+            print(f"failed to connect to sqlite:{e}")
+        except Exception as error:
+            print(f"possibility of failure to create specified table:{error}")
+
+    def insertIntoTables(self):
+        try:
+            with sqlite3.connect("purchasedCourseDetails.db") as db:
+                cursur = db.cursor()
+                cursur.execute("""
+                    INSERT INTO studentDetails(
+                        StudentId    
+                    ) VALUES(?)
+                """, (self.studentId,))
+                db.commit()
+
+            with sqlite3.connect("purchasedCourseDetails.db") as db:
+                cursur = db.cursor()
+                cursur.execute("""
+                    INSERT INTO purchasedCourse(
+                        CourseId,
+                        StudentId      
+                    ) VALUES (?,?)
+                """,(self.courseId,self.studentId))
+                db.commit()
+        except sqlite3.Error as e:
+            print(f" error occured while insertind in purchasedCourseDetails :{e}")
+        except Exception as error:
+            print(f"possibility of failling to populate the specifed table:{error}")
+
+        
