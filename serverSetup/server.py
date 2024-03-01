@@ -7,7 +7,7 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import StudentDatabases, PurchasedCourseDetails, CoursePaymentsDataDase
+from databases import StudentDatabases, PurchasedCourseDetails, FetchStudentData, CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
@@ -292,7 +292,10 @@ def login():
             is_student = checkCredentials.is_authenticated()
             if is_student:
                 user = User(studentId)
+                """session bellow stores logged instudent id which is to be used getBioDataAndCourseDetails route """
+                
                 login_user(user=user)
+                session["logged_student_id"] = current_user.id
                 next_url = session.pop("payment_url", None)
                 # if request.referrer and "/payments" in request.referrer:
                 if next_url and "/payments" in next_url:
@@ -315,12 +318,8 @@ def logout():
 @login_required
 @app.route("/studentDashboard", methods = ["POST","GET"])
 def studentDashboard():
-    # if request.method == "POST":
-    #     data = request.json
-        # print(f"course purchase details sent ")
-
-    studeent = current_user.id
-    return render_template("studentDashboard.html",studeent = studeent)
+    
+    return render_template("studentDashboard.html")
 
 
 @app.route("/payments",methods=["POST","GET"])
@@ -430,6 +429,81 @@ def paymentRecieved():
             paymentData.createTables()
             paymentData.insertIntoTables()
     return render_template("continueToDashboard.html")
+
+@app.route("/getBioDataAndCourseDetails", methods= ["GET","POST"])
+def getBioDataAndCourseDetails():
+    if request.method == "GET":
+        details = []
+        """
+            bellow we are accessing student bio data by initailizing student object then call studentBio function
+        """
+        studentId = session.get("logged_student_id")
+                
+        student  = FetchStudentData(studentId= studentId)
+        studentData = student.studentBio()
+        # print(f"fatched student data:{studentData}")
+        try:
+            """
+                this api sends student bio data and course details on each login session which are to be rendered
+                on student portal. so it sends those details to a js file which handle rendering 
+                html content on student portal
+            """
+            with sqlite3.connect("purchasedCourseDetails.db") as db:
+                curser = db.cursor()
+                curser.execute("""
+                    SELECT DISTINCT
+                        c.CourseId
+                    FROM
+                        purchasedCourse as c
+                    WHERE
+                        c.StudentId == ?   
+                """,(studentId,))
+                purchased_course = curser.fetchall()
+            
+            # print(f"yes he bought this course:{purchased_course}")
+            if purchased_course:
+                courseList = [ courseid[0] for courseid in purchased_course]
+                # print(f"course list here: {courseList}")
+
+                for id in courseList:
+                    try:
+                        with sqlite3.connect("courseDatabase.db") as db:
+                            cursor = db.cursor()
+                            cursor.execute("""
+                                SELECT
+                                    C.courseName, I.courseImageLink
+                                FROM
+                                    courseDetails AS C
+                                JOIN
+                                    courseImageLinks AS I ON I.courseId == C.courseId
+                                WHERE
+                                    C.courseId == ?
+                            """, (id,))
+                            details.append(cursor.fetchone())
+                    except sqlite3.Error as error:
+                        print(f"error in accessing course database in login route:{error}")
+                # print(details)
+                
+                
+        except sqlite3.Error as error:
+            print(f"failed to connect to sqlite in the login route:{error}")
+        except Exception as error:
+            print(f"there was aproblem in accessing student paid course details under login route:{error}")
+        formated_details = [{"courseName":item[0], "imageLink":item[1]} for item in details]
+        allDetails = {
+            "firstName":studentData[0],
+            "lastName":studentData[1],
+            "school":studentData[2],
+            "intake":studentData[3],
+            "courseDetails":formated_details
+
+        }
+        print(f" sent data: {allDetails}")
+        
+        return jsonify(allDetails)
+        # elif request.method == "POST":
+        #     return "handle post request "
+    # return render_template("continueToDashboard.html")
 
 
 @app.route("/studentProfile")

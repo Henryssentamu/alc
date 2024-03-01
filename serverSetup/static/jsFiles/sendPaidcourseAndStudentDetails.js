@@ -1,4 +1,6 @@
 import {response} from './get_course_details.js'
+// import {data} from "./loadStudentBioAndCourseToPortal.js"
+
 
 
 async function sendPurchasedCourseDetails(){
@@ -40,6 +42,7 @@ async function sendPurchasedCourseDetails(){
 // load_html()
 
 sendPurchasedCourseDetails()
+// console.log(data)
 
 
 

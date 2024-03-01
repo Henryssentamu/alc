@@ -1,3 +1,4 @@
+from shutil import ExecError
 import sqlite3
 
 class StudentDatabases:
@@ -167,6 +168,10 @@ class StudentDatabases:
             print(f"faced database connection error:{error}")
         except Exception as error:
             print(f"investigate this database error:{error} ")
+
+    
+
+    
 
 
 class CoursePaymentsDataDase:
@@ -406,8 +411,46 @@ class PurchasedCourseDetails:
                 """,(self.courseId,self.studentId))
                 db.commit()
         except sqlite3.Error as e:
-            print(f" error occured while insertind in purchasedCourseDetails :{e}")
+            print(f" error occured while insert in the purchasedCourseDetails :{e}")
         except Exception as error:
             print(f"possibility of failling to populate the specifed table:{error}")
+
+        
+class FetchStudentData:
+    def __init__(self, studentId) -> None:
+        self.studentId = studentId
+    def studentBio(self):
+        if self.studentId:
+            try:
+                with sqlite3.connect("StudentDetails.db") as db:
+                    cursor = db.cursor()
+                    # for any select update made here, there should be a corresponding  update in login route
+                    cursor.execute("""
+                        SELECT
+                            S.FirstName,
+                            S.SirName,
+                            X.school,
+                            I.Intake
+                        FROM 
+                            studentDetails AS S
+                        JOIN
+                            studentSchools AS X ON X.studentId == S.studentId
+                        JOIN
+                            studentIntake AS I ON I.studentId == S.studentId
+                        WHERE
+                            S.studentId == ?
+                                   
+                    """,(self.studentId,))
+                    student_details = cursor.fetchone()
+                    
+            except sqlite3.Error as error:
+                print(f"sqlite under fetch student details in stdent details class failed:{error}")
+                return None
+            except Exception as error:
+                print(f"faced problames in fetching student details under student details class:{error}")
+                return None
+            return student_details
+        else:
+            return "either you did't provide student id or you provided empty one"
 
         
