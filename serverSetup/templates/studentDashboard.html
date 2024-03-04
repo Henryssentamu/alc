@@ -1,62 +1,236 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Portal</title>
+  <title>student Portal</title>
   <link rel="stylesheet" href="../static/studentportal.css">
 </head>
-<body class="student-dashboard-body">
-  <header>
-    <div class="logo-section">
-      <img src="logo.png" alt="University Logo">
+<body class="studentPortal-main-body">
+  <div class="portal-header">
+    <div class="log-section">
+      <a>
+        alc
+      </a>
     </div>
-    <div class="academic-status-section">
-      <!-- Academic status information goes here -->
-      <p>Welcome!</p>
-    </div>
-    <div class="student-profile-section">
-      <img src="../static/images/newimages/istockphoto-1224500457-2048x2048.jpg" alt="Student Image" class="profile-image">
-      <div class="dropdown-content">
-        <a href="{{url_for('studentProfile')}}">Profile</a>
-        <a href="{{url_for('logout')}}">
+    <div class="header-main">Student Portal</div>
+    <div class="student-section">
+		
+		<div class="logedInstudentName">
+
+		</div>
+        
+      <!-- student image and name details will be generated from js -->
+      <div class="drop-down-menu">
+        <img class="drop-down-arrow-icon" src="../static/icons/dowmArrowwhite.png">
+        <div class="drop-down-content">
     
-            <img class="logout-icon"  src="../static/icons/icons8-logout-64.png">
-            <span class="logout-text"> Logout</span>
-        </a>
+          <div class="profile-section">
+              <a >
+                profile
+              </a>
+          </div>
+          <div class="logout-section">
+            <img class="logout-icon" src="../static/icons/logoutred.png">
+            <div class="logout-title">
+              <a class="logout-title-link" href="{{url_for('logout')}}">
+                logout
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
-  
-  <main>
-    <div class="side-bar-section">
-        <!-- <div class="course-resources">
-          <a>Resources</a>
+
+  </div>
+
+  <div class="main-body">
+    <div class="left-side-bar">
+        <div class="live-class">
+            <img  class="dashboardicons" src="../static/icons/live.png">
+            <div>
+                <a>
+                    Live Class
+                </a>
+            </div>
+            
         </div>
-        <div class="recordings">
-          <a>
-            Recordings
-          </a>
-        </div> -->
-        <div class="live-classes">
-          <a target="_blank" href="https://meet.google.com/rit-tkcd-bec">
-            live class
-          </a>
-        </div>
-        <div class="logout-section-2">
-          <a href="{{url_for('logout')}}">
+        <div class="exams">
     
-            <img class="logout-icon"  src="../static/icons/icons8-logout-64.png">
-            <span class="logout-text-2 logout-text"> Logout</span>
-        </a>
+            <div class="assessment">
+                <img class="dashboardicons" src="../static/icons/graduationicon.png">
+                <div>
+                    Assessments
+                </div>
+                
+            </div>
+            <div class="assessment-sections">
+                <div class="tests">
+                    <a>
+                        Tests
+                    </a>
+                </div>
+                <div class="exam">
+                    <a>
+                        Exams
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="projects">
+            <img class="dashboardicons" src="../static/icons/projecticon.png">
+            <div>
+                <a>
+                    Projects
+                </a>
+            </div>
+            
+        </div>
+
+        <div class="exams">
+            <img class="dashboardicons" src="../static/icons/resultsicons.png">
+            <div>
+                <a>
+                    Results
+                </a>
+            </div>
+            
+        </div>
+
+        <div class="setting-section">
+            
+            <div class="setting-drop-up-menu">
+                <img class="dashboardicons" src="../static/icons/settings.png">
+                <div>
+                    setting
+                </div>
+              
+            </div>
+            <div class="setting-contens">
+                <div class="profile-link">
+                    <a>profile</a>
+                </div>
+                <div class="logout-link">
+                    <img class="logout-icon" src="../static/icons/logoutred.png">
+                    <a href="{{url_for('logout')}}" class="logout-title-2">logout</a>
+                </div>
+                
+                
+            </div>
         </div>
     </div>
-    <div class="main-body-section">
-      
+    <div class="middle-section">
+		<div class="calender-section">
+			<h2>Academic Calendar</h2>
+
+			<table>
+				<thead>
+					<tr>
+						<th>Sun</th>
+						<th>Mon</th>
+						<th>Tue</th>
+						<th>Wed</th>
+						<th>Thu</th>
+						<th>Fri</th>
+						<th>Sat</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Break</td>
+						<td>self learning</td>
+						<td>self learning</td>
+						<td>self learning</td>
+						<td>self learning</td>
+						<td>live class</td>
+						<td>live class</td>
+					</tr>
+					<!-- Add more rows for each week -->
+					<!-- Example: -->
+					<!-- <tr>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+						<td>10</td>
+					</tr> -->
+				</tbody>
+			</table>
+		</div>
+		<div class="student-course-section"></div>
+	</div>
+
+
+    <div class="right-side-bar">
+		<div class="enrolled-course-summaries-section">
+			<div class="section-title">
+				project report
+			</div>
+			<div class="enrolled-course-details">
+				<div class="title-tag">
+					Submited
+				</div>
+				<div class="number-of-done">
+					<!-- this will be generated by js -->
+					3
+				</div>
+
+			</div>
+
+			<div class="enrolled-course-details">
+				<div class="title-tag">
+					Remaining
+				</div>
+				<div class="number-of-remaining">
+					<!-- this will be generated by js -->
+					4
+				</div>
+
+			</div>
+
+		</div>
+		<div class="enrollment-section">
+			<!-- <div class="section-title2">
+				Enrollment
+			</div> -->
+			<div class="available-schools">
+				<div class="choose-school">
+					Navigate To Courses
+				</div>
+				<!-- this shoule be generated by js -->
+				<div class="schools">
+					<a href="{{url_for('schoolDataScience')}}">
+						school of data science
+					</a>
+				</div>
+				<div class="schools">
+					<a href="{{url_for('schoolSoftwareEngineering')}}">
+						school of software Engineering
+					</a>
+					
+				</div>
+			</div>
+		</div>
+		<div class="upcoming-events-section">
+			<div class="event-sub-title">
+				Upcoming Events
+			</div>
+			<!-- this is to be generated with js -->
+			<div class="events">
+				no events yet
+			</div>
+		</div>
     </div>
-  </main>
+  </div>
+
+ 
+
+
+
   <script src="../static/jsFiles/loadStudentBioAndCourseToPortal.js"></script>
   <script type="module" src="../static/jsFiles/sendPaidcourseAndStudentDetails.js"></script>
-  
 </body>
 </html>
