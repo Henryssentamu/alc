@@ -39,10 +39,33 @@ async function generateHtml(){
     var  jsonData = await fetchStudentDetailsData()
     var firstName = jsonData["firstName"]
     var secondName = jsonData["lastName"]
+    var courseDetails =  jsonData["courseDetails"]
     var fullName = firstName + " ." + secondName[0]
+    var generatedHtml = " "
     document.querySelector(".logedInstudentName")
         .innerHTML = fullName
-    // console.log(firstName)
+
+    courseDetails.forEach(object => {
+        generatedHtml += `
+            <section class="generated-course">
+                
+                <a href="#">
+                    <div class="course-image-section">
+                    <img class="course-image" src="${object['imageLink']}">
+                    </div>
+                    <div class="course-titles">
+                        ${object["courseName"]}
+                    </div>
+                </a>
+                
+            </section>
+            
+            
+        `
+    });
+    document.querySelector(".student-course-section")
+        .innerHTML = generatedHtml
+    console.log(courseDetails)
 }
 
 generateHtml()

@@ -355,7 +355,9 @@ def payment():
         print(f"course details not found in session:{error}")
         return jsonify({"course details not found in session"}),400
     
-    
+    # if request.method == "POST":
+    #     payment_response  = request.data
+    #     print(f"resonse from strip: {payment_response}")
 
     return redirect(checkout_session.url,code=303)
 
@@ -420,6 +422,7 @@ def handlePayments():
 
 @app.route("/studentPaidCourseRecords",methods=["GET","POST"])
 def paymentRecieved():
+    # this route updates the purchased course database when the payment is successfully made
     if request.method == "POST":
         data = request.json
         if data:
@@ -429,6 +432,44 @@ def paymentRecieved():
             paymentData.createTables()
             paymentData.insertIntoTables()
     return render_template("continueToDashboard.html")
+
+
+
+# Use this sample code to handle webhook events in your integration.
+# This is your Stripe CLI webhook secret for testing your endpoint locally.
+endpoint_secret = 'whsec_f98b915535bc5c05f4173c8b1e847aead40014396adbe9892a1c9907844976d9'
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    event = None
+    payload = request.data
+    sig_header = request.headers['STRIPE_SIGNATURE']
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
+
+    # Handle the event
+    if event['type'] == 'payment_intent.succeeded':
+      payment_intent = event['data']['object']
+    # ... handle other event types
+      print(f"response from strip:{payment_intent}")
+    else:
+      print('Unhandled event type {}'.format(event['type']))
+
+    return jsonify(success=True)
+
+
+
+
+
 
 @app.route("/getBioDataAndCourseDetails", methods= ["GET","POST"])
 def getBioDataAndCourseDetails():
