@@ -1,0 +1,54 @@
+@media only screen and (max-width:600px){
+    .body-admin{
+        width: auto;
+        padding: 30px;
+    }
+
+    .contentofThePolicy{
+        margin: 0px;
+    }
+
+    .admission-policy-heading{
+        margin: 0px;
+    }
+}
+
+
+@media only screen and (min-width: 601px) and (max-width: 1024px){
+    body{
+        margin-left: 0px;
+        margin-right: 0px;
+        font-family: "Poppines";
+    }
+    .body-admin{
+        width: 800px; 
+        padding-left: 10px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        font-size: 26px;
+    }
+
+    .contentofThePolicy{
+        margin: 0px;
+    }
+
+    .admission-policy-heading{
+        margin: 0px;
+    }
+}
+
+
+/* For large screens (e.g., desktops) */
+@media only screen and (min-width: 1025px) and (max-width: 1440px){
+    .admission-policy-heading{
+        margin: 10px;
+    }
+    .contentofThePolicy{
+        margin: 10px;
+    }
+    
+    body{
+        padding-top: 50px;
+        font-size: 20px;
+    }
+}

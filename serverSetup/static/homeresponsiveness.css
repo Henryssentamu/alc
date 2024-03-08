@@ -1,0 +1,877 @@
+/* this is for small screens ie mobile */
+
+@media only screen and (max-width:600px){
+    /* body{
+        width: 400px;
+    } */
+
+    .contentofThePolicy{
+        margin: 0px;
+    }
+
+    .admission-policy-heading{
+        margin: 0px;
+    }
+
+    .banner-section{
+        width: auto;
+        background-size: auto;
+        
+    }
+    /* header styling  */
+
+    
+
+    .header-section{
+        font-size: 10px;
+    }
+    .logo-section{
+        margin-right: 14px;
+        margin-left: 1px;
+        font-size: 20px;
+        font-weight: bolder;
+    }
+
+    .page{
+        margin-right: 10px;
+    }
+
+    .page a{
+        font-weight: 900px;
+        font: size 16px; ;
+    }
+    .dropdown-menu-itmes{
+        text-decoration: none;
+        color: #0d0a2c;
+
+    }
+
+    .page:hover .dropdown-menu{
+        background-color: white;
+        width: 130px;
+        color: #0d0a2c;
+        left: 2px;
+    }
+
+    /* banner  styling  */
+
+
+    .banner-section{
+        width: 100%;
+        height: 600px;
+    }
+    .banner-details-containr{
+        top: 120px;
+        left: 60px;
+    }
+    #banner-details{
+        font-size: 26px;
+    }
+    #banner-details-register{
+        font-size: 20px;
+        margin-top: 20px;
+        margin-left: -15px;
+    }
+    .banner-details-button-section{
+        margin-top: 70px;
+        margin-left: 25px;
+    }
+    #banner-details-button{
+        padding: 12px 59px;
+        font-size: medium;
+        color: #0d0a2c;
+    }
+
+
+
+    /* content section css  */
+    .welcome h2{
+        margin-top: 50px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .welcome div{
+        text-align: left;
+        font-size: 16px;
+    }
+
+    /* course container css */
+    .courses-container{
+        display: grid;
+        grid-template-columns: 1fr;
+        margin-top: 50px;
+    }
+
+    .course{
+        width: 300px;
+    }
+    .course-thumbnail{
+        width: 320px;
+    }
+
+    .detail-section{
+        width: 320px;
+        padding: 0px 0px;
+       
+        
+       
+        justify-content: space-between;
+    }
+
+    .enrrole-section{
+        margin-top:  20px; ;
+    }
+
+    .enrrole-button{
+        padding: 5px 20px;
+    }
+
+
+    /* coming soon section */
+
+    .comming-soon-details{
+        padding: 0px;
+    }
+
+    .comming_soon{
+        padding: 0px;
+    }
+
+    .coming-soon-school-container{
+        width: 100px;
+        height: 100px;
+        perspective: 1000px;
+        
+    }
+
+    .coming-soon-school-element{
+        width: 90%;
+        height: 80%;
+    }
+
+    .back-side,
+    .front-side{
+        width: 90%;
+        height: 80%;
+    }
+
+    .front-side{
+        font-size: medium;
+    }
+
+    /* partnership section */
+
+    .partners-section{
+        display: grid;
+        grid-template-rows: 1fr;
+
+    }
+
+    .partnership-discription{
+        padding: 30px 10px;
+        width: 350px;
+        align-items: center;
+    }
+
+    .become-apartner{
+        margin-top: 20px;
+        display: block;
+        /* grid-template-columns: 1fr; */
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px;
+    }
+    .grants{
+        width: 300px;
+    }
+
+    .partnership-details{
+        position: inherit;
+        margin-top: 100px;
+        /* margin-left: 60px; */
+        left: 45px;
+        padding: 10px 0px;
+        width: 300px;
+        align-items: center; 
+      
+    }
+
+    .grants .partner-details{
+        width: 280px;
+        padding-left: 8px;
+    }
+
+    .partnership-details .body-partnership{
+        margin: 0px;
+        padding: 0px 20px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+
+    /* our partner display section */
+
+    .our-partner-display-section{
+        margin-top: 0px;
+        
+    }
+
+    .our-partner-display-heading{
+        align-items: center;
+        margin-left: 50px;
+    }
+
+    #partner-tagline{
+        width: 240px;
+        margin-left: -25px;
+        /* padding: 0px 20px; */
+        text-align: center;
+
+    }
+
+    .presentation{
+        height: 200px;
+        width: 100%;
+    }
+
+
+    /* FOOTER SECTION */
+
+    .register{
+        height: 150px;
+        top: -35px;
+        right: 5px;
+        left: 5px;
+        padding: 0px;
+        text-align: center;
+        font-size: 15px;
+    }
+
+    #register-button{
+        margin: 0px;
+    }
+   
+    .footer-section{
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 100px 20px;
+    }
+}
+
+
+/* handle tablet sizes  */
+
+@media only screen and (min-width:601px ) and (max-width:1024px){
+    .banner-section{
+        width: auto;
+        background-size: auto;
+        
+    }
+
+    /* header styling  */
+
+    
+
+    .header-section{
+        font-size: 26px;
+    }
+    .logo-section{
+        margin-right: 14px;
+        margin-left: 1px;
+        font-size: 36px;
+        font-weight: bolder;
+    }
+
+    .page{
+        margin-right: 16px;
+    }
+
+    .page a{
+        font-weight: 900px;
+        font: size 26px; ;
+    }
+    .dropdown-menu-itmes{
+        text-decoration: none;
+        color: #0d0a2c;
+
+    }
+
+    .page:hover .dropdown-menu{
+        background-color: white;
+        width: 130px;
+        color: #0d0a2c;
+        left: 2px;
+    }
+
+    /* banner  styling  */
+
+
+    .banner-section{
+        width: 100%;
+        height: 600px;
+    }
+    .banner-details-containr{
+        top: 120px;
+        left: 60px;
+    }
+    #banner-details{
+        font-size: 36px;
+    }
+    #banner-details-register{
+        font-size: 36px;
+        margin-top: 20px;
+        margin-left: -15px;
+    }
+    .banner-details-button-section{
+        margin-top: 70px;
+        margin-left: 25px;
+    }
+    #banner-details-button{
+        padding: 20px 75px;
+        font-size: larger;
+        color: #0d0a2c;
+    }
+
+        /* content section css  */
+        .welcome h2{
+            margin-top: 0px;
+            padding: 20px;
+            font-size: 36px;
+            
+        }
+    
+        .welcome div{
+            text-align: left;
+            font-size: 26px;
+            font-family: "Poppines";
+        }
+
+
+        /* course container css */
+    .courses-container{
+        display: grid;
+        grid-template-columns: 1fr;
+        margin-top: 50px;
+    }
+
+    .course{
+        width: 700px;
+    }
+    .course-thumbnail{
+        width: 700px;
+    }
+
+    .detail-section{
+        width: 600px;
+        padding: 20px 0px;
+        height: 500px;
+       
+        
+       
+        justify-content: space-between;
+
+    }
+    .course-name{
+        font-size: 36px;
+        font-weight: 900;
+        font-family: "Poppines";
+    }
+
+    .enrrole-section{
+        margin-top:  20px; ;
+    }
+
+    .enrrole-button{
+        padding: 25px 100px;
+        font-size: larger;
+    }
+
+    .detail-section div{
+        font-size: 26px;
+        /* margin: 10px 5px; */
+    }
+
+    /* coming soon section */
+
+    .comming-soon-details{
+        padding: 0px;
+    }
+
+   
+
+    .comming_soon{
+        padding: 50px;
+    }
+    .comming-soon-heading{
+        font-size: 36px;
+    }
+    .other-comming-soon-details{
+        font-size: 26px;
+    }
+
+    .coming-soon-school-container{
+        width: 330px;
+        height: 300px;
+        perspective: 1000px;
+        
+    }
+
+    .coming-soon-school-element{
+        width: 100%;
+        height: 100%;
+    }
+
+    .back-side,
+    .front-side{
+        width: 90%;
+        height: 80%;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+    
+     /* partnership section */
+
+     .partners-section{
+        display: grid;
+        grid-template-rows: 1fr;
+        align-items: center;
+        margin-left: 45px;
+
+    }
+
+    .partnership-discription{
+        padding: 30px 10px;
+        /* width: 350px; */
+        align-items: center;
+    }
+
+    .become-apartner{
+        margin-top: 20px;
+        display: block;
+        /* grid-template-columns: 1fr; */
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px;
+    }
+    .grants{
+        width: 600px;
+    }
+
+    .partnership-details{
+        position: inherit;
+        margin-top: 100px;
+        /* margin-left: 60px; */
+        left: 45px;
+        padding: 10px 0px;
+        width: 600px;
+        align-items: center; 
+      
+    }
+    .grants h1{
+        font-size: 36px;
+        padding: 15px;
+    }
+
+    .grants .partner-details{
+        width: 480px;
+        align-items: center;
+        font-size: 36px;
+        /* padding-left: 28px; */
+    }
+
+    .partnership-details .body-partnership{
+        /* /* margin: 0px; */
+        /* padding: 10px 20px; */
+        align-items: center;
+        justify-content: space-between;
+        font-size: 36px;
+        width: 500px;
+    }
+
+    .body-partnership .partner-button{
+        padding: 20px 40px;
+        font-size: 26px;
+        margin-left: 50px;
+    }
+
+     /* our partner display section */
+
+     .our-partner-display-section{
+        margin-top: 0px;
+        
+    }
+
+    .our-partner-display-heading{
+        align-items: center;
+        margin-left: 50px;
+        font-size: 26px;
+    }
+
+    #partner-tagline{
+        width: 400px;
+        margin-left: -25px;
+        /* padding: 0px 20px; */
+        text-align: center;
+
+    }
+
+    .presentation{
+        height: 300px;
+        width: 100%;
+        font-size: 20px;
+    }
+
+
+    /* FOOTER SECTION */
+
+    .register{
+        height: 150px;
+        top: -75px;
+        right: 5px;
+        left: 5px;
+        padding: 10px;
+        text-align: center;
+        font-size: 20px;
+    }
+
+    #register-button{
+        margin: 0px;
+        /* padding: 40px 56px; */
+        top: 150px;
+        font-size: 56px;
+    }
+   
+    .footer-section{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        padding: 100px 20px;
+        font-size: 20px;
+    }
+
+    .social-media{
+        margin-right: 0px;
+    }
+
+    .copyrigt-section{
+        width: 500px;
+        margin-left: -130px;
+    }
+
+
+}
+
+
+/* For large screens (e.g., desktops) */
+@media only screen and (min-width: 1025px) and (max-width: 1440px){
+    .banner-section{
+        width: auto;
+        background-size: auto;
+        
+    }
+
+    /* header styling  */
+
+    
+
+    .header-section{
+        font-size: 26px;
+    }
+    .logo-section{
+        margin-right: 14px;
+        margin-left: 1px;
+        font-size: 56px;
+        font-weight: bolder;
+    }
+
+    .page-section{
+        align-items: center;
+        justify-content: space-between;
+        margin-left: 200px;
+    }
+
+    .page{
+        margin-right: 56px;
+    }
+
+    .page a{
+        font-weight: 900px;
+        font: size 26px; ;
+    }
+    .dropdown-menu-itmes{
+        text-decoration: none;
+        color: #0d0a2c;
+
+    }
+
+    .page:hover .dropdown-menu{
+        background-color: white;
+        width: 330px;
+        color: #0d0a2c;
+        left: -102px;
+        font-size: medium;
+    }
+
+    /* banner  styling  */
+
+
+    .banner-section{
+        width: 100%;
+        height: 600px;
+    }
+    .banner-details-containr{
+        top: 120px;
+        left: 60px;
+    }
+    #banner-details{
+        font-size: 36px;
+    }
+    #banner-details-register{
+        font-size: 36px;
+        margin-top: 20px;
+        margin-left: -15px;
+    }
+    .banner-details-button-section{
+        margin-top: 70px;
+        margin-left: 25px;
+    }
+    #banner-details-button{
+        padding: 20px 75px;
+        font-size: larger;
+        color: #0d0a2c;
+    }
+
+        /* content section css  */
+        .welcome h2{
+            margin-top: 0px;
+            padding: 20px;
+            font-size: 36px;
+            
+        }
+    
+        .welcome div{
+            text-align: left;
+            font-size: 26px;
+            font-family: "Poppines";
+        }
+
+
+        /* course container css */
+    .courses-container{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-top: 50px;
+    }
+
+    .course{
+        width: 500px;
+        align-items: center;
+    }
+    .course-thumbnail{
+        width: 500px;
+    }
+
+    .detail-section{
+        width: 500px;
+        padding: 10px 0px;
+        height: 300px;
+        /* font-size: large; */
+       
+        
+       
+        justify-content: space-between;
+
+    }
+    .course-name{
+        font-size: 26px;
+        font-weight: 700;
+        font-family: "Poppines";
+    }
+
+    .enrrole-section{
+        margin-top:  20px; ;
+    }
+
+    .enrrole-button{
+        padding: 25px 70px;
+        font-size: larger;
+    }
+
+    .detail-section div{
+        font-size: 23px;
+        width: 400px;
+        /* margin: 10px 5px; */
+    }
+
+    /* coming soon section */
+
+    .comming-soon-details{
+        padding: 0px;
+    }
+
+   
+
+    .comming_soon{
+        padding: 50px;
+    }
+    .comming-soon-heading{
+        font-size: 36px;
+    }
+    .other-comming-soon-details{
+        font-size: 26px;
+    }
+
+    .coming-soon-school-container{
+        width: 330px;
+        height: 300px;
+        perspective: 1000px;
+        
+    }
+
+    .coming-soon-school-element{
+        width: 100%;
+        height: 100%;
+    }
+
+    .back-side,
+    .front-side{
+        width: 90%;
+        height: 80%;
+        font-size: 26px;
+        font-weight: 700;
+    }
+
+    
+     /* partnership section */
+
+     .partners-section{
+        display: grid;
+        grid-template-rows: 1fr;
+        align-items: center;
+        margin-left: 145px;
+
+
+    }
+
+    .partnership-discription{
+        padding: 30px 10px;
+        /* width: 350px; */
+        align-items: center;
+    }
+
+    .become-apartner{
+        width: 500px;
+        margin-top: 20px;
+        display: block;
+        /* grid-template-columns: 1fr; */
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 10px;
+    }
+    .grants{
+        width: 900px;
+    }
+
+    .partnership-details{
+        position: inherit;
+        margin-top: 100px;
+        /* margin-left: 60px; */
+        left: 45px;
+        padding: 10px 0px;
+        width: 900px;
+        align-items: center; 
+      
+    }
+    .grants h1{
+        font-size: 36px;
+        padding: 15px;
+    }
+
+    .grants .partner-details{
+        padding-left: 130px;
+        width: 600px;
+        align-items: center;
+        font-size: 36px;
+        /* padding-left: 28px; */
+    }
+
+    .partnership-details .body-partnership{
+        /* /* margin: 0px; */
+        /* padding: 10px 20px; */
+        align-items: center;
+        justify-content: space-between;
+        font-size: 36px;
+        width: 600px;
+        padding-left: 150px;
+    }
+
+    .body-partnership .partner-button{
+        padding: 20px 40px;
+        font-size: 26px;
+        margin-left: 150px;
+    }
+
+     /* our partner display section */
+
+     .our-partner-display-section{
+        margin-top: 0px;
+        
+    }
+
+    .our-partner-display-heading{
+        align-items: center;
+        margin-left: 50px;
+        font-size: 26px;
+    }
+
+    #partner-tagline{
+        width: 400px;
+        margin-left: -25px;
+        /* padding: 0px 20px; */
+        text-align: center;
+
+    }
+
+    .presentation{
+        height: 300px;
+        width: 100%;
+        font-size: 20px;
+    }
+
+
+    /* FOOTER SECTION */
+
+    .register{
+        height: 150px;
+        top: -75px;
+        right: 5px;
+        left: 5px;
+        padding: 10px;
+        text-align: center;
+        font-size: 20px;
+    }
+
+    #register-button{
+        margin: 0px;
+        /* padding: 40px 56px; */
+        top: 150px;
+        font-size: 56px;
+    }
+   
+    .footer-section{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        padding: 100px 20px;
+        font-size: 20px;
+    }
+
+    .social-media{
+        margin-right: 0px;
+    }
+
+    .copyrigt-section{
+        width: 500px;
+        margin-left: -130px;
+    }  
+}
