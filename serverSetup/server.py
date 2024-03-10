@@ -5,6 +5,7 @@ from flask_login import LoginManager, UserMixin,login_user,login_required,logout
 from wtforms import SelectField,StringField,SubmitField,EmailField,PasswordField
 from wtforms.validators import DataRequired
 import pycountry
+from dotenv import load_dotenv
 import os
 import sqlite3
 from databases import StudentDatabases, PurchasedCourseDetails, FetchStudentData, CoursePaymentsDataDase
@@ -16,7 +17,8 @@ import stripe
 
 
 
-
+# Load environment variables from .env file
+load_dotenv()
 
 
 app = Flask("__name__")
@@ -24,7 +26,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 YOUR_DOMAIN = 'http://127.0.0.1:5000'
-stripe.api_key = "sk_test_51OfIo5FEzGEPgpDS70hh7vTU0HSCG6Kp3J8dX9Nc3eVDYGPSKEfIzqDdjIm4GHBQzUOgBvCXrmKxUC1mnYAI8DVU00ax0FyfUa"
+stripe.api_key = os.getenv("strip_key")
 # stripe.Product.create(name="database")
 # stripe.Price.create(
 #   product='{{PRODUCT_ID}}',
@@ -33,7 +35,7 @@ stripe.api_key = "sk_test_51OfIo5FEzGEPgpDS70hh7vTU0HSCG6Kp3J8dX9Nc3eVDYGPSKEfIz
 # )
 
 try:
-    security = os.environ["ALC_SECURITY"]
+    security = os.getenv("ALC_SECURITY")
     app.config["SECRET_KEY"] = security
 
 except ValueError as error:
@@ -437,7 +439,7 @@ def paymentRecieved():
 
 # Use this sample code to handle webhook events in your integration.
 # This is your Stripe CLI webhook secret for testing your endpoint locally.
-endpoint_secret = 'whsec_f98b915535bc5c05f4173c8b1e847aead40014396adbe9892a1c9907844976d9'
+endpoint_secret = os.getenv("stripwhookkey")
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
