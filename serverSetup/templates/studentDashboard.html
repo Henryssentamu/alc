@@ -49,10 +49,18 @@
     <div class="left-side-bar">
         <div class="live-class">
             <img  class="dashboardicons" src="../static/icons/live.png">
-            <div>
-                <a>
-                    Live Class
-                </a>
+            <div class="live-section-dropdown-menue">
+                <div class="live-title">
+                  live sessions
+                </div>
+                <div class="live-sesstion-options">
+                  <div class="now-section">
+                    <a>Now </a>
+                  </div>
+                  <div class="recorded-section">
+                    <a href="{{url_for('recordedSessions')}}">Recordings</a>
+                  </div>
+                </div>
             </div>
             
         </div>
@@ -67,12 +75,12 @@
             </div>
             <div class="assessment-sections">
                 <div class="tests">
-                    <a>
+                    <a href="{{url_for('onlinetests')}}">
                         Tests
                     </a>
                 </div>
                 <div class="exam">
-                    <a>
+                    <a href="{{url_for('onlineexam')}}">
                         Exams
                     </a>
                 </div>
@@ -81,7 +89,7 @@
         <div class="projects">
             <img class="dashboardicons" src="../static/icons/projecticon.png">
             <div>
-                <a>
+                <a href="{{url_for('projectPage')}}">
                     Projects
                 </a>
             </div>
@@ -91,7 +99,7 @@
         <div class="exams">
             <img class="dashboardicons" src="../static/icons/resultsicons.png">
             <div>
-                <a>
+                <a href="{{url_for('studentScores')}}">
                     Results
                 </a>
             </div>

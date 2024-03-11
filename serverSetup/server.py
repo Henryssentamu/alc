@@ -148,6 +148,32 @@ def rProgrammingCourse():
     return render_template("courseRPrograming.html")
 
 
+@app.route("/onlinetests")
+def onlinetests():
+    
+    return render_template("onlineTestPage.html")
+
+@app.route("/onlineexam")
+def onlineexam():
+
+    return render_template("exampage.html")
+
+@app.route("/recordedSessions")
+def recordedSessions():
+
+    return render_template("recordedSessions.html")
+
+@app.route("/studentScores")
+def studentScores():
+
+    return render_template("studentscores.html")
+
+@app.route("/projectpage")
+def projectPage():
+
+    return render_template("projectPage.html")
+
+
 @app.route("/registrationPage", methods=["GET","POST"])
 def registrationPage():
     form = RegistrationFormStructure()

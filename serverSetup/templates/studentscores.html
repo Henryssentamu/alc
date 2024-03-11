@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .subsection {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .subsection h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .subsection p {
+            margin: 0;
+            font-size: 16px;
+            color: #444;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @media screen and (min-width: 601px) and (max-width: 768px) {
+            /* Tablets */
+            .container {
+                max-width: 600px;
+            }
+        }
+
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            /* MacBook Air */
+            .container {
+                max-width: 800px;
+            }
+        }
+
+        @media screen and (min-width: 1025px) and (max-width: 1280px) {
+            /* Samsung Devices */
+            .container {
+                max-width: 1000px;
+            }
+        }
+
+        @media screen and (min-width: 1281px) and (max-width: 1768px) {
+            /* Microsoft Surface Duo */
+            .container {
+                max-width: 1200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h2>Overall Scores</h2>
+            <div class="subsection">
+                <h3>Total</h3>
+                <p>Score: 85%</p> <!-- Calculate the overall total score and display here -->
+            </div>
+        </div>
+        <div class="section">
+            <h2>Test Section</h2>
+            <div class="subsection">
+                <h3>Test 1</h3>
+                <p>Score: 80%</p>
+            </div>
+            <div class="subsection">
+                <h3>Test 2</h3>
+                <p>Score: 75%</p>
+            </div>
+            <div class="subsection">
+                <h3>Test 3</h3>
+                <p>Score: 90%</p>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Exam Section</h2>
+            <div class="subsection">
+                <h3>Exam 1</h3>
+                <p>Score: 85%</p>
+            </div>
+            <div class="subsection">
+                <h3>Exam 2</h3>
+                <p>Score: 78%</p>
+            </div>
+            <div class="subsection">
+                <h3>Exam 3</h3>
+                <p>Score: 95%</p>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Project Section</h2>
+            <div class="subsection">
+                <h3>Project 1</h3>
+                <p>Score: 90%</p>
+            </div>
+            <div class="subsection">
+                <h3>Project 2</h3>
+                <p>Score: 88%</p>
+            </div>
+            <div class="subsection">
+                <h3>Project 3</h3>
+                <p>Score: 92%</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -159,6 +159,37 @@
     flex-direction: row;
 }
 
+.live-section-dropdown-menue{
+  display: block;
+
+
+}
+
+.live-sesstion-options{
+  display: none;
+
+}
+
+.live-class:hover .live-sesstion-options{
+  display: block;
+  position: absolute;
+  box-shadow: 0 -8px 16px 0 rgba(0,0,0,0.2); /* Adjust this to make the drop-up effect */
+    padding: 12px 16px;
+    /* z-index: 1; */
+    left: 50px;
+    top: 31px;
+    justify-content: space-between;
+}
+
+.now-section{
+  padding-bottom: 20px;
+}
+
+
+
+
+
+
 /* exam section */
 .exams{
     position: relative;

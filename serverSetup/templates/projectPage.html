@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Project Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .project {
+            margin-bottom: 20px;
+        }
+
+        .project h2 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .project-details {
+            margin-bottom: 15px;
+        }
+
+        .project-details p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @media screen and (min-width: 601px) and (max-width: 768px) {
+            /* Tablets */
+            .container {
+                max-width: 600px;
+            }
+        }
+
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            /* MacBook Air */
+            .container {
+                max-width: 800px;
+            }
+        }
+
+        @media screen and (min-width: 1025px) and (max-width: 1280px) {
+            /* Samsung Devices */
+            .container {
+                max-width: 1000px;
+            }
+        }
+
+        @media screen and (min-width: 1281px) and (max-width: 1768px) {
+            /* Microsoft Surface Duo */
+            .container {
+                max-width: 1200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="project">
+            <h2>Project Title 1</h2>
+            <div class="project-details">
+                <p>Deadline: March 31, 2024</p>
+            </div>
+            <div class="upload-section">
+                <label for="projectFile1">Upload Project File:</label>
+                <input type="file" id="projectFile1" name="projectFile1">
+            </div>
+        </div>
+
+        <div class="project">
+            <h2>Project Title 2</h2>
+            <div class="project-details">
+                <p>Deadline: April 15, 2024</p>
+            </div>
+            <div class="upload-section">
+                <label for="projectFile2">Upload Project File:</label>
+                <input type="file" id="projectFile2" name="projectFile2">
+            </div>
+        </div>
+
+        <!-- Add more project sections as needed -->
+    </div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recorded Live Sessions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .session {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+        }
+
+        .session h2 {
+            margin-top: 0;
+        }
+
+        .session p {
+            margin-bottom: 10px;
+        }
+
+        .session a {
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @media screen and (min-width: 601px) and (max-width: 768px) {
+            /* Tablets */
+            .container {
+                max-width: 600px;
+            }
+        }
+
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            /* MacBook Air */
+            .container {
+                max-width: 800px;
+            }
+        }
+
+        @media screen and (min-width: 1025px) and (max-width: 1280px) {
+            /* Samsung Devices */
+            .container {
+                max-width: 1000px;
+            }
+        }
+
+        @media screen and (min-width: 1281px) and (max-width: 1768px) {
+            /* Microsoft Surface Duo */
+            .container {
+                max-width: 1200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="session">
+            <h2>Session 1: Introduction to HTML</h2>
+            <p>Date: January 10, 2024</p>
+            <p>Topic: Basics of HTML and its structure</p>
+            <a href="session1_recorded_link">Watch Recorded Session</a>
+        </div>
+        <div class="session">
+            <h2>Session 2: CSS Styling Techniques</h2>
+            <p>Date: January 15, 2024</p>
+            <p>Topic: CSS selectors, properties, and styling</p>
+            <a href="session2_recorded_link">Watch Recorded Session</a>
+        </div>
+        <div class="session">
+            <h2>Session 3: JavaScript Fundamentals</h2>
+            <p>Date: January 20, 2024</p>
+            <p>Topic: Introduction to JavaScript, variables, and data types</p>
+            <a href="session3_recorded_link">Watch Recorded Session</a>
+        </div>
+    </div>
+</body>
+</html>
