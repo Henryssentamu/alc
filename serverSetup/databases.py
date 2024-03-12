@@ -453,4 +453,66 @@ class FetchStudentData:
         else:
             return "either you did't provide student id or you provided empty one"
 
-        
+class LiveSessions:
+    def __init__(self) -> None:
+        pass
+    def creatTables(self):
+        try:
+            with sqlite3.connect("liveSessionLinks.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS liveSessions(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        linkId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        link TEXT       
+                    )
+                """)
+            with sqlite3.connect("liveSessionLinks.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS recordedLinks(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        LinkId  INTEGER PRIMARY KEY AUTOINCREMENT,
+                        DateOfRecording VAR(150),
+                        Link TEXT,
+                        SessionTitle TEXT,
+                        TopicCovered TEXT
+                    )
+                """)
+        except sqlite3.Error as error:
+            print(f"connection error:{error}")
+        except Exception as error:
+            print(f"error occured in creating liveseesion database:{error}")
+    def insertIntoliveSessionsTable(self,link):
+        try:
+            with sqlite3.connect("liveSessionLinks.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO liveSessions(
+                        link
+                    ) VALUES (?)
+                """,(link,))
+                db.commit()
+        except sqlite3.Error as error:
+            print(f"faced error while creating recorded link table:{error}")
+        except Exception as error:
+            print(f"error occured while insertint into liveSessions table :{error}")
+
+
+    def insertIntorecordedLinksTable(self,link,DateOfRecording,SessionTitle,TopicCovered):
+        try:
+            with sqlite3.connect("liveSessionLinks.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO recordedLinks(
+                        DateOfRecording,
+                        Link,
+                        SessionTitle,
+                        TopicCovered
+                    ) VALUES (?,?,?,?)
+                """,(DateOfRecording,link,SessionTitle,TopicCovered))
+                db.commit()
+        except sqlite3.Error as error:
+            print(f"faced error while inserting into recorded link table:{error}")
+        except Exception as error:
+            print(f"error occured while inserting into liveSessions table :{error}")

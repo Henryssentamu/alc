@@ -2,7 +2,7 @@
 
 
 export let response = async  function courseData() {
-    return  await fetch("http://127.0.0.1:5000/fetchCourseDetails")
+    return  await fetch("http://127.0.0.1:5000/handleLiveAndRecordedLinks")
     .then(response => {
         if (!response.ok) {
             throw new Error("Backend server didn't send course details");

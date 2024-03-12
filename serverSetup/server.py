@@ -8,9 +8,9 @@ import pycountry
 from dotenv import load_dotenv
 import os
 import sqlite3
-from databases import StudentDatabases, PurchasedCourseDetails, FetchStudentData, CoursePaymentsDataDase
+from databases import StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions, CoursePaymentsDataDase
 from createStudentId import CreateStudentId
-from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
+# from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
 import stripe
 
@@ -103,6 +103,12 @@ class User(UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     return User(user_id)
+
+""" creating tables for live and recorded sessions """
+
+sessionClasses = LiveSessions()
+sessionClasses.creatTables()
+sessionClasses.insertIntorecordedLinksTable("https/dtxrtsey.org","30,12,2023","The HTML","Tags")
 
 
 
@@ -425,7 +431,7 @@ def fetchCourseDetails():
                         course_details = cursor.fetchone()
                         if course_details:
                             courseId,priceId = course_details
-                            print(f"courseID id here:{courseId} \n")
+                            # print(f"courseID id here:{courseId} \n")
                             session["fetched_course_pirce_details"] = priceId
                             current_student = session.get("current_student")
                             return jsonify({"studentId":current_student, "courseId":courseId, }),200
@@ -573,6 +579,32 @@ def getBioDataAndCourseDetails():
         # elif request.method == "POST":
         #     return "handle post request "
     # return render_template("continueToDashboard.html")
+
+
+
+@app.route("/handleLiveAndRecordedLinks", methods=["POST","GET"])
+def handleLiveAndRecordedLinks():
+        if request.method == "POST":
+            pass
+            """ handle post requests from the admin dashboard ie populating the recorded table"""
+        elif  request.method == "GET":
+            with sqlite3.connect("liveSessionLinks.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        DateOfRecording,
+                        Link,
+                        SessionTitle,
+                        TopicCovered
+                    FROM
+                        recordedLinks
+                """)
+                data = cursor.fetchall()
+            if data:
+                sortedData = [{"Date": item[0], "Link":item[1],"SessionTitle":item[2],"topicCovered":item[3]} for item in data]
+                return jsonify(sortedData)
+            else:
+                return jsonify({"No Recordings":"session recording is not yet ready"})
 
 
 @app.route("/studentProfile")
