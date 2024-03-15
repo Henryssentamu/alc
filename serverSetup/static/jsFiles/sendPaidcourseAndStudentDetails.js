@@ -1,10 +1,13 @@
 import {response} from './get_course_details.js'
-// import {data} from "./loadStudentBioAndCourseToPortal.js"
+// import {SendNeededCouseId} from "./get_courseId_from_studentPortal.js"
 
 
 
 async function sendPurchasedCourseDetails(){
     let data = await response();
+    // this api sends student id and paid course id to the studentPaidCourseRecords
+    //  route so that course padid 
+    // data base is updated
 
     fetch("http://127.0.0.1:5000/studentPaidCourseRecords", {
         method: "POST",
@@ -20,7 +23,7 @@ async function sendPurchasedCourseDetails(){
         return "purchase detailes sent successfuly"
     })
     .then(data => {
-        console.log(data)
+        // console.log(data)
     })
     .catch(error =>{
         console.log("investigate this error related to send purchased course details".error)
@@ -28,21 +31,16 @@ async function sendPurchasedCourseDetails(){
     
 }
 
-// async function load_html(){
-//     var get_html = sendPurchasedCourseDetails();
-//     // localStorage.setItem("html",store_html)
-//     // var get_html = localStorage.getItem("html")
-//     // console.log(get_html)
-//     console.log('can still be accessed here',data.studentId)
 
-//     document.querySelector(".main-body-section")
-//         .innerHTML += get_html
+// async function call_activator(){
+//     await sendPurchasedCourseDetails();
+//     SendNeededCouseId()
 // }
 
-// load_html()
-
 sendPurchasedCourseDetails()
-// console.log(data)
+
+
+// call_activator()
 
 
 

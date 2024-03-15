@@ -2,7 +2,8 @@
 
 
 export let response = async  function courseData() {
-    return  await fetch("http://127.0.0.1:5000/handleLiveAndRecordedLinks")
+    // this api get student id and the course id of the purchased course from fetchCourseDetails route
+    return  await fetch("http://127.0.0.1:5000/fetchCourseDetails")
     .then(response => {
         if (!response.ok) {
             throw new Error("Backend server didn't send course details");
@@ -10,7 +11,7 @@ export let response = async  function courseData() {
         return response.json();
     })
     .then(data => {
-        // console.log(data);
+        // console.log('mbo da ',data);
         return data; // Returning the data
     })
     .catch(error => {

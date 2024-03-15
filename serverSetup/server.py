@@ -1,24 +1,21 @@
-from crypt import methods
+
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin,login_user,login_required,logout_user,current_user
 from wtforms import SelectField,StringField,SubmitField,EmailField,PasswordField
 from wtforms.validators import DataRequired
 import pycountry
-from dotenv import load_dotenv
 import os
 import sqlite3
 from databases import StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions, CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
+from envKeys import strip_key,stripwhookkey,ALC_SECURITY
 import stripe
 
 
 
-
-# Load environment variables from .env file
-load_dotenv()
 
 
 app = Flask("__name__")
@@ -26,7 +23,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 YOUR_DOMAIN = 'http://127.0.0.1:5000'
-stripe.api_key = os.getenv("strip_key")
+stripe.api_key = strip_key
 # stripe.Product.create(name="database")
 # stripe.Price.create(
 #   product='{{PRODUCT_ID}}',
@@ -35,7 +32,7 @@ stripe.api_key = os.getenv("strip_key")
 # )
 
 try:
-    security = os.getenv("ALC_SECURITY")
+    security = ALC_SECURITY
     app.config["SECRET_KEY"] = security
 
 except ValueError as error:
@@ -108,7 +105,12 @@ def load_user(user_id):
 
 sessionClasses = LiveSessions()
 sessionClasses.creatTables()
-sessionClasses.insertIntorecordedLinksTable("https/dtxrtsey.org","30,12,2023","The HTML","Tags")
+# note data this call is for demo, the insertintorecorded function should be Called 
+# in the admin dashboard in the route where addmin enters recorded details
+# # # therefore it should be removed from here after testing
+# sessionClasses.insertIntorecordedLinksTable("https/24453dsd.com","12/12/2024","HTML CLASS","TagS","prod_PcWpcg8596849j")
+# sessionClasses.insertIntoliveSessionsTable("23/23/2023","2:30pm - 3:30pm","prod_PcWpcg8596849j","https/er34t343.com","Dr Tom","mathematics of Ai")
+
 
 
 
@@ -156,6 +158,7 @@ def rProgrammingCourse():
 
 @app.route("/onlinetests")
 def onlinetests():
+
     
     return render_template("onlineTestPage.html")
 
@@ -178,6 +181,11 @@ def studentScores():
 def projectPage():
 
     return render_template("projectPage.html")
+
+@app.route("/livesessionLink")
+def livesessionLink():
+
+    return render_template("liveSessionPage.html")
 
 
 @app.route("/registrationPage", methods=["GET","POST"])
@@ -471,7 +479,7 @@ def paymentRecieved():
 
 # Use this sample code to handle webhook events in your integration.
 # This is your Stripe CLI webhook secret for testing your endpoint locally.
-endpoint_secret = os.getenv("stripwhookkey")
+endpoint_secret = stripwhookkey
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -546,7 +554,7 @@ def getBioDataAndCourseDetails():
                             cursor = db.cursor()
                             cursor.execute("""
                                 SELECT
-                                    C.courseName, I.courseImageLink
+                                    C.courseId,C.courseName, I.courseImageLink
                                 FROM
                                     courseDetails AS C
                                 JOIN
@@ -564,7 +572,7 @@ def getBioDataAndCourseDetails():
             print(f"failed to connect to sqlite in the login route:{error}")
         except Exception as error:
             print(f"there was aproblem in accessing student paid course details under login route:{error}")
-        formated_details = [{"courseName":item[0], "imageLink":item[1]} for item in details]
+        formated_details = [{"courseID":item[0],"courseName":item[1], "imageLink":item[2]} for item in details]
         allDetails = {
             "firstName":studentData[0],
             "lastName":studentData[1],
@@ -573,39 +581,114 @@ def getBioDataAndCourseDetails():
             "courseDetails":formated_details
 
         }
-        print(f" sent data: {allDetails}")
+        # print(f" sent data: {allDetails}")
         
         return jsonify(allDetails)
         # elif request.method == "POST":
         #     return "handle post request "
     # return render_template("continueToDashboard.html")
 
-
-
-@app.route("/handleLiveAndRecordedLinks", methods=["POST","GET"])
-def handleLiveAndRecordedLinks():
-        if request.method == "POST":
-            pass
-            """ handle post requests from the admin dashboard ie populating the recorded table"""
-        elif  request.method == "GET":
+    
+@app.route("/handleLiveSessionLinks", methods=["GET", "POST"])
+def handleLiveSessionLinks():
+    if request.method == "GET":
+        try:
+            course_id = session.get("course_id_studentPortal")
+            if course_id is None:
+                # No course ID found in session
+                return jsonify({"error": "Course ID not found in session"})
+            # print(f"itttt:{course_id}")
             with sqlite3.connect("liveSessionLinks.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
                     SELECT
-                        DateOfRecording,
-                        Link,
-                        SessionTitle,
-                        TopicCovered
+                        link,
+                        DateofliveClass,
+                        SessionTime,
+                        InstructorName,
+                        Topic
                     FROM
-                        recordedLinks
-                """)
-                data = cursor.fetchall()
-            if data:
-                sortedData = [{"Date": item[0], "Link":item[1],"SessionTitle":item[2],"topicCovered":item[3]} for item in data]
-                return jsonify(sortedData)
-            else:
-                return jsonify({"No Recordings":"session recording is not yet ready"})
+                        liveSessions
+                    WHERE
+                        CourseId == ?
+                    ORDER BY link DESC
+                    LIMIT 1
+                """,(course_id,))
+                data = cursor.fetchone()
 
+            if data:
+                # print(f" live link data:{data}")
+                return jsonify({"link":data[0], "DateOfClass":data[1],"Time":data[2],"instructorName":data[3],"Topic":data[4]}) 
+            else:
+                return jsonify({"No Link": "There is no live session link for this course"})
+        except sqlite3.Error as error:
+            print(f"Error occurred while accessing the liveSession link database:{error}")
+            return jsonify({"error": "Database error"})
+        except Exception as error:
+            print(f"Error occurred while accessing the liveSession link database: {error}")
+            return jsonify({"error": "An unexpected error occurred"})
+    
+    elif request.method == "POST":
+        # Handle POST requests
+        pass
+    
+    # If the request method is neither GET nor POST, return an error response
+    return jsonify({"error": "Unsupported request method on handle live link route"})
+         
+
+
+@app.route("/handleRecordedLinks", methods=["POST","GET"])
+def handleRecordedLinks():
+        
+        
+    if request.method == "POST":
+        data = request.json
+        session["course_id_studentPortal"] = data["courseId"]
+        # print("recieved it :",data)
+        """ handle post requests from the admin dashboard ie populating the recorded table"""
+    elif  request.method == "GET":
+        course_id = session.get("course_id_studentPortal")
+        print(f"check this id:{course_id}")
+        with sqlite3.connect("liveSessionLinks.db") as db:
+            cursor = db.cursor()
+            cursor.execute("""
+                SELECT
+                    DateOfRecording,
+                    Link,
+                    SessionTitle,
+                    TopicCovered,
+                    CourseId
+                FROM
+                    recordedLinks
+                WHERE
+                    CourseId == ?
+            """,(course_id ,))
+            data = cursor.fetchall()
+            # print(f"check this out:{data}")
+        if data:
+            sortedData = [{"Date": item[0], "Link":item[1],"SessionTitle":item[2],"topicCovered":item[3]} for item in data]
+
+            return jsonify(sortedData)
+        else:
+            return jsonify({"No Recordings":"session recording is not yet ready"})
+    return jsonify({"error": "Unsupported request method on handle recorded link route"})
+
+@app.route("/handleOnlinetests", methods=["GET","POST"])
+def handleOnlineTests():
+    if request.method == "GET":
+        pass
+
+    """ retrive test questions from the data base and send them to client server
+        access the course to retrive quesions for from the course if which is stored in the
+        session under handlerecorded link route
+    """
+
+
+
+@app.route("/loadPaidcourseOnstudentPortal")
+def loadPaidCourseONPortal():
+
+    return render_template("paidcourseOnportal.html")
 
 @app.route("/studentProfile")
 def studentProfile():

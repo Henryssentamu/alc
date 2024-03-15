@@ -1,7 +1,6 @@
 
-
 async function fetchRecordedSessionLinks(){
-    return await fetch("http://127.0.0.1:5000/handleLiveAndRecordedLinks")
+    return await fetch("http://127.0.0.1:5000/handleRecordedLinks")
         .then(response =>{
             if(!response.ok){
                 throw new Error("recordedSessions ROUTE DID NOT SEND RECORDED SESSION LINKS ")
@@ -10,7 +9,7 @@ async function fetchRecordedSessionLinks(){
         })
 
         .then(data =>{
-            // console.log("here is the recorded session link:",data)
+            console.log("here is the recorded session link:",data)
             return data
         })
 
