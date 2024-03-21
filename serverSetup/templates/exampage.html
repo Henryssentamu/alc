@@ -1,169 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .question {
-            margin-bottom: 20px;
-        }
-
-        .options label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .options input[type="radio"] {
-            margin-right: 5px;
-        }
-
-        .submit-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .submit-btn:hover {
-            background-color: #45a049;
-        }
-
-        #timer {
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        /* Responsive Styles */
-        @media screen and (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            .options label {
-                margin-bottom: 5px;
-            }
-            .submit-btn {
-                padding: 8px 16px;
-            }
-        }
-
-        /* Media Queries for Specific Devices */
-        @media screen and (min-width: 601px) and (max-width: 768px) {
-            /* Tablets */
-            .container {
-                max-width: 600px;
-            }
-        }
-
-        @media screen and (min-width: 769px) and (max-width: 1024px) {
-            /* MacBook Air */
-            .container {
-                max-width: 800px;
-            }
-        }
-
-        @media screen and (min-width: 1025px) and (max-width: 1280px) {
-            /* Samsung Devices */
-            .container {
-                max-width: 1000px;
-            }
-        }
-
-        @media screen and (min-width: 1281px) and (max-width: 1768px) {
-            /* Microsoft Surface Duo */
-            .container {
-                max-width: 1200px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Exam Page</h1>
-        <div id="timer"></div>
-        <form id="exam-form">
-            <div class="question">
-                <p>1. What is the capital of France?</p>
-                <div class="options">
-                    <label><input type="radio" name="q1" value="a"> Paris</label>
-                    <label><input type="radio" name="q1" value="b"> London</label>
-                    <label><input type="radio" name="q1" value="c"> Berlin</label>
-                    <label><input type="radio" name="q1" value="d"> Rome</label>
-                </div>
-            </div>
-            <div class="question">
-                <p>2. What is the largest planet in our solar system?</p>
-                <div class="options">
-                    <label><input type="radio" name="q2" value="a"> Jupiter</label>
-                    <label><input type="radio" name="q2" value="b"> Saturn</label>
-                    <label><input type="radio" name="q2" value="c"> Earth</label>
-                    <label><input type="radio" name="q2" value="d"> Mars</label>
-                </div>
-            </div>
-            <button type="submit" class="submit-btn">Submit</button>
-        </form>
-    </div>
-
-    <script>
-        // Set the time limit for the exam (in minutes)
-        const timeLimit = 1; // Change this value to set the time limit
-
-        // Countdown timer
-        const timerDisplay = document.getElementById('timer');
-        let timeLeft = timeLimit * 60;
-
-        function countdown() {
-            const minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-
-            if (seconds < 10) {
-                seconds = '0' + seconds;
-            }
-
-            timerDisplay.textContent = `Time Left: ${minutes}:${seconds}`;
-
-            if (timeLeft === 0) {
-                // Time's up, redirect to home page or another page
-                window.location.href = '{{url_for("studentDashboard")}}' // Change 'home.html' to your desired page
-            } else {
-                timeLeft--;
-            }
-        }
-
-        // Start the countdown timer
-        setInterval(countdown, 1000);
-
-        // Form submission handling
-        document.getElementById('exam-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-            
-            // You can add logic here to handle form submission,
-            // such as checking answers and displaying results.
-            // For now, let's just show a simple alert.
-            alert('Exam submitted! You can handle the submission logic here.');
-        });
-    </script>
-</body>
-</html> -->
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -171,219 +5,148 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data Science Trivia</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-
-    .question-container {
-      background-color: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .options-container {
-      margin-left: 20px;
-    }
-
-    .option {
-      margin-bottom: 10px;
-    }
-
-    #timer-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: #333;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 18px;
-    }
-
-    #submitBtn {
-      display: block;
-      width: 100%;
-      max-width: 200px;
-      margin: 20px auto;
-      padding: 10px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    #submitBtn:hover {
-      background-color: #0056b3;
-    }
-
-    @media only screen and (max-width: 600px) {
-      .container {
-        padding: 10px;
-      }
-
-      #timer-container {
-        top: 10px;
-        right: 10px;
-        font-size: 16px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="../static/examCss.css">
 </head>
 <body>
   <div class="container">
-    <h1>Data Science Trivia</h1>
+    <h1>EXAM </h1>
 
     <div id="timer-container">Time Remaining: <span id="timer"></span></div>
 
-    <div id="questions-container"></div>
+    <div id="questions-section">
+    </div>
 
-    <button id="submitBtn" onclick="submitAnswers()">Submit Answers</button>
+    <button id="submitBtn">Submit Answers</button>
+    <div id="no-exam-message">No exam available yet.</div>
   </div>
 
-  <script>
+  <script  src="../static/jsFiles/handlOnlineExam.js">
     // JSON data containing the trivia questions
-    const triviaData = [
-      {
-        "question": "What is the process of converting raw data into a more structured format called?",
-        "options": [
-          "Data Visualization",
-          "Data Wrangling",
-          "Data Mining",
-          "Data Aggregation"
-        ],
-        "correct_answer": "Data Wrangling"
-      },
-      {
-        "question": "Which of the following is NOT a supervised learning algorithm?",
-        "options": [
-          "Linear Regression",
-          "Decision Tree",
-          "K-Means Clustering",
-          "Support Vector Machine"
-        ],
-        "correct_answer": "K-Means Clustering"
-      },
-      {
-        "question": "What statistical measure is used to quantify the dispersion or spread of a dataset?",
-        "options": [
-          "Mean",
-          "Median",
-          "Mode",
-          "Standard Deviation"
-        ],
-        "correct_answer": "Standard Deviation"
-      }
-    ];
+    // const triviaData = [
+    //   {
+    //     "question": "What is the process of converting raw data into a more structured format called?",
+    //     "options": [
+    //       "Data Visualization",
+    //       "Data Wrangling",
+    //       "Data Mining",
+    //       "Data Aggregation"
+    //     ],
+    //     "correct_answer": "Data Wrangling",
+    //     "QuestionId":"qn0.1"
+    //   },
+    //   {
+    //     "question": "Which of the following is NOT a supervised learning algorithm?",
+    //     "options": [
+    //       "Linear Regression",
+    //       "Decision Tree",
+    //       "K-Means Clustering",
+    //       "Support Vector Machine"
+    //     ],
+    //     "correct_answer": "K-Means Clustering"
+    //   },
+    //   {
+    //     "question": "What statistical measure is used to quantify the dispersion or spread of a dataset?",
+    //     "options": [
+    //       "Mean",
+    //       "Median",
+    //       "Mode",
+    //       "Standard Deviation"
+    //     ],
+    //     "correct_answer": "Standard Deviation"
+    //   }
+    // ];
 
-    // Timer duration in milliseconds (e.g., 5 minutes)
-    const timerDuration = 0.30 * 60 * 1000; // 5 minutes
-    let timeLeft = timerDuration / 1000; // Convert milliseconds to seconds
-    let timerInterval;
+    // // Timer duration in milliseconds (e.g., 5 minutes)
+    // const timerDuration = 0.30 * 60 * 1000; // 5 minutes
+    // let timeLeft = timerDuration / 1000; // Convert milliseconds to seconds
+    // let timerInterval;
 
-    // Function to generate HTML for each trivia question
-    function generateQuestionHTML(questionData, index) {
-      let html = `
-        <div class="question-container">
-          <p>${questionData.question}</p>
-          <div class="options-container">
-      `;
+    // // Function to generate HTML for each trivia question
+    // function generateQuestionHTML(questionData, index) {
+    //   let html = `
+    //     <div class="question-container">
+    //       <p>${questionData.question}</p>
+    //       <div class="options-container">
+    //   `;
       
-      questionData.options.forEach((option, optionIndex) => {
-        html += `
-          <div class="option">
-            <input type="radio" name="question-${index}" value="${option}" id="q${index}-option${optionIndex}">
-            <label for="q${index}-option${optionIndex}">${option}</label>
-          </div>
-        `;
-      });
+    //   questionData.options.forEach((option, optionIndex) => {
+    //     html += `
+    //       <div class="option">
+    //         <input type="radio" name="question-${index}" value="${option}" id="q${index}-option${optionIndex}">
+    //         <label for="q${index}-option${optionIndex}">${option}</label>
+    //       </div>
+    //     `;
+    //   });
 
-      html += `
-          </div>
-        </div>
-      `;
+    //   html += `
+    //       </div>
+    //     </div>
+    //   `;
 
-      return html;
-    }
+    //   return html;
+    // }
 
-    // Function to render trivia questions on the page
-    function renderTriviaQuestions() {
-      const questionsContainer = document.getElementById('questions-container');
-      triviaData.forEach((questionData, index) => {
-        questionsContainer.innerHTML += generateQuestionHTML(questionData, index);
-      });
-    }
+    // // Function to render trivia questions on the page
+    // function renderTriviaQuestions() {
+    //   const questionsContainer = document.getElementById('questions-container');
+    //   triviaData.forEach((questionData, index) => {
+    //     questionsContainer.innerHTML += generateQuestionHTML(questionData, index);
+    //   });
+    // }
 
-    // Function to update timer display
-    function updateTimerDisplay() {
-      const timerElement = document.getElementById('timer');
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
+    // // Function to update timer display
+    // function updateTimerDisplay() {
+    //   const timerElement = document.getElementById('timer');
+    //   const minutes = Math.floor(timeLeft / 60);
+    //   const seconds = timeLeft % 60;
+    //   timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    // }
 
-    // Function to redirect user to the provided page
-    function redirectToProvidedPage() {
-      window.location.href = 'http://127.0.0.1:5000/loadPaidcourseOnstudentPortal';
-    }
+    // // Function to redirect user to the provided page
+    // function redirectToProvidedPage() {
+    //   window.location.href = 'http://127.0.0.1:5000/loadPaidcourseOnstudentPortal';
+    // }
 
-    // Function to submit user answers
-    function submitAnswers() {
-      clearInterval(timerInterval); // Stop the timer
-      const userAnswers = [];
-      triviaData.forEach((questionData, index) => {
-        const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
-        if (selectedOption) {
-          userAnswers.push(selectedOption.value);
-        } else {
-          userAnswers.push(null); // Indicate unanswered questions
-        }
-      });
-      console.log(userAnswers); // You can process or display user answers here
+    // // Function to submit user answers
+    // function submitAnswers() {
+    //   clearInterval(timerInterval); // Stop the timer
+    //   const userAnswers = [];
+    //   triviaData.forEach((questionData, index) => {
+    //     const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
+    //     if (selectedOption) {
+    //       userAnswers.push(selectedOption.value);
+    //     } else {
+    //       userAnswers.push(null); // Indicate unanswered questions
+    //     }
+    //   });
+    //   console.log(userAnswers); // You can process or display user answers here
 
-      // Redirect user to the provided page after submission
-      redirectToProvidedPage();
-    }
+    //   // Redirect user to the provided page after submission
+    //   redirectToProvidedPage();
+    // }
 
-    // Function to auto-submit answers when the timer elapses
-    function autoSubmitAnswers() {
-      clearInterval(timerInterval); // Stop the timer
-      submitAnswers(); // Call the function to submit answers
-    }
+    // // Function to auto-submit answers when the timer elapses
+    // function autoSubmitAnswers() {
+    //   clearInterval(timerInterval); // Stop the timer
+    //   submitAnswers(); // Call the function to submit answers
+    // }
 
-    // Call the function to render trivia questions when the page loads
-    window.onload = function() {
-      renderTriviaQuestions();
+    // // Call the function to render trivia questions when the page loads
+    // window.onload = function() {
+    //   renderTriviaQuestions();
       
-      // Set timer for auto-submit
-      timerInterval = setInterval(function() {
-        timeLeft -= 1;
-        if (timeLeft <= 0) {
-          autoSubmitAnswers();
-        }
-        updateTimerDisplay();
-      }, 1000);
+    //   // Set timer for auto-submit
+    //   timerInterval = setInterval(function() {
+    //     timeLeft -= 1;
+    //     if (timeLeft <= 0) {
+    //       autoSubmitAnswers();
+    //     }
+    //     updateTimerDisplay();
+    //   }, 1000);
 
-      // Initial timer display
-      updateTimerDisplay();
-    };
+    //   // Initial timer display
+    //   updateTimerDisplay();
+    // };
   </script>
 </body>
 </html>

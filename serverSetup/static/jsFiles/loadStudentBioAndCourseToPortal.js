@@ -1,5 +1,5 @@
-// this api get both student data and paid course data, uses the data to generate course section on 
-// student portal then adds event listen which makes api that send the course id to the server on click to the handlerecorded link route
+// // this api get both student data and paid course data, uses the data to generate course section on 
+// // student portal then adds event listen which makes api that send the course id to the server on click to the handlerecorded link route
 
  async  function fetchStudentDetailsData(){
     return await fetch("http://127.0.0.1:5000/getBioDataAndCourseDetails")
@@ -28,11 +28,12 @@ async function generateHtml(){
     var generatedHtml = " "
     document.querySelector(".logedInstudentName")
         .innerHTML = fullName
-    courseDetails.forEach(object => {
+    courseDetails.forEach( (object, index)=> {
+        console.log(object['courseID'])
         generatedHtml += `
             <section class="generated-course">
                 
-                <a  class="portalclass"  data-course-id="${object['courseID']}" href="http://127.0.0.1:5000/loadPaidcourseOnstudentPortal">
+                <a id="${index}" onclick="activateEventListner('${index}');" class="portalclass"  data-course-id="${object['courseID']}" href="http://127.0.0.1:5000/loadPaidcourseOnstudentPortal">
                     <div class="course-image-section">
                     <img class="course-image" src="${object['imageLink']}">
                     </div>
@@ -40,12 +41,10 @@ async function generateHtml(){
                         ${object["courseName"]}
                     </div>
                 </a>
-
-                
             </section>
             
-            
         `
+        
     });
     document.querySelector(".student-course-section")
         .innerHTML = generatedHtml
@@ -56,12 +55,46 @@ async function generateHtml(){
         // send to handleRecordedLinks route by an api
 
 
-    document.querySelector(".portalclass")
-        .addEventListener("click",function(event){
-            // event.preventDefault();
-            var i_d = this.getAttribute('data-course-id')
+    // document.querySelector(".portalclass1")
+    //     .addEventListener("click",function(event){
+    //         // event.preventDefault();
+    //         var i_d = this.getAttribute('data-course-id')
+
+            
+    //         console.log(i_d)
+    //         fetch("http://127.0.0.1:5000/recieveLoadedCourseIdOnStudentPortal", {
+    //             method: "POST",
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({
+    //                 "courseId": i_d
+    //             })
+    //         })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             // return data
+    //             console.log("data courseId sent to the server", data);
+    //             // alert(data)
+    //         })
+    //         .catch(error => {
+    //             console.log("error occurred while sending course id picked from the student portal");
+    //         });
+            
+    //     })
+
+
+}
+
+function activateEventListner(id){
+    var idElement = document.getElementById(id);
+    
+    // var i_d = this.getAttribute('data-course-id')
+    var i_d = idElement.getAttribute('data-course-id')
+
+            
             // console.log(i_d)
-            fetch("http://127.0.0.1:5000/handleRecordedLinks", {
+            fetch("http://127.0.0.1:5000/recieveLoadedCourseIdOnStudentPortal", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -72,17 +105,16 @@ async function generateHtml(){
             })
             .then(response => response.json())
             .then(data => {
-                // console.log("data courseId sent to the server", data);
+                // return data
+                console.log("data courseId sent to the server", data);
                 // alert(data)
             })
             .catch(error => {
                 console.log("error occurred while sending course id picked from the student portal");
             });
-        })
-
-
 }
 
 
 generateHtml()
+
 

@@ -1,4 +1,6 @@
 
+from ast import Pass
+from crypt import methods
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin,login_user,login_required,logout_user,current_user
@@ -7,7 +9,7 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions, CoursePaymentsDataDase
+from databases import Exams, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions, CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
@@ -111,7 +113,47 @@ sessionClasses.creatTables()
 # sessionClasses.insertIntorecordedLinksTable("https/24453dsd.com","12/12/2024","HTML CLASS","TagS","prod_PcWpcg8596849j")
 # sessionClasses.insertIntoliveSessionsTable("23/23/2023","2:30pm - 3:30pm","prod_PcWpcg8596849j","https/er34t343.com","Dr Tom","mathematics of Ai")
 
+"""
+    demo  exam data
+"""
+# creation on exam database and insertation but this should be done on admins route when created
 
+questions = [
+    {
+        "question": "What is the process of converting raw data into a more structured format called?",
+        "options": [
+          "Data Visualization",
+          "Data Wrangling",
+          "Data Mining",
+          "Data Aggregation"
+        ],
+        "correct_answer": "Data Wrangling"
+      },
+      {
+        "question": "Which of the following is NOT a supervised learning algorithm?",
+        "options": [
+          "Linear Regression",
+          "Decision Tree",
+          "K-Means Clustering",
+          "Support Vector Machine"
+        ],
+        "correct_answer": "K-Means Clustering"
+      },
+      {
+        "question": "What statistical measure is used to quantify the dispersion or spread of a dataset?",
+        "options": [
+          "Mean",
+          "Median",
+          "Mode",
+          "Standard Deviation"
+        ],
+        "correct_answer": "Standard Deviation"
+      }
+    ]
+
+# exam = Exams(questions,"prod_PcWpcg8596849j","dasci123")
+# exam.createTables()
+# exam.insertIntoTable()
 
 
 @app.route("/")
@@ -634,7 +676,19 @@ def handleLiveSessionLinks():
     
     # If the request method is neither GET nor POST, return an error response
     return jsonify({"error": "Unsupported request method on handle live link route"})
-         
+
+
+@app.route("/recieveLoadedCourseIdOnStudentPortal", methods= ["post"])
+def recieveLoadedCourseIdOnStudentPortal():
+    try:
+        if request.method == "POST":
+            data = request.json
+            
+            session["course_id_studentPortal"] = data["courseId"]
+            print(f"the real one :{data}")
+    except Exception as error:
+        return f"api failed to fecth course i on the student portal :{error}"
+    return jsonify({"api satus":"recieveLoadedCourseIdOnStudentPortal failed"})
 
 
 @app.route("/handleRecordedLinks", methods=["POST","GET"])
@@ -642,13 +696,14 @@ def handleRecordedLinks():
         
         
     if request.method == "POST":
-        data = request.json
-        session["course_id_studentPortal"] = data["courseId"]
+        pass
+        # data = request.json
+        # session["course_id_studentPortal"] = data["courseId"]
         # print("recieved it :",data)
         """ handle post requests from the admin dashboard ie populating the recorded table"""
     elif  request.method == "GET":
         course_id = session.get("course_id_studentPortal")
-        print(f"check this id:{course_id}")
+        # print(f"check this id:{course_id}")
         with sqlite3.connect("liveSessionLinks.db") as db:
             cursor = db.cursor()
             cursor.execute("""
@@ -682,6 +737,53 @@ def handleOnlineTests():
         access the course to retrive quesions for from the course if which is stored in the
         session under handlerecorded link route
     """
+
+@app.route("/handleOnlineExams", methods=["GET","POST"])
+def handleOnlineExams():
+    if request.method == "GET":
+        studentId = session.get("logged_student_id")
+        print(f"student to do the paper:{studentId}")
+        try:
+            courseId = session.get("course_id_studentPortal")
+            print(f"cid:{courseId}")
+            if courseId:
+                with sqlite3.connect("examDataBase.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            q.ExamId,q.CourseId,q.Question,o.Options
+                        FROM
+                            questionDetails AS q
+                        JOIN
+                            options AS o ON o.CourseId == q.CourseId AND o.ExamId == q.ExamId
+    
+                        WHERE
+                            q.CourseId == ?
+                    """, (courseId,))
+                    data = cursor.fetchall()
+                if data:
+                    # print(data)
+                    formatedData = []
+                    for questionObject in data:
+                        formatedData.append({
+                            "studentId": studentId,
+                            "ExamId":questionObject[0],
+                            "courseId": questionObject[1],                           
+                            "Question":questionObject[2],
+                            "Options": questionObject[3].split(",")
+                        })
+                    # print(formatedData)
+
+                    return jsonify(formatedData)
+                else:
+                    return jsonify({"Exam Status":"No exam yet"})
+
+        except Exception as error:
+            return f"session in handleonlineExam route failed {error}"
+    else:
+        studentAnswers = request.json
+        print(studentAnswers)
+    return jsonify({"api status":"handleOnlineExam api failure"})
 
 
 
