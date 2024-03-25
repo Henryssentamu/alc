@@ -1,165 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Test</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .question {
-            margin-bottom: 20px;
-        }
-
-        .options label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .options input[type="radio"] {
-            margin-right: 5px;
-        }
-
-        .submit-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .submit-btn:hover {
-            background-color: #45a049;
-        }
-
-        #timer {
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        /* Responsive Styles */
-        @media screen and (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            .options label {
-                margin-bottom: 5px;
-            }
-            .submit-btn {
-                padding: 8px 16px;
-            }
-        }
-
-        /* Media Queries for Specific Devices */
-        @media screen and (min-width: 601px) and (max-width: 768px) {
-            /* Tablets */
-            .container {
-                max-width: 600px;
-            }
-        }
-
-        @media screen and (min-width: 769px) and (max-width: 1024px) {
-            /* MacBook Air */
-            .container {
-                max-width: 800px;
-            }
-        }
-
-        @media screen and (min-width: 1025px) and (max-width: 1280px) {
-            /* Samsung Devices */
-            .container {
-                max-width: 1000px;
-            }
-        }
-
-        @media screen and (min-width: 1281px) and (max-width: 1768px) {
-            /* Microsoft Surface Duo */
-            .container {
-                max-width: 1200px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Science Trivia</title>
+  <link rel="stylesheet" href="../static/examCss.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Online Test</h1>
-        <div id="timer"></div>
-        <form id="test-form">
-            <div class="question">
-                <p>1. What is the capital of France?</p>
-                <div class="options">
-                    <label><input type="radio" name="q1" value="a"> Paris</label>
-                    <label><input type="radio" name="q1" value="b"> London</label>
-                    <label><input type="radio" name="q1" value="c"> Berlin</label>
-                    <label><input type="radio" name="q1" value="d"> Rome</label>
-                </div>
-            </div>
-            <div class="question">
-                <p>2. What is the largest planet in our solar system?</p>
-                <div class="options">
-                    <label><input type="radio" name="q2" value="a"> Jupiter</label>
-                    <label><input type="radio" name="q2" value="b"> Saturn</label>
-                    <label><input type="radio" name="q2" value="c"> Earth</label>
-                    <label><input type="radio" name="q2" value="d"> Mars</label>
-                </div>
-            </div>
-            <button type="submit" class="submit-btn">Submit</button>
-        </form>
+  <div class="container">
+    <h1>Test </h1>
+
+    <div id="timer-container">Time Remaining: <span id="timer"></span></div>
+
+    <div id="questions-section">
     </div>
 
-    <script>
-        // Set the time limit for the test (in minutes)
-        const timeLimit = 1; // Change this value to set the time limit
+    <button id="submitBtn">Submit Answers</button>
+    <div id="no-exam-message">No Test available yet.</div>
+  </div>
 
-        // Countdown timer
-        const timerDisplay = document.getElementById('timer');
-        let timeLeft = timeLimit * 60;
+  <script  src="../static/jsFiles/handlOnlineTest.js">
 
-        function countdown() {
-            const minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-
-            if (seconds < 10) {
-                seconds = '0' + seconds;
-            }
-
-            timerDisplay.textContent = `Time Left: ${minutes}:${seconds}`;
-
-            if (timeLeft === 0) {
-                // Time's up, redirect to home page or another page
-                window.location.href = '{{url_for("studentDashboard")}}'; // Change 'home.html' to your desired page
-            } else {
-                timeLeft--;
-            }
-        }
-
-        // Start the countdown timer
-        setInterval(countdown, 1000);
-
-        // Form submission handling
-        document.getElementById('test-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-            
-            // You can add logic here to handle form submission,
-            // such as checking answers and displaying results.
-            // For now, let's just show a simple alert.
-            // alert('Test submitted! You can handle the submission logic here.');
-        });
-    </script>
+  </script>
 </body>
 </html>

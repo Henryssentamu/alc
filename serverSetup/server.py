@@ -1,5 +1,4 @@
 
-from ast import Pass
 from crypt import methods
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
@@ -9,7 +8,7 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import Exams, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions, CoursePaymentsDataDase
+from databases import ExamStudentAnswes, Exams, Test,TestStudentAnswes, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
@@ -151,9 +150,41 @@ questions = [
       }
     ]
 
+# test question sample
+
+testQuestions = [
+    {
+        "question": "What is the process of converting raw data into a more structured format called?",
+        "options": [
+          "Data Visualization",
+          "Data Wrangling",
+          "Data Mining",
+          "Data Aggregation"
+        ],
+        "correct_answer": "Data Wrangling"
+      },
+      {
+        "question": "Which of the following is NOT a supervised learning algorithm?",
+        "options": [
+          "Linear Regression",
+          "Decision Tree",
+          "K-Means Clustering",
+          "Support Vector Machine"
+        ],
+        "correct_answer": "K-Means Clustering"
+      },
+      
+    ]
+
 # exam = Exams(questions,"prod_PcWpcg8596849j","dasci123")
 # exam.createTables()
 # exam.insertIntoTable()
+
+"""teting the test class """
+# Testobj = Test(testQuestions,"prod_PcWpcg8596849j","test019")
+# Testobj.createTables()
+# Testobj.insertIntoTable()
+
 
 
 @app.route("/")
@@ -685,7 +716,7 @@ def recieveLoadedCourseIdOnStudentPortal():
             data = request.json
             
             session["course_id_studentPortal"] = data["courseId"]
-            print(f"the real one :{data}")
+            # print(f"the real one :{data}")
     except Exception as error:
         return f"api failed to fecth course i on the student portal :{error}"
     return jsonify({"api satus":"recieveLoadedCourseIdOnStudentPortal failed"})
@@ -731,8 +762,52 @@ def handleRecordedLinks():
 @app.route("/handleOnlinetests", methods=["GET","POST"])
 def handleOnlineTests():
     if request.method == "GET":
-        pass
+        studentId = session.get("logged_student_id")
+        # print(f"student to do the paper:{studentId}")
+        try:
+            courseId = session.get("course_id_studentPortal")
+            # print(f"cid:{courseId}")
+            if courseId:
+                with sqlite3.connect("testDataBase.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            q.TestId,q.CourseId,q.Question,o.Options
+                        FROM
+                            questionDetails AS q
+                        JOIN
+                            options AS o ON o.CourseId == q.CourseId AND o.TestId == q.TestId
+    
+                        WHERE
+                            q.CourseId == ?
+                    """, (courseId,))
+                    data = cursor.fetchall()
+                if data:
+                    # print(data)
+                    formatedData = []
+                    for questionObject in data:
+                        formatedData.append({
+                            "studentId": studentId,
+                            "TestId":questionObject[0],
+                            "courseId": questionObject[1],                           
+                            "Question":questionObject[2],
+                            "Options": questionObject[3].split(",")
+                        })
+                    # print(formatedData)
 
+                    return jsonify(formatedData)
+                else:
+                    return jsonify({"Test Status":"No test yet"})
+
+        except Exception as error:
+            return f"session in handleonlineTest route failed {error}"
+    else:
+        Results = request.json
+        # print(f"test answers :{tresults}")
+        testResults = TestStudentAnswes(Results)
+        testResults.createTable()
+        testResults.insertIntotable()
+    return jsonify({"api status":"handleOnlineExam api failure"})
     """ retrive test questions from the data base and send them to client server
         access the course to retrive quesions for from the course if which is stored in the
         session under handlerecorded link route
@@ -742,10 +817,10 @@ def handleOnlineTests():
 def handleOnlineExams():
     if request.method == "GET":
         studentId = session.get("logged_student_id")
-        print(f"student to do the paper:{studentId}")
+        # print(f"student to do the paper:{studentId}")
         try:
             courseId = session.get("course_id_studentPortal")
-            print(f"cid:{courseId}")
+            # print(f"cid:{courseId}")
             if courseId:
                 with sqlite3.connect("examDataBase.db") as db:
                     cursor = db.cursor()
@@ -782,7 +857,11 @@ def handleOnlineExams():
             return f"session in handleonlineExam route failed {error}"
     else:
         studentAnswers = request.json
-        print(studentAnswers)
+        answer = ExamStudentAnswes(studentAnswers)
+        answer.createTable()
+        answer.insertIntoTable()
+
+        # print(studentAnswers)
     return jsonify({"api status":"handleOnlineExam api failure"})
 
 
@@ -791,6 +870,34 @@ def handleOnlineExams():
 def loadPaidCourseONPortal():
 
     return render_template("paidcourseOnportal.html")
+
+@app.route("/handleCourseYouTubeLink", methods = ["GET","POST"])
+def handleCourseYouTubeLink():
+    if request.method == "GET":
+        courseId = session.get("course_id_studentPortal")
+        try:
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        youtubeLink 
+                    FROM
+                        courseYoutubeLink
+                    WHERE
+                        courseId == ?         
+                """,(courseId,))
+                data = cursor.fetchone()
+            print(f"youtube link:{data}")
+            return jsonify({"link":data})
+        except sqlite3.Error as error:
+            return f"api failed to connect to courseDatabase in loadPaidcourseOnstudentPortal route: {error}"
+        except Exception as error:
+            return f"error face while accessing courseDatabase in loadPaidcourseOnstudentPortal:{error} "
+
+    elif request.method == "POST":
+        pass
+    else:
+        return {"api status":"api failed to fetch course youtube link"}
 
 @app.route("/studentProfile")
 def studentProfile():

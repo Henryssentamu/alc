@@ -19,6 +19,21 @@
             text-align: center;
             padding: 20px 0;
         }
+        .projects a{
+            text-decoration: none;
+            color: #333;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .projects{
+            display:  flex;
+            flex-direction: row;
+            align-items: center;
+            /* justify-content: space-between; */
+        }
+        .projecticons{
+            margin-right: 15px;
+        }
 
         .container {
             max-width: 1200px;
@@ -95,8 +110,8 @@
         <h1>Course Page</h1>
     </header>
     <div class="container">
-        <section id="resources" class="resource">
-            <h2 class="section-title">Course Resources</h2>
+        <section id="resources" class="resource addYoutubeLink">
+            <h2 class="section-title ">Course Resources</h2>
             <!-- Add resources here -->
         </section>
         <section id="sessions" class="session">
@@ -131,6 +146,18 @@
                 </div>
             </h2>
         </section>
+        <section id="assessment" class="assessment">
+            <div class="projects">
+                <img class="projecticons" src="../static/icons/projecticon.png">
+                <div>
+                    <a href="{{url_for('projectPage')}}">
+                        Projects
+                    </a>
+                </div>
+                
+            </div>
+        </section>
     </div>
+    <script src="../static/jsFiles/loadcourseyoutubelink.js"></script>
 </body>
 </html>

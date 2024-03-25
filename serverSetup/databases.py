@@ -1,6 +1,5 @@
 
 import sqlite3
-
 class StudentDatabases:
     def __init__(self, studentId, firstname,sirName, gender,phoneNumber,email, school,country,password, intake) -> None:
         self.studentId = studentId
@@ -265,13 +264,9 @@ class CoursePaymentsDataDase:
 
 
 class Courses:
-    def __init__(self, courseId,courseName,coursePrice,coursePriceId, courseImageLink,courseDiscription) -> None:
-        self.courseId = courseId
-        self.courseName = courseName
-        self.coursePrice = coursePrice
-        self.coursePriceId = coursePriceId
-        self.courseImageLink = courseImageLink
-        self.courseDiscription = courseDiscription
+    def __init__(self, courseObject) -> None:
+        self.courseObject = courseObject
+        
     def createTables(self):
         try:
 
@@ -291,7 +286,7 @@ class Courses:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         coursePriceIds TEXT PRIMARY KEY,
                         courseId TEXT,
-                        coursePrice INTERGER,
+                        coursePrice INTEGER,
                         FOREIGN KEY (courseId) REFERENCES courseDetails(courseId)   
                     )
                 """)
@@ -316,8 +311,21 @@ class Courses:
                         FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
                     )
                 """)
+
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS courseYoutubeLink(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        courseId TEXT,
+                        youtubeLink TEXT,
+                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
+                              
+                    )
+                """)
         except Exception as error:
-            print(f"somthing happened in creating course detail database: {error}")
+            # print(f"somthing happened in creating course detail database: {error}")
+            return f"somthing happened in creating course detail database: {error}"
     def insertIntoTables(self):
         try:
             with sqlite3.connect("courseDatabase.db") as db:
@@ -327,7 +335,7 @@ class Courses:
                         courseID,
                         courseName
                     ) VALUES(?,?)
-                """,(self.courseId,self.courseName))
+                """,(self.courseObject["courseId"],self.courseObject["courseName"]))
                 db.commit()
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
@@ -337,7 +345,7 @@ class Courses:
                         courseId,
                         coursePrice  
                     )  VALUES(?,?,?)
-                """,(self.coursePriceId,self.courseId,self.coursePrice))
+                """,(self.courseObject["coursePriceId"],self.courseObject["courseId"],self.courseObject["coursePrice"]))
                 db.commit()
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
@@ -346,7 +354,7 @@ class Courses:
                         courseImageLink,
                         courseId 
                     ) VALUES(?,?)
-                """,(self.courseImageLink, self.courseId))
+                """,(self.courseObject["courseImageLink"], self.courseObject["courseId"]))
                 db.commit()
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
@@ -355,10 +363,22 @@ class Courses:
                         courseId,
                         courseDiscription
                     ) VALUES(?,?)
-                """,(self.courseId,self.courseDiscription))
+                """,(self.courseObject["courseId"],self.courseObject["discription"]))
+                db.commit()
+
+            with sqlite3.connect("courseDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO courseYoutubeLink(
+                        courseId,
+                        youtubeLink         
+                    ) VALUES(?,?)
+                """,(self.courseObject["courseId"],self.courseObject["youtubeLink"]))
                 db.commit()
         except Exception as error:
-            print(f"faced chalenge in inserting data into course details. {error}")
+            # print(f"faced chalenge in inserting data into course details. {error}")
+            return f"faced chalenge in inserting data into course details. {error}"
+
 
 class PurchasedCourseDetails:
     def __init__(self,studentId, courseId) -> None:
@@ -628,12 +648,100 @@ class Exams:
             except Exception as error:
                 print(f"Error On inserting into Exam databese :{error}")
                 return f"Error On inserting into Exam databese :{error}"
+            
+
+class ExamStudentAnswes:
+    def __init__(self, answerObject) -> None:
+        self.answerObject = answerObject
+    def createTable(self):
+        try:
+            with sqlite3.connect("studentExamAnswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS studentDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ResponseId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        StudentId VARCHAR(200)
+                               
+                    )
+                """)
+            with sqlite3.connect("studentExamAnswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS ExamDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ResponseId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        StudentId VARCHAR(200),
+                        courseID TEXT,
+                        ExamId VARCHAR(200),
+                        FOREIGN KEY(StudentId) REFERENCES studentDetails(StudentId)
+                               
+                    )
+                """)
+            with sqlite3.connect("studentExamAnswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS Answers(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ResponseId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        StudentId VARCHAR(200),
+                        courseID TEXT,
+                        ExamId VARCHAR(200),
+                        Answers TEXT,
+                        FOREIGN KEY(StudentId) REFERENCES studentDetails(StudentId),
+                        FOREIGN KEY(ExamId) REFERENCES  ExamDetails(ExamId),
+                        FOREIGN KEY(courseID) REFERENCES  ExamDetails(courseID)
+                                    
+                    )
+                """)
+        except sqlite3.Error as error:
+            return f"failed to connect to  studentExamAnswers.db:{error}"
+        except Exception as error:
+            return f"This error is related to studentExamAnswers database:{error} "
+    def insertIntoTable(self):
+        try:
+            with sqlite3.connect("studentExamAnswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO studentDetails(
+                        StudentId    
+                    ) VALUES (?)
+                """,(self.answerObject["studentId"],))
+                db.commit()
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO ExamDetails(
+                        StudentId,
+                        courseID,
+                        ExamId   
+                    ) VALUES (?,?,?)
+                """,(self.answerObject["studentId"],self.answerObject["courseId"],self.answerObject["ExamId"]))
+                db.commit()
+                stringedAnswerObject = ",".join(self.answerObject["answers"])
+                # print(f" cytu:{stringedAnswerObject}")
+
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO Answers(
+                        StudentId,
+                        courseID,
+                        ExamId,
+                        Answers  
+                    ) VALUES (?,?,?,?)
+                """,(self.answerObject["studentId"],self.answerObject["courseId"],self.answerObject["ExamId"],stringedAnswerObject))
+                db.commit()
+        except sqlite3.Error as error:
+            return f"failed to connect to  studentExamAnswers.db:{error}"
+        except Exception as error:
+            return f"This error is related to studentExamAnswers database:{error} "
+
 
 
 class Test:
-    def __init__(self, questionObject,courseId) -> None:
+    def __init__(self, questionObject,courseId, testId) -> None:
         self.questionObject = questionObject
         self.courseId = courseId
+        self.testId = testId
     def createTables(self):
         try:
             with sqlite3.connect("testDataBase.db") as db:
@@ -641,7 +749,8 @@ class Test:
                 cursor.execute("""
                     CREATE TABLE IF NOT EXISTS questionDetails(
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        PaperId VARCHAR(200),
+                        QuestionsId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        TestId VARCHAR(200),
                         CourseId TEXT,
                         Question TEXT       
                     )
@@ -655,10 +764,10 @@ class Test:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         OptionId INTEGER PRIMARY KEY AUTOINCREMENT,
                         CourseId TEXT,
-                        PaperId TEXT,
+                        TestId TEXT,
                         Options TEXT,
                         FOREIGN KEY(CourseId) REFERENCES questionDetails(CourseId),
-                        FOREIGN KEY(PaperId) REFERENCES questionDetails(PaperId) 
+                        FOREIGN KEY(TestId) REFERENCES questionDetails(TestId) 
                     )
                         
                 """)
@@ -670,19 +779,19 @@ class Test:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         AnswerId INTEGER PRIMARY KEY AUTOINCREMENT,
                         CourseId TEXT,
-                        PaperId TEXT,
+                        TestId TEXT,
                         Answer TEXT,
                         FOREIGN KEY(CourseId) REFERENCES questionDetails(CourseId),
-                        FOREIGN KEY(PaperId) REFERENCES questionDetails(PaperId)  
+                        FOREIGN KEY(TestId) REFERENCES questionDetails(TestId)  
                     )
                         
                 """)
         except sqlite3.Error as error:
-            print(f"failed to connect to exam database:{error}")
-            return f"failed to connect to exam database:{error}"
+            # print(f"failed to connect to test database:{error}")
+            return f"failed to connect to test database:{error}"
         except Exception as error:
-            print(f"exam data base error:{error}")
-            return f"exam data base error:{error}"
+            # print(f"test data base error:{error}")
+            return f"test data base error:{error}"
     
     def insertIntoTable(self):
         for object in self.questionObject:
@@ -691,35 +800,144 @@ class Test:
                     cursor = db.cursor()
                     cursor.execute("""
                         INSERT INTO  questionDetails(
-                            PaperId,
+                            TestId,
                             CourseId,
                             Question         
                         ) VALUES (?,?,?)
                             
-                    """,(object["QuestionId"],self.courseId, object["question"]))
+                    """,(self.testId,self.courseId, object["question"]))
                     StringOptions = ",".join(object["options"])
                     cursor.execute("""
                         INSERT INTO  options(
                             CourseId,
-                            PaperId,
+                            TestId,
                             Options         
                         ) VALUES (?,?,?)
                             
-                    """,(self.courseId, object["PaperId"], StringOptions))
+                    """,(self.courseId, self.testId, StringOptions))
                     
                     cursor.execute("""
                         INSERT INTO  answer(
                             CourseId,
-                            QuestionId,
+                            TestId,
                             Answer        
                         ) VALUES (?,?,?)
                             
-                    """,(self.courseId, object["PaperId"], object["correct_answer"]))
+                    """,(self.courseId, self.testId, object["correct_answer"]))
                     db.commit()
                 
             except sqlite3.Error as error:
-                # print(f"Error On inserting into Exam databese :{error}")
+                # print(f"Error On inserting into test databese :{error}")
                 return f"Error On inserting into test databese :{error}"
             except Exception as error:
-                # print(f"Error On inserting into Exam databese :{error}")
-                return f"Error On inserting into text databese :{error}"
+                # print(f"Error On inserting into test databese :{error}")
+                return f"Error On inserting into test databese :{error}"
+            
+
+class TestStudentAnswes:
+    def __init__(self, answerObject):
+        self.answerObject = answerObject
+    def createTable(self):
+        try:
+            with sqlite3.connect("testanswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS studentdetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        Responses INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Studentid VARCHAR(200)    
+                    )
+                """)
+
+            with sqlite3.connect("testanswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS courseDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        Responses INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Studentid VARCHAR(200),
+                        CourseId TEXT,
+                        FOREIGN KEY(Studentid) REFERENCES studentdetails(Studentid) 
+                    )
+                """)
+
+            with sqlite3.connect("testanswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS testDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        Responses INTEGER PRIMARY KEY AUTOINCREMENT,
+                        CourseId TEXT,
+                        TestId VARCHAR(300),
+                        FOREIGN KEY (CourseId) REFERENCES courseDetails(CourseId)
+                    )
+                """)
+
+            with sqlite3.connect("testanswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS answers(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        Responses INTEGER PRIMARY KEY AUTOINCREMENT,
+                        TestId VARCHAR(300),
+                        Answers TEXT,
+                        FOREIGN KEY (TestId) REFERENCES testDetails(TestId)
+                    )
+                """)
+
+        except sqlite3.Error as error:
+            return f"failed to connect to testAnswer db :{error}"
+        except Exception as error:
+            return f"error on test Answer db: {error}"
+    def insertIntotable(self):
+        try:
+            with sqlite3.connect("testanswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO studentdetails(
+                        Studentid
+                    ) VALUES (?)
+                """,(self.answerObject["studentId"],))
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO courseDetails(
+                        Studentid,
+                        CourseId
+                    ) VALUES(?,?)
+                """,(self.answerObject["studentId"],self.answerObject["courseId"]))
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO testDetails(
+                        CourseId,
+                        TestId      
+                    ) VALUES(?,?)
+                """,(self.answerObject["courseId"], self.answerObject["TestId"]))
+                formatedAnswers = ",".join(self.answerObject["answers"])
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO answers(
+                        TestId,
+                        Answers
+                    ) VALUES(?,?)
+                """,(self.answerObject["TestId"],formatedAnswers))
+                db.commit()
+        except sqlite3.Error as error:
+            return f"failed to connect to testAnswer db :{error}"
+        except Exception as error:
+            return f"error on test Answer db: {error}"
+        
+
+# class YoutubeCourseLinks:
+#     def __init__(self) -> None:
+#         pass
+#     def createTables(self):
+#         try:
+#             with sqlite3.connect("courselinkdatabase.db") as db:
+#                 cursor = db.cursor()
+#                 cursor.execute("""
+#                     CREATE TABLE IF NOT EXISTS cou
+#                 """)
+#         except sqlite3.Error as error:
+#             return f"failed to connect to courselink database:{error} "
+#         except Exception as error:
+#             return f"error related to courselink database:{error}"

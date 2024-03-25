@@ -1,8 +1,8 @@
-async function fetchExamData() {
-    return await fetch("http://127.0.0.1:5000/handleOnlineExams")
+async function fetchTestData() {
+    return await fetch("http://127.0.0.1:5000/handleOnlinetests")
       .then(response =>{
           if(! response.ok){
-            throw new Error("handleOnlinExam api failed")
+            throw new Error("handleOnlinTest api failed")
           }
           return response.json()
       })
@@ -20,11 +20,11 @@ async function fetchExamData() {
 
 
 async function loadPage(){
-    let data = await fetchExamData()
+    let data = await fetchTestData()
 	// console.log(data)
 	// alert(data)
 	
-	if ("Exam Status" in data){	
+	if ("Test Status" in data){	
 		// Show no exam message and return
 		document.getElementById('timer-container').style.display = "none";
 		document.getElementById('submitBtn').style.display = "none"
@@ -88,22 +88,22 @@ async function loadPage(){
 	function sendeAnswersToServer(answerObject){
 		var courseId = data[1]["courseId"]
 		var studentId = data[0]["studentId"]
-		var ExamId = data[0]["ExamId"]
-		fetch("http://127.0.0.1:5000/handleOnlineExams",{
+		var TestId = data[0]["TestId"]
+		fetch("http://127.0.0.1:5000/handleOnlinetests",{
 			method: "POST",
 			headers:{
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
 				"studentId":studentId,
-				"ExamId": ExamId,
+				"TestId": TestId,
 				"courseId": courseId,
 				"answers":answerObject
 			})
 		}) 
 		.then(response => response.json())
 		.then(data =>{
-			console.log(data)
+			// console.log(data)
 		})
 		.catch(error =>{
 			console.log("failed to send answers to the backend ")
