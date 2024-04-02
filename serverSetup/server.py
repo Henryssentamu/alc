@@ -1,5 +1,5 @@
 
-from crypt import methods
+
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin,login_user,login_required,logout_user,current_user
@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import ExamStudentAnswes, Exams, Test,TestStudentAnswes, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase
+from databases import ExamStudentAnswes, Exams, Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase
 from createStudentId import CreateStudentId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
@@ -898,6 +898,33 @@ def handleCourseYouTubeLink():
         pass
     else:
         return {"api status":"api failed to fetch course youtube link"}
+    
+
+
+@app.route("/handleStudentscores", methods =["GET"])
+def handleStudentscores():
+    if request.method == "GET":
+        courseId = session.get("course_id_studentPortal")
+        studentId = session.get("logged_student_id")
+        # compiledResults= {}
+        if courseId and studentId:
+            # print(f"sid:{studentId} and cis:{courseId}")
+            try:
+                student = AssessmentResults(studentId= studentId, courseId= courseId)
+                # student.formateStudentAnswerData()
+                results = student.markResults()
+
+                
+                return jsonify(results)
+            except Exception as error:
+                return f"Error in handleStudentResults route{error}"
+        else:
+            return jsonify({"student and course IDs":"not suplied"})
+        
+    else:
+        pass
+    return jsonify({"api status":" handleStudentResults api failed"})
+
 
 @app.route("/studentProfile")
 def studentProfile():

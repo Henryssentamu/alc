@@ -94,6 +94,12 @@
             margin-left: 20px;
         }
 
+        .results{
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
         @media only screen and (max-width: 768px) {
             .container {
                 padding: 0 10px;
@@ -156,6 +162,18 @@
                 </div>
                 
             </div>
+        </section>
+        <section id="assessment" class="assessment">
+            <div class="results">
+                <img class="dashboardicons" src="../static/icons/resultsicons.png">
+                <div>
+                    <a href="{{url_for('studentScores')}}">
+                        Results
+                    </a>
+                </div>
+                
+            </div>
+
         </section>
     </div>
     <script src="../static/jsFiles/loadcourseyoutubelink.js"></script>

@@ -1,5 +1,8 @@
 
+from re import split
 import sqlite3
+
+from numpy import inexact, isin
 class StudentDatabases:
     def __init__(self, studentId, firstname,sirName, gender,phoneNumber,email, school,country,password, intake) -> None:
         self.studentId = studentId
@@ -925,19 +928,343 @@ class TestStudentAnswes:
             return f"failed to connect to testAnswer db :{error}"
         except Exception as error:
             return f"error on test Answer db: {error}"
+
+
+def formateStudentAnswerdata(object):
+    listObj = []
+    for  obj in object:
+            for index ,item in enumerate(obj):
+                if index == 3:
+                    formateobj = item.split(",")
+                    listObj.append(formateobj)
+    return listObj
+def formateCorrectAnswer(answeObject):
+    formatedAnswers = []
+    testanswers = []
+    examanswerList = []
+    for obj in answeObject:
+        key = list(obj.keys())[0]
+        if key == "test":
+            details = obj[key]
+            for item in details:
+                if len(testanswers) == 0:
+                    testanswers.append(
+                        {
+                            "testId":item[0],
+                            "answers":[item[2]]
+                        }
+                    )
+                elif len(testanswers) != 0 :
+                    for ansobj in testanswers:
+                        if ansobj["testId"] == item[0]:
+                            ansobj["answers"].append(item[2])
+                        else:
+                            testanswers.append(
+                                {
+                                    "testId":item[0],
+                                    "answers":[item[2]]
+                                }
+                            )
+        else:
+            details = obj[key]
+            for item in details:
+                if len(examanswerList) == 0:
+                    examanswerList.append(
+                        {
+                            "examId":item[0],
+                            "answers":[item[2]]
+                        }
+                    )
+                elif len(examanswerList) != 0 :
+                    for ansobj in examanswerList:
+                        if ansobj["examId"] == item[0]:
+                            ansobj["answers"].append(item[2])
+                        else:
+                            examanswerList.append(
+                                {
+                                    "examId":item[0],
+                                    "answers":[item[2]]
+                                }
+                            )
+    
+    for ans in testanswers:
+        formatedAnswers.append(ans)
+    else:
+        for ans in examanswerList:
+            formatedAnswers.append(ans)
+    return formatedAnswers
+
+
+def marks(object1,object2):
+    correct_count = sum( 1 for correctAnswer,studentAnswer in  zip(object1,object2) if correctAnswer == studentAnswer)
+
+    return round((correct_count/ len(object1))* 100)
+    # for i in range(len(object1)):
+    #     if object1[i] == object2[i]:
+    #         score += 1
+    # return round((score/len(object1))*100)
+
+
+class AssessmentResults:
+    def __init__(self,studentId, courseId):
+        self.studentAnswersDetails = []
+        self.correctAnswers = []
+        self.studentId = studentId
+        self.courseId = courseId
+        self.studentResults = None
+        self.correctResults = None
+        # self.examResults = None
+
+    def fetchRightAnswers(self):
+        try:
+            with sqlite3.connect("testDataBase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        q.TestId,q.CourseId, a.Answer
+                    FROM
+                        questionDetails AS q
+                    JOIN
+                        answer AS a ON a.CourseId == q.CourseId
+                    WHERE
+                        q.CourseId == ?  
+                """,(self.courseId,))
+                TestData = cursor.fetchall()
+                if TestData:
+                    self.correctAnswers.append({"test":TestData})
+                else:
+                    self.correctAnswers.append({"test":"no test"})
+            with sqlite3.connect("examDataBase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        q.ExamId,q.CourseId,a.Answer
+                    FROM
+                        questionDetails AS q
+                    JOIN
+                        answer AS a ON a.CourseId == q.CourseId
+                    WHERE
+                        q.CourseId == ?           
+                """,(self.courseId,))
+                Examdata = cursor.fetchall()
+                if Examdata:
+                    self.correctAnswers.append({"exam":Examdata})
+                else:
+                    self.correctAnswers.append({"exam":"no answers"})
+        except sqlite3.Error as error:
+            return f"fetchRightAnswers api failed to connect to  specified database:{error}"
+        except Exception as error:
+            return f"Error on fetching RightAnswers from the specified database:{error}"
+       
+
+    def fetchStudentAnswers(self):
+
+        try:
+            with sqlite3.connect("testanswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        s.Studentid,c.CourseId, t.TestId, a.Answers
+                    FROM
+                        studentdetails as s
+                    JOIN
+                        courseDetails AS c ON c.Studentid == s.Studentid
+                    JOIN
+                        testDetails AS t ON t.CourseId == c.CourseId
+                    JOIN
+                        answers AS a ON a.TestId == t.TestId
+                    WHERE
+                        s.Studentid == ? AND c.CourseId == ?
+                    
+                """,(self.studentId, self.courseId))
+                TestData = cursor.fetchall()
+            if TestData:
+                self.studentAnswersDetails.append({"test":TestData})
+            else:
+                self.studentAnswersDetails.append({"test":"no answers"})
+
+            with sqlite3.connect("studentExamAnswers.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        s.StudentId,c.courseID,c.ExamId,a.Answers
+                    FROM
+                        studentDetails AS s
+                    JOIN
+                        ExamDetails AS c ON c.StudentId == s.StudentId 
+                    JOIN
+                        Answers  AS a ON a.ExamId == c.ExamId
+                    WHERE
+                        s.StudentId == ? AND c.courseID == ? 
+                """,(self.studentId,self.courseId))
+                ExamData = cursor.fetchall()
+            if ExamData:
+                self.studentAnswersDetails.append({"exam":ExamData})
+            else:
+                self.studentAnswersDetails.append({"exam":"no results"})
+
+        except sqlite3.Error as error:
+            return f" sql Error on fetchRightAnswer api:{error}"
+        except Exception as error:
+            return f"Error on fetchRightAnswer api:{error}"
+    def formateStudentAnswerData(self):
+        self.fetchStudentAnswers()
+        # print(self.studentAnswersDetails)
+        answers = []
+        testanswersList = []
+        examanswersList = []
+        for answerobj in self.studentAnswersDetails:
+            key = list(answerobj.keys())[0]
+            if key == "test":
+                testnaswers = answerobj[key]
+                for details in testnaswers:
+                    if len(testanswersList) == 0:
+                        testanswersList.append({
+                        "testId":details[2],
+                        "answers":details[3].split(",")
+                        
+                        })
+                    else:
+                        
+                        for ans in testanswersList:
+                            if ans["testId"] == details[2]:
+                                continue
+                            else:
+                                testanswersList.append({
+                                    "testId":details[2],
+                                    "answers":details[3].split(",")
+                                    
+                                    })
+
+            else:
+                examanswers = answerobj[key]
+                for details in examanswers:
+                    
+                    if len(examanswersList) == 0:
+                        examanswersList.append({
+                        "examId":details[2],
+                        "answers":details[3].split(",")
+                        
+                        })
+                    else:
+                        
+                        for ans in examanswersList:
+                            if ans["examId"] == details[2]:
+                                continue
+                            else:
+                                examanswersList.append({
+                                    "examId":details[2],
+                                    "answers":details[3].split(",")
+                                    
+                                    })
+
+        for answ in testanswersList:
+            answers.append(answ)
+        else:
+            for answ in examanswersList:
+                answers.append(answ)
+
+        self.studentResults = answers
+        
+    def formateAnswers(self):
+        self.fetchRightAnswers()
+        self.formateStudentAnswerData()
+        self.correctResults =  formateCorrectAnswer(self.correctAnswers)
+
+    def markResults(self):
+        self.formateAnswers()
+        
+        def makeResultsStructure():
+            scores = []
+            for object in self.studentResults:
+                for key in object:
+                    if key == "testId":
+                        if len(scores) == 0:
+                            scores.append(
+                                {
+                                    "testId":object[key],
+                                    "scores": 0
+                                }
+                            )
+                        else:
+                            for obj in scores:
+                                for key in obj:
+                                    if key == "testId":
+                                        if obj[key] == object[key]:
+                                            continue
+                                        else:
+                                            scores.append(
+                                                {
+                                                    "testId":object[key],
+                                                    "scores": 0
+                                                }
+                                            )
+                                    else:
+                                        continue
+                    elif key == "examId":                      
+                        scores.append(
+                            {
+                                "examId":object[key],
+                                "scores": 0
+                            }
+                        )
+                    else:
+                        continue
+            return scores
+        
         
 
-# class YoutubeCourseLinks:
-#     def __init__(self) -> None:
-#         pass
-#     def createTables(self):
-#         try:
-#             with sqlite3.connect("courselinkdatabase.db") as db:
-#                 cursor = db.cursor()
-#                 cursor.execute("""
-#                     CREATE TABLE IF NOT EXISTS cou
-#                 """)
-#         except sqlite3.Error as error:
-#             return f"failed to connect to courselink database:{error} "
-#         except Exception as error:
-#             return f"error related to courselink database:{error}"
+        scoreBody = makeResultsStructure()
+        for object in self.studentResults:
+            value = list(object.values())
+            id = value[0]
+            answer = value[1]
+            
+
+            for correctObj in self.correctResults:
+                correctValues = list(correctObj.values())
+                if id in correctValues:
+                    correct = correctValues[1]
+                    for obj in scoreBody:
+                        for key in obj:
+                            if obj[key] == id:
+                                obj["scores"] = marks(answer,correct)
+                else:
+                    continue
+        return scoreBody
+
+
+
+
+
+                    
+
+
+
+            
+
+
+
+
+
+
+
+            
+            
+
+        
+
+      
+
+    
+        
+        
+
+
+
+
+
+           
+           
+           
+
