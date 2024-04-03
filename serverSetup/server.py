@@ -14,6 +14,8 @@ from createStudentId import CreateStudentId
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,ALC_SECURITY
 import stripe
+from sendemail import sendEmail
+
 
 
 
@@ -327,6 +329,9 @@ def registrationPage():
                     studentDataBase.createTables()
                     """inserting values into the created tables"""
                     studentDataBase.insertIntoTables()
+                    # print(emailAddress,studentId,password)
+                    
+                    sendEmail(Email=emailAddress, sPassword=studentPassword, studentRigNo=studentId)
                     return redirect(url_for('login'))
                 else:
                     return redirect(url_for('registrationPage'))
@@ -913,7 +918,6 @@ def handleStudentscores():
                 student = AssessmentResults(studentId= studentId, courseId= courseId)
                 # student.formateStudentAnswerData()
                 results = student.markResults()
-
                 
                 return jsonify(results)
             except Exception as error:
