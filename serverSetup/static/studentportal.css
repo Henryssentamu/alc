@@ -282,6 +282,12 @@
     
   }
 
+  /* no course massage css */
+  .noCourseMessage{
+    text-align: center;
+    padding-left: 80px;
+  }
+
 
 
 

@@ -1,13 +1,15 @@
+import datetime
 import random
 
 class CreateStudentId:
-    def __init__(self, sirName) -> None:
-        self.sirName = sirName
-    def generateRandomNumber(self):
-        return random.randint(1,100)
+    numberOfStudent = 0
+    def __init__(self) -> None:
+        self.date_time = datetime.datetime.now()
+        self.year = self.date_time.year
+        CreateStudentId.numberOfStudent += 1
+        self.studentNumber = str(CreateStudentId.numberOfStudent).zfill(4)
     def makeStudentId(self):
-        number = self.generateRandomNumber()
-        # if self.generateRandomNumber() == number:
-        #     number = self.generateRandomNumber()
-        # numberToUse = number
-        return f"{self.sirName[:4]}/{number}"
+        regno = str(self.year)[2:] + "/" + "A"+ "/" + self.studentNumber + "/" +"ps"
+
+        return regno
+    

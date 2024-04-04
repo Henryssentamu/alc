@@ -318,7 +318,7 @@ def registrationPage():
                     """creating database object """
                     #making student id 
                     try:
-                        student = CreateStudentId(sirName= sirName)
+                        student = CreateStudentId()
                         studentId = student.makeStudentId()
                     except ValueError as error:
                         print(f" probably create student id class failed. check the error: {error}")
