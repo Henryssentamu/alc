@@ -1,8 +1,5 @@
 
-from re import split
 import sqlite3
-
-from numpy import inexact, isin
 class StudentDatabases:
     def __init__(self, studentId, firstname,sirName, gender,phoneNumber,email, school,country,password, intake) -> None:
         self.studentId = studentId
@@ -282,6 +279,15 @@ class Courses:
                         courseName VARCHAR(200)
                     )
                 """)
+
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS CourseSchoolIdentity(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        courseId TEXT,
+                        SchoolId VARCHAR(300),
+                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
+                    )
+                """)
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
@@ -339,6 +345,12 @@ class Courses:
                         courseName
                     ) VALUES(?,?)
                 """,(self.courseObject["courseId"],self.courseObject["courseName"]))
+                cursor.execute("""
+                    INSERT INTO CourseSchoolIdentity(
+                        courseId,
+                        SchoolId
+                    ) VALUES(?,?)
+                """,(self.courseObject["courseId"],self.courseObject["schoolId"]))
                 db.commit()
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
@@ -702,6 +714,7 @@ class ExamStudentAnswes:
         except Exception as error:
             return f"This error is related to studentExamAnswers database:{error} "
     def insertIntoTable(self):
+        print(f"exa:{self.answerObject}")
         try:
             with sqlite3.connect("studentExamAnswers.db") as db:
                 cursor = db.cursor()
@@ -797,6 +810,7 @@ class Test:
             return f"test data base error:{error}"
     
     def insertIntoTable(self):
+        
         for object in self.questionObject:
             try:
                 with sqlite3.connect("testDataBase.db") as db:
@@ -929,15 +943,14 @@ class TestStudentAnswes:
         except Exception as error:
             return f"error on test Answer db: {error}"
 
-
-def formateStudentAnswerdata(object):
-    listObj = []
-    for  obj in object:
-            for index ,item in enumerate(obj):
-                if index == 3:
-                    formateobj = item.split(",")
-                    listObj.append(formateobj)
-    return listObj
+# def formateStudentAnswerdata(object):
+#     listObj = []
+#     for  obj in object:
+#             for index ,item in enumerate(obj):
+#                 if index == 3:
+#                     formateobj = item.split(",")
+#                     listObj.append(formateobj)
+#     return listObj
 def formateCorrectAnswer(answeObject):
     formatedAnswers = []
     testanswers = []
@@ -1232,6 +1245,91 @@ class AssessmentResults:
                 else:
                     continue
         return scoreBody
+    
+
+class SchoolDatabes:
+    def __init__(self,schoolObject):
+        self.schoolObjet = schoolObject
+    def createTables(self):
+        try:
+
+            with sqlite3.connect("schoolsDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS schoolDetails(
+                            Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            SchoolId VARCHAR(200) PRIMARY KEY,
+                            SchoolName VARCHAR(300)  
+                    )
+                """)
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS SchoolCoordinator(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        SchoolId VARCHAR(200),
+                        CoordinatorName VARCHAR(300),
+                        FOREIGN KEY(SchoolId) REFERENCES schoolDetails(SchoolId)
+                        
+                    )
+                """)
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS schoolUrl(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        SchoolId VARCHAR(200),
+                        Url TEXT,
+                        FOREIGN KEY(SchoolId) REFERENCES schoolDetails(SchoolId)
+                    )
+                """)
+                db.commit()
+        except sqlite3.Error as error:
+            return f"sqlite connection error:{error}"
+        except Exception as error:
+            return f"schoolDatabase error:{error}"
+        else:
+            return "succefully created"
+            
+
+    def insertIntotables(self):
+        try:
+            for school in self.schoolObjet:
+            
+                with sqlite3.connect("schoolsDatabase.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        INSERT INTO schoolDetails(
+                            SchoolId,
+                            SchoolName         
+                        ) VALUES(?,?)
+                    """,(school["schoolId"], school["SchoolName"]))
+                    cursor.execute("""
+                        INSERT INTO SchoolCoordinator(
+                            SchoolId,
+                            CoordinatorName        
+                        ) VALUES(?,?)
+                    """,(school["schoolId"], school["SchoolCoordinator"]))
+                    cursor.execute("""
+                        INSERT INTO schoolUrl(
+                            SchoolId,
+                            Url
+                        )VALUES(?,?)
+                    """,(school["schoolId"],school["schoolUrl"]))
+                    db.commit()
+        except sqlite3.Error as error:
+            return f"sqlite error: {error}"
+        except Exception as error:
+            return f"school databasee error: {error}"
+        else:
+            return "succefully inserted"
+        
+
+
+def formateSchoolData(object):
+    return [{
+        "schoolId": object["schID"],
+        "SchoolName": object["schName"],
+        "SchoolCoordinator":object["schCoordinator"],
+        "schoolUrl":object["url"]
+
+    }]
 
 
 

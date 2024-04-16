@@ -1,5 +1,8 @@
 
 
+from ast import Pass
+from crypt import methods
+import json
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin,login_user,login_required,logout_user,current_user
@@ -8,7 +11,7 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import ExamStudentAnswes, Exams, Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase
+from databases import ExamStudentAnswes, Exams, SchoolDatabes, Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
 from createStudentId import CreateStudentId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
@@ -183,7 +186,7 @@ testQuestions = [
 # exam.insertIntoTable()
 
 """teting the test class """
-# Testobj = Test(testQuestions,"prod_PcWpcg8596849j","test019")
+# Testobj = Test(testQuestions,"prod_PcWpcg8596849j","test319")
 # Testobj.createTables()
 # Testobj.insertIntoTable()
 
@@ -554,38 +557,43 @@ def paymentRecieved():
     return render_template("continueToDashboard.html")
 
 
-
-# Use this sample code to handle webhook events in your integration.
-# This is your Stripe CLI webhook secret for testing your endpoint locally.
 endpoint_secret = stripwhookkey
 
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    event = None
-    payload = request.data
-    sig_header = request.headers['STRIPE_SIGNATURE']
+""" here will handle webhook such that, i triger add course to a student's portal accout
+    after the payment hass been successfuly made.
+"""
 
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, endpoint_secret
-        )
-    except ValueError as e:
-        # Invalid payload
-        raise e
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        raise e
+# # This is your Stripe CLI webhook secret for testing your endpoint locally.
+# endpoint_secret = 'whsec_f98b915535bc5c05f4173c8b1e847aead40014396adbe9892a1c9907844976d9'
 
-    # Handle the event
-    if event['type'] == 'payment_intent.succeeded':
-      payment_intent = event['data']['object']
-    # ... handle other event types
-      print(f"response from strip:{payment_intent}")
-    else:
-      print('Unhandled event type {}'.format(event['type']))
 
-    return jsonify(success=True)
 
+# @app.route('/webhook', methods=['POST'])
+# def webhook():
+#     event = None
+#     payload = request.data
+#     sig_header = request.headers['STRIPE_SIGNATURE']
+
+#     try:
+#         event = stripe.Webhook.construct_event(
+#             payload, sig_header, endpoint_secret
+#         )
+#     except ValueError as e:
+#         # Invalid payload
+#         raise e
+#     except stripe.error.SignatureVerificationError as e:
+#         # Invalid signature
+#         raise e
+
+#     # Handle the event
+#     if event['type'] == 'payment_intent.succeeded':
+#       payment_intent = event['data']['object']
+#       print(pay)
+#     # ... handle other event types
+#     else:
+#       print('Unhandled event type {}'.format(event['type']))
+
+#     return jsonify(success=True)
 
 
 
@@ -808,15 +816,18 @@ def handleOnlineTests():
             return f"session in handleonlineTest route failed {error}"
     else:
         Results = request.json
-        # print(f"test answers :{tresults}")
-        testResults = TestStudentAnswes(Results)
-        testResults.createTable()
-        testResults.insertIntotable()
+        print(f"test answers  wano :{Results}")
+        try:
+            testResults = TestStudentAnswes(Results)
+            testResults.createTable()
+            testResults.insertIntotable()
+        except Exception as error:
+            return f"error on dealing with student test respons:{error}"
     return jsonify({"api status":"handleOnlineExam api failure"})
-    """ retrive test questions from the data base and send them to client server
-        access the course to retrive quesions for from the course if which is stored in the
-        session under handlerecorded link route
-    """
+""" retrive test questions from the data base and send them to client server
+    access the course to retrive quesions for from the course if which is stored in the
+    session under handlerecorded link route
+"""
 
 @app.route("/handleOnlineExams", methods=["GET","POST"])
 def handleOnlineExams():
@@ -935,6 +946,88 @@ def studentProfile():
 
     return render_template("studentProfile.html")
 
+
+@app.route("/admin")
+def admin():
+    return render_template("adminDashoard.html")
+
+@app.route("/adminSchoolPage")
+def adminSchoolPage():
+    return render_template("adminSchoolPage.html")
+
+@app.route("/handleAdminSchoolPage", methods=["POST", "GET"])
+def handleAdminSchoolPage():
+    if request.method == "POST":
+        data = request.data
+        data = data.decode("utf-8")
+        print(data)
+        formatedData = json.loads(data)
+        s = formateSchoolData(formatedData)
+        """ inserting school details to the school database """
+        school = SchoolDatabes(s)
+        created = school.createTables()
+        inserted = school.insertIntotables()
+        # print(created)
+        # print(inserted)
+        
+        
+
+    
+    try:
+        with sqlite3.connect("schoolsDatabase.db") as db:
+            cursor = db.cursor()
+            cursor.execute("""
+                SELECT
+                    S.SchoolId, 
+                    S.SchoolName,
+                    C.CoordinatorName,
+                    U.Url
+                FROM
+                    schoolDetails AS S 
+                JOIN
+                    SchoolCoordinator AS C ON C.SchoolId == S.SchoolId
+                JOIN
+                    schoolUrl AS U ON  U.SchoolId == S.SchoolId
+
+            """)
+            data = cursor.fetchall()
+        formatedData =  [{"schoolId":object[0], "schoolName":object[1], "url":object[3],"schoolCoordinator":object[2]} for object in data]
+        # print(formatedData)
+        return jsonify(formatedData)
+
+    except sqlite3.Error as error:
+        return f"faced sql connection error on fetching from school database:{error}"
+    except Exception as error:
+        return f"faced error on fetching from school database: {error}"
+    
+
+@app.route("/showAdminSchoolDetailsToDelete")
+def showAdminSchoolDetailsToDelet():
+    # url = url_for('showAdminSchoolDetailsToDelet')
+    return render_template("schoolTodelet.html")
+
+    
+@app.route("/handleAdminSchoolDeletion", methods=["POST","GET"])
+def handleAdminSchoolDeletion():
+    if request.method == "POST":
+        data = request.data
+        data = data.decode("utf-8")
+        data = json.loads(data)
+        print(data)
+    elif request.method == "GET":
+        Pass
+    return jsonify({"response":"success"}),200
+
+
+
+
+@app.route("/adminschoolTemplate")
+def adminschoolTemplate():
+    return render_template("adminschoolTemplate.html")
+
+@app.route("/admincourseInterface")
+def admincourseInterface():
+    return render_template("admincourseInterface.html")
 
 
 if __name__ == "__main__":

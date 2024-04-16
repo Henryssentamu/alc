@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Page</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .box {
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    h1, h2 {
+        text-align: center;
+    }
+
+    .statistics {
+        margin-bottom: 20px;
+    }
+
+    .resource-form input[type="text"] {
+        width: calc(100% - 100px);
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .dropdown-select {
+        display: flex;
+        align-items: center;
+    }
+
+    .dropdown-select select {
+        padding: 8px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .add-btn {
+        padding: 8px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .add-btn:hover {
+        background-color: #45a049;
+    }
+
+    .resources {
+        margin-top: 20px;
+    }
+
+    .resource {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Course Name</h1>
+
+    <div class="box">
+        <h2>Statistics</h2>
+        <div class="statistics">
+            <p>Total enrolled students: <span id="totalEnrolled">0</span></p>
+            <p>Students finished the course: <span id="finishedCourse">0</span></p>
+            <p>Students dropped out: <span id="droppedOut">0</span></p>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>Add Course Resources</h2>
+        <div class="resource-form">
+            <div class="dropdown-select" id="liveLinkInput">
+                <select id="liveLinkCohort">
+                    <option value="cohort1">Cohort 1</option>
+                    <option value="cohort2">Cohort 2</option>
+                    <option value="cohort3">Cohort 3</option>
+                </select>
+                <input type="text" placeholder="Live Link">
+                <button class="add-btn" onclick="addResource('liveLink')">Add</button>
+            </div>
+            <div class="dropdown-select" id="recordedLinkInput">
+                <select id="recordedLinkCohort">
+                    <option value="cohort1">Cohort 1</option>
+                    <option value="cohort2">Cohort 2</option>
+                    <option value="cohort3">Cohort 3</option>
+                </select>
+                <input type="text" placeholder="Recorded Link">
+                <button class="add-btn" onclick="addResource('recordedLink')">Add</button>
+            </div>
+            <div class="dropdown-select" id="examLinkInput">
+                <select id="examLinkCohort">
+                    <option value="cohort1">Cohort 1</option>
+                    <option value="cohort2">Cohort 2</option>
+                    <option value="cohort3">Cohort 3</option>
+                </select>
+                <input type="text" placeholder="Exam Link">
+                <button class="add-btn" onclick="addResource('examLink')">Add</button>
+            </div>
+            <div class="dropdown-select" id="testLinkInput">
+                <select id="testLinkCohort">
+                    <option value="cohort1">Cohort 1</option>
+                    <option value="cohort2">Cohort 2</option>
+                    <option value="cohort3">Cohort 3</option>
+                </select>
+                <input type="text" placeholder="Test Link">
+                <button class="add-btn" onclick="addResource('testLink')">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="box">
+        <h2>Course Resources</h2>
+        <div class="resources" id="courseResources"></div>
+    </div>
+</div>
+
+<script>
+    // Sample data - You can replace this with dynamic data from a backend
+    let enrolledStudents = 0;
+    let finishedCourse = 0;
+    let droppedOut = 0;
+    const resources = {
+        liveLink: [],
+        recordedLink: [],
+        examLink: [],
+        testLink: []
+    };
+
+    // Function to update statistics
+    function updateStatistics() {
+        document.getElementById("totalEnrolled").innerText = enrolledStudents;
+        document.getElementById("finishedCourse").innerText = finishedCourse;
+        document.getElementById("droppedOut").innerText = droppedOut;
+    }
+
+    // Function to add a resource
+    function addResource(type) {
+        const cohort = document.querySelector(`#${type}Cohort`).value;
+        const inputElement = document.querySelector(`#${type}Input input`);
+        const link = inputElement.value.trim();
+        if (link !== "") {
+            resources[type].push({ cohort, link });
+            renderResources();
+            inputElement.value = "";
+        } else {
+            alert("Please enter a valid link.");
+        }
+    }
+
+    // Function to render course resources
+    function renderResources() {
+        const courseResources = document.getElementById("courseResources");
+        courseResources.innerHTML = "";
+        Object.keys(resources).forEach(key => {
+            resources[key].forEach((resource, index) => {
+                const resourceElement = document.createElement("div");
+                resourceElement.classList.add("resource");
+                resourceElement.innerHTML = `
+                    <p>${key.charAt(0).toUpperCase() + key.slice(1)} ${index + 1}:</p>
+                    <p>Cohort: ${resource.cohort}, Link: ${resource.link}</p>
+                `;
+                courseResources.appendChild(resourceElement);
+            });
+        });
+    }
+
+    // Initial render
+    updateStatistics();
+    renderResources();
+</script>
+
+</body>
+</html>

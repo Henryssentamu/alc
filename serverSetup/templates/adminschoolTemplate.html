@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Admin Page</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .box {
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    h1, h2 {
+        text-align: center;
+    }
+
+    .course-container {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: box-shadow 0.3s;
+    }
+
+    .course-container:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .course {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
+    .course a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    .course a:hover {
+        text-decoration: underline;
+    }
+
+    .add-remove-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .add-remove-section .add-remove-form {
+        width: 48%;
+    }
+
+    .add-remove-section input[type="text"] {
+        width: 70%;
+        padding: 8px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .add-remove-section button {
+        padding: 8px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .add-remove-section button:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="box">
+        <h2>School Statistics</h2>
+        <div>Total number of available courses: <span id="totalCourses">0</span></div>
+        <div>Total number of students: <span id="numStudents">0</span></div>
+    </div>
+
+    <div class="box">
+        <h2>Available Courses</h2>
+        <div id="coursesList" class="course-container"></div>
+    </div>
+
+    <div class="box">
+        <h2>Add or Remove Course</h2>
+        <div class="add-remove-section">
+            <div class="add-remove-form">
+                <input type="text" id="addCourseNameInput" placeholder="Course Name">
+                <button id="addCourseBtn">Add Course</button>
+            </div>
+            <div class="add-remove-form">
+                <input type="text" id="removeCourseNameInput" placeholder="Course Name">
+                <button id="removeCourseBtn">Remove Course</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sample data - You can replace this with dynamic data from a backend
+    let courses = [
+        { name: "Mathematics", numStudents: 30 },
+        { name: "Science", numStudents: 25 },
+        { name: "History", numStudents: 20 }
+    ];
+
+    // Function to render available courses
+    function renderCourses() {
+        const coursesList = document.getElementById("coursesList");
+        coursesList.innerHTML = "";
+        courses.forEach(course => {
+            const courseContainer = document.createElement("div");
+            courseContainer.classList.add("course-container");
+            courseContainer.addEventListener("click", function() {
+                // Redirect to course page or perform any other action
+                console.log("Redirecting to course page:", course.name);
+            });
+            const courseElement = document.createElement("div");
+            courseElement.classList.add("course");
+            courseElement.innerHTML = `<a href="{{url_for('admincourseInterface')}}">${course.name}</a> <span>${course.numStudents} students</span>`;
+            courseContainer.appendChild(courseElement);
+            coursesList.appendChild(courseContainer);
+        });
+    }
+
+    // Function to update school statistics
+    function updateStats() {
+        const numStudents = courses.reduce((acc, course) => acc + course.numStudents, 0);
+        document.getElementById("numStudents").innerText = numStudents;
+        document.getElementById("totalCourses").innerText = courses.length;
+    }
+
+    // Function to add a course
+    function addCourse(courseName) {
+        courses.push({ name: courseName, numStudents: 0 });
+        renderCourses();
+        updateStats();
+    }
+
+    // Function to remove a course
+    function removeCourse(courseName) {
+        courses = courses.filter(course => course.name !== courseName);
+        renderCourses();
+        updateStats();
+    }
+
+    // Event listener for add course button
+    document.getElementById("addCourseBtn").addEventListener("click", function() {
+        const courseNameInput = document.getElementById("addCourseNameInput");
+        const courseName = courseNameInput.value.trim();
+        if (courseName !== "") {
+            addCourse(courseName);
+            courseNameInput.value = "";
+        } else {
+            alert("Please enter a course name.");
+        }
+    });
+
+    // Event listener for remove course button
+    document.getElementById("removeCourseBtn").addEventListener("click", function() {
+        const courseNameInput = document.getElementById("removeCourseNameInput");
+        const courseName = courseNameInput.value.trim();
+        if (courseName !== "") {
+            const courseExists = courses.some(course => course.name === courseName);
+            if (courseExists) {
+                removeCourse(courseName);
+                courseNameInput.value = "";
+            } else {
+                alert("Course not found.");
+            }
+        } else {
+            alert("Please enter a course name.");
+        }
+    });
+
+    // Initial render
+    renderCourses();
+    updateStats();
+</script>
+
+</body>
+</html>

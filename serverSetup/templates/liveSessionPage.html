@@ -133,6 +133,14 @@
             text-decoration: none;
             color: white;
         }
+        .goback a{
+            color: white;
+            text-decoration: none;
+            display: flex;
+        }
+        .goback div{
+            padding-top: 5px;
+        }
 
         @media only screen and (max-width: 768px) {
             .session-card {
@@ -144,6 +152,13 @@
 <body>
     <header>
         <h1>Live Sessions for Students</h1>
+        <div class="goback">
+            <a href="{{url_for('loadPaidCourseONPortal')}}"> 
+                <img src="../static/icons/backArrow.png">
+                <div>Back</div>
+            </a>
+            
+        </div>
     </header>
     <div class="container">
         <!-- <div class="session-card">

@@ -30,10 +30,11 @@
 }
 .portal-header .log-section{
   /* border-right: solid 2px; */
-  width: 20px;
+  /* width: 218px; */
   background-color: #0d0a2c;
   margin-right: 2px;
   padding: 10px 0px;
+  
 }
 
 .header-main{
@@ -121,6 +122,7 @@
   height: 80px;
   align-items: center;
   justify-content: space-between;
+  z-index: 500px;
   
  
 
@@ -298,6 +300,7 @@
   /* RIGHT SIDE BAR/ SECTION CSS */
 
   .right-side-bar{
+    margin-top: 70px;
 
     position: fixed;
     padding: 10px 8px;

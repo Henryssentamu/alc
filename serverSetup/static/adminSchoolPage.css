@@ -1,0 +1,135 @@
+
+.modify-school-section{
+    width: 1200px;
+    background-color: white;
+    box-shadow: 0px 1px 1px #b2aeae66;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* .details-section{
+    background-color: rgb(245, 245, 245);
+} */
+
+/* add sechool */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+form label {
+    margin-bottom: 10px;
+}
+
+form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+
+/* delet school */
+
+.details-section {
+    width: 500px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.details-section h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.select-school {
+    margin-bottom: 20px;
+}
+
+.select-school label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.select-school select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#view-details-btn {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#view-details-btn:hover {
+    background-color: #0056b3;
+}
+
+/* school list section */
+
+.school-list-section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.school-list-section h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.school-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.school {
+    width: 300px;
+    padding: 20px;
+    margin: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adding box-shadow */
+}
+
+.school a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.school:hover {
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Box-shadow on hover */
+}

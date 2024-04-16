@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/adminSchoolPage.css">
+</head>
+<body>
+    <h1> school admin dashboard </h1>
+    <div class="school-list-section">
+        <h2>Available Schools</h2>
+        <div class="school-row">
+            <!-- this is filled with generated html  -->
+        </div>
+    </div>
+    <div class="modify-school-section">
+        <section class="details-section">
+            <form id="add-school-form">
+                <label for="school-name">Add School:</label>
+                <label>{"schID":"v","schName":"v","schCoordinator":"v","url":"/sclOFmath"}</label>
+                <input type="text" id="school-name" placeholder="Enter school object">
+                <button type="submit">Add</button>
+            </form>
+        </section>
+
+        <section class="details-section">
+            <h2>Delate School</h2>
+            <div class="select-school">
+                <label for="school-select">Select School:</label>
+                <select id="school-select">
+                    <!-- Schools dynamically populated using JavaScript -->
+                </select>
+            </div>
+            <button  onclick="getSelectedSchool(); window.location.href= '/showAdminSchoolDetailsToDelete'" id="view-details-btn">View Details</button>
+            <!-- Details dynamically populated using JavaScript -->
+        </section>
+    </div>
+    
+
+    <script>
+
+
+            async function fetchSchoolData(){
+                return await fetch("http://127.0.0.1:5000/handleAdminSchoolPage")
+                    .then(response =>{
+                        if (!response.ok){
+                            throw new Error("api failed to fetch school details from server");
+                        }
+                        return response.json()
+                    })
+                    .then(data =>{
+                        // console.log(data)
+                        return data
+                    })
+                    .catch(error =>{
+                        console.log("error occured while fetching school data from server",error)
+                    })
+            }
+        // function to generate the school list section
+        async function  generateSchoolList(){
+            // var data = await fetchSchoolsDetails()
+            var data = await fetchSchoolData()
+            
+            let html = ""
+
+            data.forEach((object)=>{
+                html += `<div class="school" data-school-id = ${object["schoolId"]} data-school-coordinator=${object["schoolCoordinator"]}>
+                <a href="${object["url"]}">${object["schoolName"]}</a>
+                </div>
+                
+                `
+
+            })
+            return html
+            
+        }
+        async function displaySchools(){
+            var h = await generateSchoolList()
+            document.querySelector(".school-row")
+                .innerHTML = h
+        }
+        displaySchools()
+
+        // Function to populate the school select dropdown
+        async function populateSchoolSelect() {
+            var schooldata = await fetchSchoolData()
+            const schoolSelect = document.getElementById("school-select");
+
+            // Clear any existing options
+            schoolSelect.innerHTML = "";
+
+            // Create and append an option element for each school
+            schooldata.forEach(school => {
+                const option = document.createElement("option");
+                option.value = school.schoolId;
+                option.textContent = school.schoolName;
+                schoolSelect.appendChild(option);
+            });
+        }
+
+        // Call the function to populate the select dropdown
+        populateSchoolSelect();
+
+
+        function sendAddedSchoolDataToServer(){
+            document.getElementById('add-school-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission behavior
+                
+                // Get the input value
+                var inputDetails = document.getElementById('school-name');
+                var schoolDetails = inputDetails.value
+                // console.log(schoolDetails)
+                
+                // Make a POST request using the Fetch API
+                fetch('http://127.0.0.1:5000/handleAdminSchoolPage', {
+                    method: 'POST',
+                    body:schoolDetails
+                    
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('school data not sent to server');
+                    }
+                    return response.json(); // assuming server responds with JSON
+                })
+                .then(data => {
+                    // Handle the response from the server
+                    console.log(data);
+                    
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+                inputDetails.value = ""
+            });
+        }
+        sendAddedSchoolDataToServer()
+
+        function getSelectedSchool(){
+            // this function gets school id for selected school to delet
+            var selectedElement = document.getElementById("school-select")
+            var selectedOption = selectedElement.options[selectedElement.selectedIndex]
+            var schoolId = selectedOption.value
+            console.log(schoolId)
+
+            fetch("http://127.0.0.1:5000/handleAdminSchoolDeletion",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({"schoolId":schoolId})
+            })
+                .then(response =>{
+                    if (!response.ok){
+                        throw new Error("api failed to send school id")
+                    }
+                })
+                .then(data =>{
+                    // data here
+                    console.log("from server",data)
+                })
+                .catch(error =>{
+                    console.log("send school id faced  error", error)
+                })
+
+        }
+    </script>
+</body>
+</html>

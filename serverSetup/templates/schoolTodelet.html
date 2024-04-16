@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Course - Admin Details</title>
+    <link rel="stylesheet" href="../static/schoolTodelet.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Delete Course</h1>
+        <div class="admin-details">
+            <h2>Admin Details</h2>
+            <p><strong>Name:</strong> <span id="admin-name"></span></p>
+            <p><strong>Email:</strong> <span id="admin-email"></span></p>
+            <p><strong>Role:</strong> <span id="admin-role"></span></p>
+        </div>
+        <div class="confirmation">
+            <p>Are you sure you want to delete this school?</p>
+            <button id="delete-btn">Delete</button>
+            <button id="cancel-btn">Cancel</button>
+        </div>
+    </div>
+    <script >
+        // Assume you have admin details available from the server
+var adminDetails = {
+    name: "John Doe",
+    email: "john@example.com",
+    role: "Administrator"
+};
+
+// Update admin details in the HTML
+document.getElementById("admin-name").textContent = adminDetails.name;
+document.getElementById("admin-email").textContent = adminDetails.email;
+document.getElementById("admin-role").textContent = adminDetails.role;
+
+// Add event listeners to delete and cancel buttons
+document.getElementById("delete-btn").addEventListener("click", function() {
+    // Code to handle delete operation
+    console.log("Deleting course...");
+});
+
+document.getElementById("cancel-btn").addEventListener("click", function() {
+    // Code to handle cancel operation
+    window.location.href='/adminSchoolPage?'
+    console.log("Canceling delete operation...");
+});
+
+    </script>
+</body>
+</html>
