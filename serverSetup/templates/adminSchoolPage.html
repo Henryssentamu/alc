@@ -143,13 +143,17 @@
             var selectedOption = selectedElement.options[selectedElement.selectedIndex]
             var schoolId = selectedOption.value
             console.log(schoolId)
+            var data_body = {
+                "type": "id",
+                "data":schoolId
+            }
 
             fetch("http://127.0.0.1:5000/handleAdminSchoolDeletion",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
                 },
-                body:JSON.stringify({"schoolId":schoolId})
+                body:JSON.stringify(data_body)
             })
                 .then(response =>{
                     if (!response.ok){

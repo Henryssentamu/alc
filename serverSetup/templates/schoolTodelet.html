@@ -9,12 +9,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>Delete Course</h1>
+        <h1>Delete School</h1>
         <div class="admin-details">
-            <h2>Admin Details</h2>
-            <p><strong>Name:</strong> <span id="admin-name"></span></p>
-            <p><strong>Email:</strong> <span id="admin-email"></span></p>
-            <p><strong>Role:</strong> <span id="admin-role"></span></p>
+            
         </div>
         <div class="confirmation">
             <p>Are you sure you want to delete this school?</p>
@@ -24,28 +21,99 @@
     </div>
     <script >
         // Assume you have admin details available from the server
-var adminDetails = {
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Administrator"
-};
+        async function fetchSchoolData(){
+            return await fetch("http://127.0.0.1:5000/handleAdminSchoolDeletion?type=get_data",{
+                method:"GET",
+                headers:{
+                    "Content-Type": "application/json" 
+                }
+            })
+                .then(response =>{
+                    if (!response.ok){
+                        throw new Error("api failed to send school id")
+                    }
+                    return response.json()
+                })
+                .then(data =>{
+                    // data here
+                    console.log("from server",data)
+                    return data
+                })
+                .catch(error =>{
+                    console.log("send school id faced  error", error)
+                })
+        }
 
-// Update admin details in the HTML
-document.getElementById("admin-name").textContent = adminDetails.name;
-document.getElementById("admin-email").textContent = adminDetails.email;
-document.getElementById("admin-role").textContent = adminDetails.role;
 
-// Add event listeners to delete and cancel buttons
-document.getElementById("delete-btn").addEventListener("click", function() {
-    // Code to handle delete operation
-    console.log("Deleting course...");
-});
+        function triggerDelete(){
+            var data_body = {
+                "type": "delete"
+            }
 
-document.getElementById("cancel-btn").addEventListener("click", function() {
-    // Code to handle cancel operation
-    window.location.href='/adminSchoolPage?'
-    console.log("Canceling delete operation...");
-});
+            fetch("http://127.0.0.1:5000/handleAdminSchoolDeletion",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(data_body)
+            })
+                .then(response =>{
+                    if (!response.ok){
+                        throw new Error("api failed to send school id")
+                    }
+                })
+                .then(data =>{
+                    // data here
+                    console.log("from server",data)
+                })
+                .catch(error =>{
+                    console.log("send school id faced  error", error)
+                })
+            
+        }
+
+        function loadHtml( dataDetails){
+
+            var generatedHtml = `
+                <h2>school Details</h2>
+                <p><strong>School:</strong> <span id="admin-name">${dataDetails[1]}</span></p>
+                <p><strong>Coordinator:</strong> <span id="admin-email"></span>${dataDetails[2]}</p>
+            `
+
+            document.querySelector(".admin-details")
+                .innerHTML = generatedHtml
+            // Add event listeners to delete and cancel buttons
+            document.getElementById("delete-btn").addEventListener("click", function() {
+                triggerDelete()
+                window.location.href='/adminSchoolPage'
+                
+            console.log("Deleting course...");
+            });
+
+            document.getElementById("cancel-btn").addEventListener("click", function() {
+            // Code to handle cancel operation
+            window.location.href='/adminSchoolPage?'
+            console.log("Canceling delete operation...");
+            });
+
+        }
+
+        async function loadEverything(){
+            var schoolData = await fetchSchoolData()
+            schoolData = schoolData["data"]
+            console.log(schoolData)
+            loadHtml(schoolData)
+
+
+        }
+
+        
+
+        loadEverything()
+
+        
+        
+        
 
     </script>
 </body>

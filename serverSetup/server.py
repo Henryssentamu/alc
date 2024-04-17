@@ -1010,12 +1010,50 @@ def showAdminSchoolDetailsToDelet():
 @app.route("/handleAdminSchoolDeletion", methods=["POST","GET"])
 def handleAdminSchoolDeletion():
     if request.method == "POST":
-        data = request.data
-        data = data.decode("utf-8")
-        data = json.loads(data)
-        print(data)
+        type_param = request.json.get("type")
+
+        if type_param == "id":
+            data = request.json.get("data")
+            session["schoolId_to_delet"] = data
+            # print(data)
+        elif type_param == "delete":
+            schoolTodelete = session.get("schoolId_to_delet")
+            with sqlite3.connect("schoolsDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    DELETE FROM
+                        schoolDetails
+                    WHERE
+                        SchoolId == ?
+                               
+                """,(schoolTodelete,))
+
+        
     elif request.method == "GET":
-        Pass
+        type_args = request.args.get("type")
+        # print(type_args)
+        if type_args == "get_data":
+            schoolId = session.get("schoolId_to_delet")
+            # print(schoolId)
+            if schoolId:
+                with sqlite3.connect("schoolsDatabase.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            S.SchoolId, 
+                            S.SchoolName,
+                            C.CoordinatorName
+                        FROM
+                            schoolDetails AS S 
+                        JOIN
+                            SchoolCoordinator AS C ON C.SchoolId == S.SchoolId
+                        WHERE
+                            S.SchoolId == ?  
+                    """,(schoolId,))
+                    data = cursor.fetchall()
+                # print(data)
+                return jsonify({"data":data[0]})
+
     return jsonify({"response":"success"}),200
 
 

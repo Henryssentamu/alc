@@ -1267,7 +1267,7 @@ class SchoolDatabes:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         SchoolId VARCHAR(200),
                         CoordinatorName VARCHAR(300),
-                        FOREIGN KEY(SchoolId) REFERENCES schoolDetails(SchoolId)
+                        FOREIGN KEY(SchoolId) REFERENCES schoolDetails(SchoolId) ON DELETE CASCADE
                         
                     )
                 """)
@@ -1276,7 +1276,7 @@ class SchoolDatabes:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         SchoolId VARCHAR(200),
                         Url TEXT,
-                        FOREIGN KEY(SchoolId) REFERENCES schoolDetails(SchoolId)
+                        FOREIGN KEY(SchoolId) REFERENCES schoolDetails(SchoolId) ON DELETE CASCADE
                     )
                 """)
                 db.commit()
