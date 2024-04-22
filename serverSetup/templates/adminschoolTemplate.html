@@ -50,15 +50,19 @@
         align-items: center;
         justify-content: space-between;
         padding: 10px;
+        
+    }
+    .course:hover{
+        box-shadow: 4px 8px 16px rgba(195, 160, 3, 0.2);
     }
 
-    .course a {
+    .course a{
         text-decoration: none;
         color: #333;
     }
 
     .course a:hover {
-        text-decoration: underline;
+        text-decoration: none;
     }
 
     .add-remove-section {
@@ -97,7 +101,10 @@
 
 <div class="container">
     <div class="box">
-        <h2>School Statistics</h2>
+        <h2 class="boxSch">
+            <!-- to be filled with js  -->
+            
+        </h2>
         <div>Total number of available courses: <span id="totalCourses">0</span></div>
         <div>Total number of students: <span id="numStudents">0</span></div>
     </div>
@@ -123,52 +130,79 @@
 </div>
 
 <script>
-    // Sample data - You can replace this with dynamic data from a backend
-    let courses = [
-        { name: "Mathematics", numStudents: 30 },
-        { name: "Science", numStudents: 25 },
-        { name: "History", numStudents: 20 }
-    ];
+    async  function fetchSchoolname(){
+        return await fetch("http://127.0.0.1:5000/adminschoolTemplate?type=schoolName")
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("api failed to fetch school name")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                // console.log(data)
+                return data
+            })
+            .catch(error =>{
+                console.log("faced error while fetching school name from the server")
+            })
+    }
+
+    async function fetchCourseDetails(){
+        return await fetch("http://127.0.0.1:5000/adminschoolTemplate?type=courseDdetails")
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("faced error whill fetching course details")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                // console.log(data)
+                return data
+            })
+            .catch(error =>{
+                console.log("faced error while fetching course details")
+            })
+    }
+
+    
+
+    
+    async function renderSchoolname(){
+        var school_name = await fetchSchoolname()
+        // console.log("dd",school_name)
+        document.querySelector(".boxSch")
+            .innerHTML = school_name["name"]
+
+    }
+    
+    
 
     // Function to render available courses
-    function renderCourses() {
-        const coursesList = document.getElementById("coursesList");
-        coursesList.innerHTML = "";
-        courses.forEach(course => {
-            const courseContainer = document.createElement("div");
-            courseContainer.classList.add("course-container");
-            courseContainer.addEventListener("click", function() {
-                // Redirect to course page or perform any other action
-                console.log("Redirecting to course page:", course.name);
-            });
-            const courseElement = document.createElement("div");
-            courseElement.classList.add("course");
-            courseElement.innerHTML = `<a href="{{url_for('admincourseInterface')}}">${course.name}</a> <span>${course.numStudents} students</span>`;
-            courseContainer.appendChild(courseElement);
-            coursesList.appendChild(courseContainer);
-        });
+    async function renderCourses() {
+        var courseData = await fetchCourseDetails()
+        let Coursedetails = courseData["data"] 
+        var numberOfSchools = Coursedetails.length
+        console.log(numberOfSchools)
+        var html = ""
+        Coursedetails.forEach(course =>{
+            html  += `
+                <div class= "course">
+                    <a href="{{url_for('admincourseInterface')}}" data-course-id="${course["courseId"]}">
+                        ${course["courseName"]}
+                    </a>    
+                </div>
+            `
+
+        })
+
+        document.querySelector(".course-container")
+            .innerHTML = html
+            document.getElementById("totalCourses")
+                .innerHTML = numberOfSchools
+
     }
 
-    // Function to update school statistics
-    function updateStats() {
-        const numStudents = courses.reduce((acc, course) => acc + course.numStudents, 0);
-        document.getElementById("numStudents").innerText = numStudents;
-        document.getElementById("totalCourses").innerText = courses.length;
-    }
-
-    // Function to add a course
-    function addCourse(courseName) {
-        courses.push({ name: courseName, numStudents: 0 });
-        renderCourses();
-        updateStats();
-    }
-
-    // Function to remove a course
-    function removeCourse(courseName) {
-        courses = courses.filter(course => course.name !== courseName);
-        renderCourses();
-        updateStats();
-    }
+    
 
     // Event listener for add course button
     document.getElementById("addCourseBtn").addEventListener("click", function() {
@@ -200,8 +234,9 @@
     });
 
     // Initial render
+    renderSchoolname()
     renderCourses();
-    updateStats();
+    // updateStats();
 </script>
 
 </body>

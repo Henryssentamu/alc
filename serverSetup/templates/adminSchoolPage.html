@@ -66,7 +66,7 @@
 
             data.forEach((object)=>{
                 html += `<div class="school" data-school-id = ${object["schoolId"]} data-school-coordinator=${object["schoolCoordinator"]}>
-                <a href="${object["url"]}">${object["schoolName"]}</a>
+                <a href="${object["url"]}" onclick="sendSelectedSchoolToNavigateTo(event)">${object["schoolName"]}</a>
                 </div>
                 
                 `
@@ -167,6 +167,38 @@
                 .catch(error =>{
                     console.log("send school id faced  error", error)
                 })
+
+        }
+
+        function sendSelectedSchoolToNavigateTo(event){
+            // Get the parent div element
+            var parentDiv = event.target.parentNode;
+
+            // Get the data attributes from the div
+            var schoolId = parentDiv.getAttribute("data-school-id");
+            var data = {
+                "type":"schoolId",
+                "id":schoolId
+            }
+            fetch("http://127.0.0.1:5000/adminschoolTemplate",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(data)
+            })
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("failed to send clicked school id to server")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                console.log(data)
+            })
+            .catch(error =>{
+                console.log("error while sending school id to server:",error)
+            })
 
         }
     </script>

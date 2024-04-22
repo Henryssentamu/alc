@@ -1027,6 +1027,7 @@ def handleAdminSchoolDeletion():
                         SchoolId == ?
                                
                 """,(schoolTodelete,))
+                db.commit()
 
         
     elif request.method == "GET":
@@ -1059,8 +1060,69 @@ def handleAdminSchoolDeletion():
 
 
 
-@app.route("/adminschoolTemplate")
+@app.route("/adminschoolTemplate", methods = ["POST","GET"])
 def adminschoolTemplate():
+    if request.method == "POST":
+        body = request.json.get("type")
+        if body == "schoolId":
+            id = request.json.get("id")
+            session["school_to_load"] = id
+    elif request.method == "GET":
+        typeAgr = request.args.get("type")
+        schoolId= session["school_to_load"]
+        if schoolId:
+            if typeAgr == "schoolName":
+                try:
+                    with sqlite3.connect("schoolsDatabase.db") as db:
+                        cursor = db.cursor()
+                        cursor.execute("""
+                            SELECT
+                                s.SchoolName
+                            FROM
+                                schoolDetails AS s
+                            WHERE
+                                s.SchoolId == ?
+                                    
+                                
+                        """,(schoolId,))
+                        results1 = cursor.fetchone()
+                    # print(results1[0])
+                    return jsonify({
+                        "name":results1[0]
+                    })
+                except sqlite3.Error as error:
+                    print(f"connection  error on retriving school details:{error}")
+                    return f"connection  error on retriving school details:{error}"
+                except Exception as error:
+                    print(f"Error while retriving school details:{error}")
+                    return f"Error while retriving school details:{error}"
+            elif typeAgr == "courseDdetails":
+                try:
+                    with sqlite3.connect("courseDatabase.db") as db:
+                        cursor = db.cursor()
+                        cursor.execute("""
+                            SELECT
+                                C.courseId,
+                                C.courseName,
+                                S.SchoolId
+                            FROM
+                                courseDetails AS C
+                            JOIN
+                                CourseSchoolIdentity AS S ON S.courseId == C.courseId
+                            WHERE
+                                S.SchoolId == ?      
+                        """,(schoolId,))
+                        details = cursor.fetchall()
+                        data =[{"courseId":dataObj[0],"courseName":dataObj[1]}for dataObj in details]
+                    # print(data)
+                    return jsonify({"data":data})
+                except sqlite3.Error as error:
+                    print(f"sqlite connection error while fetching course details:{error}")
+                    return f"sqlite connection error while fetching course details:{error}"
+                except Exception as error:
+                    print(f"faced error while fetching course details: {error}")
+                    return f"faced error while fetching course details: {error}"
+
     return render_template("adminschoolTemplate.html")
 
 @app.route("/admincourseInterface")
