@@ -276,18 +276,19 @@ class Courses:
                     CREATE TABLE IF NOT EXISTS courseDetails(
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         courseId TEXT PRIMARY KEY,
+                        schoolId VARCHAR(300),
                         courseName VARCHAR(200)
                     )
                 """)
 
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS CourseSchoolIdentity(
-                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        courseId TEXT,
-                        SchoolId VARCHAR(300),
-                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
-                    )
-                """)
+                # cursor.execute("""
+                #     CREATE TABLE IF NOT EXISTS CourseSchoolIdentity(
+                #         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                #         courseId TEXT,
+                #         SchoolId VARCHAR(300),
+                #         FOREIGN KEY(courseId) REFERENCES courseDetails(courseId) ON DELETE CASCADE
+                #     )
+                # """)
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
@@ -296,7 +297,7 @@ class Courses:
                         coursePriceIds TEXT PRIMARY KEY,
                         courseId TEXT,
                         coursePrice INTEGER,
-                        FOREIGN KEY (courseId) REFERENCES courseDetails(courseId)   
+                        FOREIGN KEY (courseId) REFERENCES courseDetails(courseId)  ON DELETE CASCADE 
                     )
                 """)
 
@@ -307,7 +308,7 @@ class Courses:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         courseImageLink TEXT,
                         courseId TEXT,
-                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
+                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId) ON DELETE CASCADE
                     )
                 """)
             with sqlite3.connect("courseDatabase.db") as db:
@@ -317,7 +318,7 @@ class Courses:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         courseId TEXT,
                         courseDiscription TEXT,
-                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
+                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId) ON  DELETE CASCADE
                     )
                 """)
 
@@ -328,7 +329,7 @@ class Courses:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         courseId TEXT,
                         youtubeLink TEXT,
-                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId)
+                        FOREIGN KEY(courseId) REFERENCES courseDetails(courseId) ON DELETE CASCADE
                               
                     )
                 """)
@@ -342,15 +343,16 @@ class Courses:
                 cursor.execute("""
                     INSERT INTO courseDetails(
                         courseID,
+                        schoolId,
                         courseName
-                    ) VALUES(?,?)
-                """,(self.courseObject["courseId"],self.courseObject["courseName"]))
-                cursor.execute("""
-                    INSERT INTO CourseSchoolIdentity(
-                        courseId,
-                        SchoolId
-                    ) VALUES(?,?)
-                """,(self.courseObject["courseId"],self.courseObject["schoolId"]))
+                    ) VALUES(?,?,?)
+                """,(self.courseObject["courseId"], self.courseObject["schoolId"], self.courseObject["courseName"]))
+                # cursor.execute("""
+                #     INSERT INTO CourseSchoolIdentity(
+                #         courseId,
+                #         SchoolId
+                #     ) VALUES(?,?)
+                # """,(self.courseObject["courseId"],self.courseObject["schoolId"]))
                 db.commit()
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()

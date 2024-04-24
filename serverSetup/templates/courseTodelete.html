@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Course - Admin Details</title>
+    <link rel="stylesheet" href="../static/schoolTodelet.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Delete Course</h1>
+        <div class="admin-details">
+            
+        </div>
+        <div class="confirmation">
+            <p>Are you sure you want to delete this Course</p>
+            <button id="delete-btn">Delete</button>
+            <button id="cancel-btn">Cancel</button>
+        </div>
+    </div>
+    <script >
+        // Assume you have admin details available from the server
+        async function sendCourseDeletConfirmation(){
+            return await fetch("http://127.0.0.1:5000/courseTodelete",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({"type":"delete", "body":"yes"})
+            })
+                .then(response =>{
+                    if (!response.ok){
+                        throw new Error("api failed to fetch course details")
+                    }
+                    return response.json()
+                })
+                .then(data =>{
+                    // data here
+                    console.log("from server",data)
+                    return data
+                })
+                .catch(error =>{
+                    console.log("fetch course details faced  error", error)
+                })
+        }
+
+        
+
+        function triggerDelete(){
+            const deletElement = document.getElementById("delete-btn")
+            deletElement.addEventListener("click",()=>{
+                sendCourseDeletConfirmation()
+                window.location.href="/adminschoolTemplate"
+
+            })
+        }
+
+        function concelCourseDeletation(){
+            const concelElement = document.getElementById("cancel-btn")
+
+            concelElement.addEventListener("click",()=>{
+                window.location.href = "/adminschoolTemplate"
+            })
+        }
+
+        triggerDelete()
+        concelCourseDeletation()
+
+
+        
+
+        
+        
+        
+
+    </script>
+</body>
+</html>

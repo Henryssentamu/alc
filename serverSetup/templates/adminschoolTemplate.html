@@ -118,12 +118,14 @@
         <h2>Add or Remove Course</h2>
         <div class="add-remove-section">
             <div class="add-remove-form">
-                <input type="text" id="addCourseNameInput" placeholder="Course Name">
+                {"cId":"v", "sId":"v", "cName":"v", "cPriceId":"v", "cPrice":"v", "Dscrp":"v", "imgLnk":"v", "utubeLnk":"v"}
+                <input type="text" id="addCourseNameInput" placeholder="Copy the formate above">
                 <button id="addCourseBtn">Add Course</button>
             </div>
             <div class="add-remove-form">
-                <input type="text" id="removeCourseNameInput" placeholder="Course Name">
-                <button id="removeCourseBtn">Remove Course</button>
+                {"courseID": "v","schoolId":"v"}
+                <input type="text" id="removeCourseNameInput" placeholder="Copy the formate above">
+                <button id="removeCourseBtn" onclick="sendDetailsfCourseToBeDeleted();window.location.href='/courseTodelete'">Review Details</button>
             </div>
         </div>
     </div>
@@ -205,37 +207,113 @@
     
 
     // Event listener for add course button
-    document.getElementById("addCourseBtn").addEventListener("click", function() {
-        const courseNameInput = document.getElementById("addCourseNameInput");
-        const courseName = courseNameInput.value.trim();
-        if (courseName !== "") {
-            addCourse(courseName);
-            courseNameInput.value = "";
-        } else {
-            alert("Please enter a course name.");
-        }
-    });
+    function sendAddedCourseToServer(){
+        document.getElementById("addCourseBtn").addEventListener("click", function() {
+            const courseNameInput = document.getElementById("addCourseNameInput");
+            const courseDetails = courseNameInput.value.trim();
+            var courseData = {
+                "type":"addCourse",
+                "body":courseDetails
+            }
+            fetch("http://127.0.0.1:5000/adminschoolTemplate",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify(courseData)
+            })
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("faced connection error while sending course details to server")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                console.log(data)
+            })
+            .catch(error =>{
+                console.log("error while sending course details to the server:",error)
+            })
+            
+            courseNameInput.value = ""
+    
+        });
+
+    }
+    
 
     // Event listener for remove course button
-    document.getElementById("removeCourseBtn").addEventListener("click", function() {
+    function sendDetailsfCourseToBeDeleted(){
+        // document.getElementById("removeCourseBtn").addEventListener("click", function() {
+            // const courseNameInput = document.getElementById("removeCourseNameInput");
+            // const courseToDeletDetails = courseNameInput.value.trim();
+            // var courseData = {
+            //     "type":"DeletCourse",
+            //     "Details":courseToDeletDetails
+            // }
+            // fetch("http://127.0.0.1:5000/adminschoolTemplate",{
+            //     method:"POST",
+            //     headers:{
+            //         "Content-Type":"application/json"
+            //     },
+            //     body: JSON.stringify(courseData)
+            // })
+            // .then(response =>{
+            //     if(!response.ok){
+            //         throw new Error("faced connection error while sending course details to server")
+            //     }
+            //     return response.json()
+            // })
+            // .then(data =>{
+            //     console.log(data)
+            // })
+            // .catch(error =>{
+            //     console.log("error while sending course details to the server:",error)
+            // })
+            
+            // courseNameInput.value = ""
+        
+
+        
+        // });
         const courseNameInput = document.getElementById("removeCourseNameInput");
-        const courseName = courseNameInput.value.trim();
-        if (courseName !== "") {
-            const courseExists = courses.some(course => course.name === courseName);
-            if (courseExists) {
-                removeCourse(courseName);
-                courseNameInput.value = "";
-            } else {
-                alert("Course not found.");
+            const courseToDeletDetails = courseNameInput.value.trim();
+            var courseData = {
+                "type":"DeletCourse",
+                "Details":courseToDeletDetails
             }
-        } else {
-            alert("Please enter a course name.");
-        }
-    });
+            fetch("http://127.0.0.1:5000/courseTodelete",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify(courseData)
+            })
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("faced connection error while sending course details to server")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                console.log(data)
+            })
+            .catch(error =>{
+                console.log("error while sending course details to the server:",error)
+            })
+            
+            courseNameInput.value = ""
+
+    }
+
+    
+    
 
     // Initial render
     renderSchoolname()
     renderCourses();
+    sendAddedCourseToServer()
+    // sendDetailsfCourseToBeDeleted()
     // updateStats();
 </script>
 

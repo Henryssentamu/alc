@@ -11,7 +11,7 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import ExamStudentAnswes, Exams, SchoolDatabes, Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
+from databases import ExamStudentAnswes, Exams, Courses, SchoolDatabes, Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
 from createStudentId import CreateStudentId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
@@ -1066,10 +1066,56 @@ def adminschoolTemplate():
         body = request.json.get("type")
         if body == "schoolId":
             id = request.json.get("id")
-            session["school_to_load"] = id
+            print(id)
+            session["schoolToLoad"] = id
+            return jsonify({"status":"ok"})
+        elif body == "addCourse":
+            courseDetails = request.json.get("body")
+            courseDetails = json.loads(courseDetails)
+
+            if courseDetails:
+                try:
+                    courseId = courseDetails["cId"]
+                    schoolId = courseDetails["sId"]
+                    courseName = courseDetails["cName"]
+                    coursePriceId = courseDetails["cPriceId"]
+                    coursePrice = courseDetails["cPrice"]
+                    discription = courseDetails["Dscrp"]
+                    courseImageLink = courseDetails["imgLnk"]
+                    youtubeLink = courseDetails["utubeLnk"]
+                    courseObj = {
+                        "courseId":courseId,
+                        "schoolId": schoolId,
+                        "courseName": courseName,
+                        "coursePriceId":coursePriceId,
+                        "coursePrice":coursePrice,
+                        "discription":discription,
+                        "courseImageLink":courseImageLink,
+                        "youtubeLink":youtubeLink
+
+                    }
+                    # print(courseObj)
+
+                    db = Courses(courseObject= courseObj)
+
+                    # create tables
+                    db.createTables()
+                    # insert into tables
+                    db.insertIntoTables()
+                except Exception as error:
+                    print(f"error whill populating course database:{error}")
+                    return f"error whill populating course database:{error}"
+            return jsonify({"requestStatus":"ok"}),200
+        
+        # elif body == "DeletCourse":
+            # courseData = request.json.get("Details")
+            # courseData = json.loads(courseData)
+            # session["course_to_delete"] = courseData
+            # # print(courseData)
+            # return jsonify({"status":"ok"})
     elif request.method == "GET":
         typeAgr = request.args.get("type")
-        schoolId= session["school_to_load"]
+        schoolId= session["schoolToLoad"]
         if schoolId:
             if typeAgr == "schoolName":
                 try:
@@ -1081,8 +1127,7 @@ def adminschoolTemplate():
                             FROM
                                 schoolDetails AS s
                             WHERE
-                                s.SchoolId == ?
-                                    
+                                s.SchoolId == ?     
                                 
                         """,(schoolId,))
                         results1 = cursor.fetchone()
@@ -1104,13 +1149,11 @@ def adminschoolTemplate():
                             SELECT
                                 C.courseId,
                                 C.courseName,
-                                S.SchoolId
+                                C.SchoolId
                             FROM
                                 courseDetails AS C
-                            JOIN
-                                CourseSchoolIdentity AS S ON S.courseId == C.courseId
                             WHERE
-                                S.SchoolId == ?      
+                                C.SchoolId == ?      
                         """,(schoolId,))
                         details = cursor.fetchall()
                         data =[{"courseId":dataObj[0],"courseName":dataObj[1]}for dataObj in details]
@@ -1124,6 +1167,42 @@ def adminschoolTemplate():
                     return f"faced error while fetching course details: {error}"
 
     return render_template("adminschoolTemplate.html")
+
+@app.route("/courseTodelete",methods = ["GET","POST"])
+def courseTodelete():
+    if request.method == "POST":
+        bodyType = request.json.get("type")
+        if bodyType and bodyType == "DeletCourse":
+            courseData = request.json.get("Details")
+            courseData = json.loads(courseData)
+            session["course_to_delete"] = courseData
+            # print(courseData)
+            return jsonify({"status":"ok"})
+        elif bodyType and bodyType == "delete":
+            data = request.json.get("body")
+            if data and data == "yes":
+                courseTodelete = session.get("course_to_delete")
+                id = courseTodelete["courseID"]
+                # print(courseTodelete["courseID"])
+                try:
+                    with sqlite3.connect("courseDatabase.db") as db:
+                        cursor = db.cursor()
+                        cursor.execute("""
+                            DELETE FROM
+                                courseDetails
+                            WHERE
+                                courseId == ? 
+                        """,(id,))
+
+                except sqlite3.Error as error:
+                    print(f"Connection error course debase:{error}")
+                    return f"Connection error course debase:{error}"
+                except Exception as error:
+                    print(f"error while accessing course debase:{error}")
+                    return f"error while accessing course debase:{error}"
+
+    return render_template("courseTodelete.html")
+
 
 @app.route("/admincourseInterface")
 def admincourseInterface():
