@@ -79,21 +79,17 @@
         border: 1px solid #ccc;
         border-radius: 5px;
     }
+
+    .courseDescription{
+        padding: 10px;
+    }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Course Name</h1>
-
-    <div class="box">
-        <h2>Statistics</h2>
-        <div class="statistics">
-            <p>Total enrolled students: <span id="totalEnrolled">0</span></p>
-            <p>Students finished the course: <span id="finishedCourse">0</span></p>
-            <p>Students dropped out: <span id="droppedOut">0</span></p>
-        </div>
-    </div>
+<div id="setCourseiD" class="container">
+    <h1 class="CourseName">Course Name</h1>
+    <div class="courseDescription"></div>
 
     <div class="box">
         <h2>Add Course Resources</h2>
@@ -104,7 +100,7 @@
                     <option value="cohort2">Cohort 2</option>
                     <option value="cohort3">Cohort 3</option>
                 </select>
-                <input type="text" placeholder="Live Link">
+                <input type="text" placeholder='{"link":"v", "type": "live","topic":"v","instructor":"v","sessionTime":"v","date":"v"}'>
                 <button class="add-btn" onclick="addResource('liveLink')">Add</button>
             </div>
             <div class="dropdown-select" id="recordedLinkInput">
@@ -113,7 +109,7 @@
                     <option value="cohort2">Cohort 2</option>
                     <option value="cohort3">Cohort 3</option>
                 </select>
-                <input type="text" placeholder="Recorded Link">
+                <input type="text" placeholder='{"link":"v", "type": "recorded","topic":"v","instructor":"v","sessionTime":"v","date":"v"}'>
                 <button class="add-btn" onclick="addResource('recordedLink')">Add</button>
             </div>
             <div class="dropdown-select" id="examLinkInput">
@@ -138,28 +134,53 @@
     </div>
 
     <div class="box">
-        <h2>Course Resources</h2>
-        <div class="resources" id="courseResources"></div>
+        <h1>exam section</h1>
+
     </div>
+
+    <div class="box">
+        <h1>course youtube link section</h1>
+
+    </div>
+
+    
 </div>
 
 <script>
-    // Sample data - You can replace this with dynamic data from a backend
-    let enrolledStudents = 0;
-    let finishedCourse = 0;
-    let droppedOut = 0;
-    const resources = {
-        liveLink: [],
-        recordedLink: [],
-        examLink: [],
-        testLink: []
-    };
 
-    // Function to update statistics
-    function updateStatistics() {
-        document.getElementById("totalEnrolled").innerText = enrolledStudents;
-        document.getElementById("finishedCourse").innerText = finishedCourse;
-        document.getElementById("droppedOut").innerText = droppedOut;
+    async function getCourseDEtails(){
+            return await fetch("http://127.0.0.1:5000/admincourseInterface?type=courseDetails")
+                .then(response =>{
+                    if(!response.ok){
+                        throw new Error("api failed to retrive course data from server")
+                    }
+                    return response.json()
+                })
+                .then(data =>{
+                    console.log(data)
+                    return data
+
+                })
+                .catch(error =>{
+                    console.log("error while retriving course data:",error)
+                })
+        }
+
+    
+    // Sample data - You can replace this with dynamic data from a backend
+    
+    
+
+    // Function to render course name
+    async function RenderCourseDetails() {
+        let courseDetail =  await getCourseDEtails()
+        console.log(courseDetail)
+        document.querySelector(".CourseName")
+            .innerHTML = courseDetail["CourseName"]
+        document.querySelector(".courseDescription")
+            .innerHTML = courseDetail["CourseDEscription"]
+        var elemntID = document.getElementById("setCourseiD")
+        elemntID.setAttribute("data-course-id",courseDetail["courseId"])
     }
 
     // Function to add a resource
@@ -167,35 +188,60 @@
         const cohort = document.querySelector(`#${type}Cohort`).value;
         const inputElement = document.querySelector(`#${type}Input input`);
         const link = inputElement.value.trim();
+        const courseIdHtml = document.getElementById("setCourseiD")
+        const courseId = courseIdHtml.getAttribute("data-course-id")
         if (link !== "") {
-            resources[type].push({ cohort, link });
-            renderResources();
+            console.log(link)
+            var dataDetails = JSON.parse(link)
+            console.log(dataDetails)
+            var data = {
+                "link":dataDetails["link"],
+                "linkType": dataDetails["type"],
+                "instructor":dataDetails["instructor"],
+                "topic":dataDetails["topic"],
+                "sessionTime":dataDetails["sessionTime"],
+                "date":dataDetails["date"],
+                "cohort": cohort,
+                "courseId": courseId
+            }
+            var body = {
+                "type":"linkDetails",
+                "data":data
+            }
+            console.log(data)
+            fetch("http://127.0.0.1:5000/admincourseInterface",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(body)
+            })
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("api failed to send send live/recorded links to the server")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                // server response data
+                console.log(data)
+            })
+            .catch(error =>{
+                console.log(error)
+            })
             inputElement.value = "";
         } else {
             alert("Please enter a valid link.");
         }
     }
 
-    // Function to render course resources
-    function renderResources() {
-        const courseResources = document.getElementById("courseResources");
-        courseResources.innerHTML = "";
-        Object.keys(resources).forEach(key => {
-            resources[key].forEach((resource, index) => {
-                const resourceElement = document.createElement("div");
-                resourceElement.classList.add("resource");
-                resourceElement.innerHTML = `
-                    <p>${key.charAt(0).toUpperCase() + key.slice(1)} ${index + 1}:</p>
-                    <p>Cohort: ${resource.cohort}, Link: ${resource.link}</p>
-                `;
-                courseResources.appendChild(resourceElement);
-            });
-        });
-    }
+
+    
 
     // Initial render
-    updateStatistics();
+    RenderCourseDetails();
     renderResources();
+    
 </script>
 
 </body>

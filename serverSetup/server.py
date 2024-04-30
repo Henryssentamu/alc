@@ -107,19 +107,8 @@ class User(UserMixin):
 def load_user(user_id):
     return User(user_id)
 
-""" creating tables for live and recorded sessions """
 
-sessionClasses = LiveSessions()
-sessionClasses.creatTables()
-# note data this call is for demo, the insertintorecorded function should be Called 
-# in the admin dashboard in the route where addmin enters recorded details
-# # # therefore it should be removed from here after testing
-# sessionClasses.insertIntorecordedLinksTable("https/24453dsd.com","12/12/2024","HTML CLASS","TagS","prod_PcWpcg8596849j")
-# sessionClasses.insertIntoliveSessionsTable("23/23/2023","2:30pm - 3:30pm","prod_PcWpcg8596849j","https/er34t343.com","Dr Tom","mathematics of Ai")
 
-"""
-    demo  exam data
-"""
 # creation on exam database and insertation but this should be done on admins route when created
 
 questions = [
@@ -741,13 +730,13 @@ def handleRecordedLinks():
         
     if request.method == "POST":
         pass
-        # data = request.json
-        # session["course_id_studentPortal"] = data["courseId"]
-        # print("recieved it :",data)
+        data = request.json
+        session["course_id_studentPortal"] = data["courseId"]
+        print("recieved it :",data)
         """ handle post requests from the admin dashboard ie populating the recorded table"""
     elif  request.method == "GET":
         course_id = session.get("course_id_studentPortal")
-        # print(f"check this id:{course_id}")
+        print(f"check this id:{course_id}")
         with sqlite3.connect("liveSessionLinks.db") as db:
             cursor = db.cursor()
             cursor.execute("""
@@ -1066,7 +1055,7 @@ def adminschoolTemplate():
         body = request.json.get("type")
         if body == "schoolId":
             id = request.json.get("id")
-            print(id)
+            # print(f"clicked on course {id}")
             session["schoolToLoad"] = id
             return jsonify({"status":"ok"})
         elif body == "addCourse":
@@ -1204,8 +1193,62 @@ def courseTodelete():
     return render_template("courseTodelete.html")
 
 
-@app.route("/admincourseInterface")
+@app.route("/admincourseInterface", methods =["GET","POST"])
 def admincourseInterface():
+    if request.method == "POST":
+        requestType = request.json.get("type")
+        if requestType == "courseId":
+            CourseId = request.json.get("body")
+            print(f" stored {CourseId}")
+            if CourseId:
+                session["adminAccessedCourse"] = CourseId
+                return jsonify({"status":"course id recieved"})
+            
+        elif requestType == "linkDetails":
+            data = request.json.get("data")
+            if data:
+                "live sesstion class call"
+                live_sessionObject = LiveSessions()
+                live_sessionObject.creatTables()
+                linkType = data["linkType"]
+                if linkType == "live":
+                    "populate live session data base"
+                    live_sessionObject.insertIntoliveSessionsTable(dataObject=data)
+                    return jsonify({"status":"link data recieved"})
+                elif linkType == "recorded":
+                    "populate recorded session data base"
+                    live_sessionObject.insertIntorecordedLinksTable(dataObject=data)
+                    return jsonify({"status":"link data recieved"})
+    else:
+        getRequestType = request.args.get("type")
+        if getRequestType == "courseDetails":
+            courseId = session.get("adminAccessedCourse")
+            if courseId:
+                try:
+                    with sqlite3.connect("courseDatabase.db") as db:
+                        cursor = db.cursor()
+                        cursor.execute("""
+                            SELECT
+                                C.courseName,D.courseDiscription
+                            FROM
+                                courseDetails AS C
+                            JOIN
+                                courseDiscription AS D ON D.courseId == C.courseId
+                            WHERE
+                                C.courseId == ?      
+                        """,(courseId,))
+                        data = cursor.fetchall()
+                        formated = data[0]
+                    return jsonify({"CourseName":formated[0],"CourseDEscription":formated[1],"courseId":courseId})
+
+                except sqlite3.Error as error:
+                    print(error)
+                    return f"connection error while retriving course Details: {error}"
+                except Exception as error:
+                    print(error)
+                    return f"error while retriving course Details: {error}"
+            
+        
     return render_template("admincourseInterface.html")
 
 

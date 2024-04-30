@@ -506,9 +506,8 @@ class LiveSessions:
                         CourseId TEXT,
                         link TEXT,
                         InstructorName VARCHAR(200),
-                        Topic
-                        
-                             
+                        Topic TEXT,
+                        Cohort VARCHAR(200)       
                     )
                 """)
             with sqlite3.connect("liveSessionLinks.db") as db:
@@ -521,14 +520,22 @@ class LiveSessions:
                         Link TEXT,
                         SessionTitle TEXT,
                         TopicCovered TEXT,
-                        CourseId
+                        CourseId TEXT,
+                        Cohort VARCHAR(200)
                     )
                 """)
         except sqlite3.Error as error:
             print(f"connection error:{error}")
         except Exception as error:
             print(f"error occured in creating liveseesion database:{error}")
-    def insertIntoliveSessionsTable(self,Date,SessionTime,CourseID,link, InstructorName,Topic):
+    def insertIntoliveSessionsTable(self, dataObject):
+        link =  dataObject["link"]
+        SessionTime = dataObject["sessionTime"]
+        CourseID = dataObject["courseId"]
+        InstructorName = dataObject["instructor"]
+        Topic = dataObject["topic"]
+        cohort = dataObject["cohort"]
+        Date = dataObject["date"]
         try:
             with sqlite3.connect("liveSessionLinks.db") as db:
                 cursor = db.cursor()
@@ -539,17 +546,25 @@ class LiveSessions:
                         CourseId,
                         link,
                         InstructorName,
-                        Topic
-                    ) VALUES (?,?,?,?,?,?)
-                """,(Date,SessionTime,CourseID,link, InstructorName,Topic))
+                        Topic,
+                        Cohort
+                               
+                    ) VALUES (?,?,?,?,?,?,?)
+                """,(Date,SessionTime,CourseID,link, InstructorName,Topic,cohort))
                 db.commit()
         except sqlite3.Error as error:
-            print(f"faced error while creating recorded link table:{error}")
+            print(f" faced error while inserting into live link table:{error}")
         except Exception as error:
-            print(f"error occured while insertint into liveSessions table :{error}")
+            print(f"error occured while insert into liveSessions table :{error}")
 
 
-    def insertIntorecordedLinksTable(self,link,DateOfRecording,SessionTitle,TopicCovered, CourseId):
+    def insertIntorecordedLinksTable(self,dataObject):
+        link =  dataObject["link"]
+        CourseId = dataObject["courseId"]
+        SessionTitle = dataObject["topic"]
+        TopicCovered = dataObject["topic"]
+        cohort = dataObject["cohort"]
+        DateOfRecording = dataObject["date"]
         try:
             with sqlite3.connect("liveSessionLinks.db") as db:
                 cursor = db.cursor()
@@ -559,9 +574,10 @@ class LiveSessions:
                         Link,
                         SessionTitle,
                         TopicCovered,
-                        CourseId
-                    ) VALUES (?,?,?,?,?)
-                """,(DateOfRecording,link,SessionTitle,TopicCovered,CourseId))
+                        CourseId,
+                        Cohort
+                    ) VALUES (?,?,?,?,?,?)
+                """,(DateOfRecording,link,SessionTitle,TopicCovered,CourseId,cohort))
                 db.commit()
         except sqlite3.Error as error:
             print(f"faced error while inserting into recorded link table:{error}")

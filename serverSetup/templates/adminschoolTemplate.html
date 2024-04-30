@@ -186,10 +186,10 @@
         var numberOfSchools = Coursedetails.length
         console.log(numberOfSchools)
         var html = ""
-        Coursedetails.forEach(course =>{
+        Coursedetails.forEach((course, index) =>{
             html  += `
                 <div class= "course">
-                    <a href="{{url_for('admincourseInterface')}}" data-course-id="${course["courseId"]}">
+                    <a id="${index}" href="{{url_for('admincourseInterface')}}" data-course-id="${course["courseId"]}" onclick="getClickOnCourseId('${index}')">
                         ${course["courseName"]}
                     </a>    
                 </div>
@@ -306,6 +306,32 @@
 
     }
 
+    function getClickOnCourseId(index){
+        var HtmlElement = document.getElementById(`${index}`)
+        var Course_id = HtmlElement.dataset.courseId
+            var data = {
+                "type":"courseId",
+                "body":Course_id
+            }
+            fetch("http://127.0.0.1:5000/admincourseInterface",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(request =>{
+                throw new Error("failed to send course id to course route")
+            })
+            .then(data =>{
+                var returnedResponse = data
+                console.log(returnedResponse)
+            })
+            .catch(error =>{
+                console.log(error)
+            })
+    }
+
     
     
 
@@ -313,6 +339,7 @@
     renderSchoolname()
     renderCourses();
     sendAddedCourseToServer()
+    
     // sendDetailsfCourseToBeDeleted()
     // updateStats();
 </script>
