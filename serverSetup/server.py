@@ -12,7 +12,7 @@ import pycountry
 import os
 import sqlite3
 from databases import ExamStudentAnswes, Exams, Courses, SchoolDatabes, Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
-from createStudentId import CreateStudentId
+from createStudentId import CreatePaperIds, CreateStudentId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,ALC_SECURITY
@@ -49,7 +49,7 @@ except Exception as error:
 def getCountries():
     return [(country.alpha_2, country.name)for country in pycountry.countries]
 available_schools = [("datascience","School of Data Science"),("softwareEngineering", "School of Software Engineering")]
-intake_list = [("January","January in-Take"),("Apirl","April in-Take"),("August","August in-Take")]
+intake_list = [("cohort1","cohort1 (January-intake)"),("cohort2","cohort2 (Apirl in-tak)"),("cohort3","cohort3 (August in-take)"),("cohort4","cohort4 (December in-tak)")]
 
 
 class RegistrationFormStructure(FlaskForm):
@@ -62,7 +62,7 @@ class RegistrationFormStructure(FlaskForm):
     password = PasswordField(label="Enter  Password",validators=[DataRequired(message="password required")])
     comfirmPassword = PasswordField(label="Comfirm  Password",validators=[DataRequired(message="password required")])
     schools = SelectField(label="Select School",choices= available_schools)
-    intake = SelectField(label="Choose the in-take", choices=intake_list)
+    intake = SelectField(label="Choose in-take cohort", choices=intake_list)
     submit = SubmitField(label= "Submit")
 
 class StudentLoginForm(FlaskForm):
@@ -170,14 +170,7 @@ testQuestions = [
       
     ]
 
-# exam = Exams(questions,"prod_PcWpcg8596849j","dasci123")
-# exam.createTables()
-# exam.insertIntoTable()
 
-"""teting the test class """
-# Testobj = Test(testQuestions,"prod_PcWpcg8596849j","test319")
-# Testobj.createTables()
-# Testobj.insertIntoTable()
 
 
 
@@ -668,11 +661,13 @@ def getBioDataAndCourseDetails():
 def handleLiveSessionLinks():
     if request.method == "GET":
         try:
-            course_id = session.get("course_id_studentPortal")
+            courseDetails = session["courseDetails_loadedOnStudentPortal"]
+            course_id = courseDetails["courseId"]
+            cohort = courseDetails["cohort"]
+
             if course_id is None:
                 # No course ID found in session
                 return jsonify({"error": "Course ID not found in session"})
-            # print(f"itttt:{course_id}")
             with sqlite3.connect("liveSessionLinks.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
@@ -685,10 +680,10 @@ def handleLiveSessionLinks():
                     FROM
                         liveSessions
                     WHERE
-                        CourseId == ?
+                        CourseId == ? and Cohort == ?
                     ORDER BY link DESC
                     LIMIT 1
-                """,(course_id,))
+                """,(course_id,cohort))
                 data = cursor.fetchone()
 
             if data:
@@ -711,32 +706,36 @@ def handleLiveSessionLinks():
     return jsonify({"error": "Unsupported request method on handle live link route"})
 
 
-@app.route("/recieveLoadedCourseIdOnStudentPortal", methods= ["post"])
-def recieveLoadedCourseIdOnStudentPortal():
-    try:
-        if request.method == "POST":
-            data = request.json
-            
-            session["course_id_studentPortal"] = data["courseId"]
-            # print(f"the real one :{data}")
-    except Exception as error:
-        return f"api failed to fecth course i on the student portal :{error}"
-    return jsonify({"api satus":"recieveLoadedCourseIdOnStudentPortal failed"})
+# @app.route("/recieveLoadedCourseIdOnStudentPortal", methods= ["post"])
+# def recieveLoadedCourseIdOnStudentPortal():
+#     try:
+#         if request.method == "POST":
+#             data = request.json
+#             # print(data)
+#             session["cohort"] = data["cohort"]
+#             session["course_id_studentPortal"] = data["courseId"]
+#             # print(f"the real one :{data}")
+#     except Exception as error:
+#         return f"api failed to fecth course i on the student portal :{error}"
+#     return jsonify({"api satus":"recieveLoadedCourseIdOnStudentPortal failed"})
 
 
 @app.route("/handleRecordedLinks", methods=["POST","GET"])
 def handleRecordedLinks():
-        
-        
-    if request.method == "POST":
-        pass
-        data = request.json
-        session["course_id_studentPortal"] = data["courseId"]
-        print("recieved it :",data)
-        """ handle post requests from the admin dashboard ie populating the recorded table"""
-    elif  request.method == "GET":
-        course_id = session.get("course_id_studentPortal")
-        print(f"check this id:{course_id}")
+
+    
+         
+    # if request.method == "POST":
+    #     pass
+    #     data = request.json
+    #     session["course_id_studentPorta"] = data["courseId"]
+    #     # print("recieved it :",data)
+    #     """ handle post requests from the admin dashboard ie populating the recorded table"""
+    if  request.method == "GET":
+        courseDetails = session["courseDetails_loadedOnStudentPortal"]
+        course_id = courseDetails["courseId"]
+        cohort = courseDetails["cohort"]
+
         with sqlite3.connect("liveSessionLinks.db") as db:
             cursor = db.cursor()
             cursor.execute("""
@@ -749,10 +748,9 @@ def handleRecordedLinks():
                 FROM
                     recordedLinks
                 WHERE
-                    CourseId == ?
-            """,(course_id ,))
+                    CourseId == ? AND Cohort==?
+            """,(course_id,cohort))
             data = cursor.fetchall()
-            # print(f"check this out:{data}")
         if data:
             sortedData = [{"Date": item[0], "Link":item[1],"SessionTitle":item[2],"topicCovered":item[3]} for item in data]
 
@@ -765,11 +763,12 @@ def handleRecordedLinks():
 def handleOnlineTests():
     if request.method == "GET":
         studentId = session.get("logged_student_id")
-        # print(f"student to do the paper:{studentId}")
         try:
-            courseId = session.get("course_id_studentPortal")
-            # print(f"cid:{courseId}")
+            courseDetails = session["courseDetails_loadedOnStudentPortal"]
+            courseId = courseDetails["courseId"]
+            cohort = courseDetails["cohort"]
             if courseId:
+                # print(courseId)
                 with sqlite3.connect("testDataBase.db") as db:
                     cursor = db.cursor()
                     cursor.execute("""
@@ -781,8 +780,8 @@ def handleOnlineTests():
                             options AS o ON o.CourseId == q.CourseId AND o.TestId == q.TestId
     
                         WHERE
-                            q.CourseId == ?
-                    """, (courseId,))
+                            q.CourseId == ? AND CohortId == ?
+                    """, (courseId,cohort))
                     data = cursor.fetchall()
                 if data:
                     # print(data)
@@ -805,7 +804,7 @@ def handleOnlineTests():
             return f"session in handleonlineTest route failed {error}"
     else:
         Results = request.json
-        print(f"test answers  wano :{Results}")
+        # print(f"test answers  wano :{Results}")
         try:
             testResults = TestStudentAnswes(Results)
             testResults.createTable()
@@ -822,10 +821,11 @@ def handleOnlineTests():
 def handleOnlineExams():
     if request.method == "GET":
         studentId = session.get("logged_student_id")
-        # print(f"student to do the paper:{studentId}")
         try:
-            courseId = session.get("course_id_studentPortal")
-            # print(f"cid:{courseId}")
+            courseDetails = session["courseDetails_loadedOnStudentPortal"]
+            courseId = courseDetails["courseId"]
+            cohort = courseDetails["cohort"]
+
             if courseId:
                 with sqlite3.connect("examDataBase.db") as db:
                     cursor = db.cursor()
@@ -838,8 +838,8 @@ def handleOnlineExams():
                             options AS o ON o.CourseId == q.CourseId AND o.ExamId == q.ExamId
     
                         WHERE
-                            q.CourseId == ?
-                    """, (courseId,))
+                            q.CourseId == ? AND Cohort == ?
+                    """, (courseId, cohort))
                     data = cursor.fetchall()
                 if data:
                     # print(data)
@@ -871,15 +871,22 @@ def handleOnlineExams():
 
 
 
-@app.route("/loadPaidcourseOnstudentPortal")
+@app.route("/loadPaidcourseOnstudentPortal", methods=["POST","GET"])
 def loadPaidCourseONPortal():
+    if request.method == "POST":
+        requestType = request.json.get("type")
+        if requestType == "student-paid-course":
+            data = request.json.get("data")            
+            session["courseId_loadedOnStudentPortal"] = data["courseId"]
+            session["courseDetails_loadedOnStudentPortal"] = data
+
 
     return render_template("paidcourseOnportal.html")
 
 @app.route("/handleCourseYouTubeLink", methods = ["GET","POST"])
 def handleCourseYouTubeLink():
     if request.method == "GET":
-        courseId = session.get("course_id_studentPortal")
+        courseId = session.get("courseId_loadedOnStudentPortal")
         try:
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
@@ -1199,10 +1206,11 @@ def admincourseInterface():
         requestType = request.json.get("type")
         if requestType == "courseId":
             CourseId = request.json.get("body")
-            print(f" stored {CourseId}")
+            # print(f" stored {CourseId}")
             if CourseId:
                 session["adminAccessedCourse"] = CourseId
                 return jsonify({"status":"course id recieved"})
+
             
         elif requestType == "linkDetails":
             data = request.json.get("data")
@@ -1219,6 +1227,48 @@ def admincourseInterface():
                     "populate recorded session data base"
                     live_sessionObject.insertIntorecordedLinksTable(dataObject=data)
                     return jsonify({"status":"link data recieved"})
+        elif requestType == "questions":
+            data = request.json.get("data")
+            if data:
+                questionType = data["questionType"]
+                if questionType == "exams":
+                    """populate exam data base here"""
+                    courseID = data["courseId"]
+                    Examcohort = data["cohort"]
+                    time = data["time"]
+                    examQuestionObject = data["questionObject"]
+                    examQuestionObject = json.loads(examQuestionObject)                    
+
+                    paperIds = CreatePaperIds(courseId=courseID,cohort=Examcohort)
+                    examID = paperIds.examId()
+                    # print(examID)
+                    # print(courseID)
+                    # print(type(time))
+                    # print(examQuestionObject)
+
+                    exam = Exams(questionObject=examQuestionObject,courseId=courseID,examId=examID,cohort=Examcohort,duration=time)
+                    exam.createTables()
+                    exam.insertIntoTable()
+                    
+                else:
+                    """populate test database here"""
+                    _courseID = data["courseId"]
+                    Testcohort = data["cohort"]
+                    Testtime = data["time"]
+                    questionObject = data["questionObject"]
+                    questionObject = json.loads(questionObject)
+
+                    paperIds = CreatePaperIds(courseId= _courseID, cohort=Testcohort)
+                    testId = paperIds.testId()
+                    # print(testId)
+
+                    """teting the test class """
+                    Testobj = Test(questionObject=questionObject ,courseId=_courseID,testId=testId,cohort=Testcohort,duration=Testtime)
+                    Testobj.createTables()
+                    Testobj.insertIntoTable()
+                   
+                return jsonify({"response Status":"question recieved"})
+
     else:
         getRequestType = request.args.get("type")
         if getRequestType == "courseDetails":

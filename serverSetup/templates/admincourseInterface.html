@@ -38,7 +38,7 @@
 
     .resource-form input[type="text"] {
         width: calc(100% - 100px);
-        padding: 8px;
+        padding: 18px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -50,14 +50,14 @@
     }
 
     .dropdown-select select {
-        padding: 8px;
+        padding: 18px;
         margin-right: 10px;
         border: 1px solid #ccc;
         border-radius: 5px;
     }
 
     .add-btn {
-        padding: 8px 20px;
+        padding: 18px 20px;
         background-color: #4CAF50;
         color: white;
         border: none;
@@ -83,6 +83,58 @@
     .courseDescription{
         padding: 10px;
     }
+
+    /* test exam section css */
+    .examtestSection{
+        align-items: center;
+        display: flex;
+    }
+    .title_section{
+        
+    }
+    .input-section{
+        width: calc(100% - 100px);
+        padding: 18px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .selections{
+        padding: 18px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .submitQuestions{
+        padding: 18px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+    }
+
+    .time{
+        width: 135px;
+        padding: 18px;
+        margin-right: 10px;
+        margin-left: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .courseRecourceButton{
+        border: none;
+        padding: 20px;
+        background-color: transparent;
+        width: inherit;
+        cursor: pointer;
+        margin-left: 200px;
+        font-size: x-large;
+    }
+   
 </style>
 </head>
 <body>
@@ -92,7 +144,7 @@
     <div class="courseDescription"></div>
 
     <div class="box">
-        <h2>Add Course Resources</h2>
+        <h2>Live & Recorded class section </section></h2>
         <div class="resource-form">
             <div class="dropdown-select" id="liveLinkInput">
                 <select id="liveLinkCohort">
@@ -112,36 +164,47 @@
                 <input type="text" placeholder='{"link":"v", "type": "recorded","topic":"v","instructor":"v","sessionTime":"v","date":"v"}'>
                 <button class="add-btn" onclick="addResource('recordedLink')">Add</button>
             </div>
-            <div class="dropdown-select" id="examLinkInput">
-                <select id="examLinkCohort">
-                    <option value="cohort1">Cohort 1</option>
-                    <option value="cohort2">Cohort 2</option>
-                    <option value="cohort3">Cohort 3</option>
-                </select>
-                <input type="text" placeholder="Exam Link">
-                <button class="add-btn" onclick="addResource('examLink')">Add</button>
-            </div>
-            <div class="dropdown-select" id="testLinkInput">
-                <select id="testLinkCohort">
-                    <option value="cohort1">Cohort 1</option>
-                    <option value="cohort2">Cohort 2</option>
-                    <option value="cohort3">Cohort 3</option>
-                </select>
-                <input type="text" placeholder="Test Link">
-                <button class="add-btn" onclick="addResource('testLink')">Add</button>
-            </div>
+            
         </div>
     </div>
 
     <div class="box">
-        <h1>exam section</h1>
+        <h1>exam & test setting section</h1>
+        <div class="title_section"> Copy formate: [
+            {
+                "question": "v",
+                "options": [
+                  "1",
+                  "2",
+                  "etc"
+                ],
+                "correct_answer": "v"
+              }]</div>
+        <div class="examtestSection">
+            <select  id="examsCohort" class="selections">
+                <option value="cohort1">Cohort 1</option>
+                <option value="cohort2">Cohort 2</option>
+                <option value="cohort3">Cohort 3</option>
+            </select>
+            <input id="exams" class="input-section" type="text" placeholder="Exam object">
+            <input class="time timeexams" placeholder="Time in minutes.Eg 90">
+            <button  class="submitQuestions" onclick="getQuestions('exams')">submit </button>
+        </div>
+
+        <div class="examtestSection">
+            <select id="testsCohort" class="selections">
+                <option value="cohort1">Cohort 1</option>
+                <option value="cohort2">Cohort 2</option>
+                <option value="cohort3">Cohort 3</option>
+            </select>
+            <input id="tests" class="input-section" type="text" placeholder="Test object">
+            <input class="time timetests" placeholder="Time in minutes.Eg 90">
+            <button class="submitQuestions" onclick="getQuestions('tests')">submit </button>
+        </div>
+        
 
     </div>
 
-    <div class="box">
-        <h1>course youtube link section</h1>
-
-    </div>
 
     
 </div>
@@ -191,9 +254,9 @@
         const courseIdHtml = document.getElementById("setCourseiD")
         const courseId = courseIdHtml.getAttribute("data-course-id")
         if (link !== "") {
-            console.log(link)
+            // console.log(link)
             var dataDetails = JSON.parse(link)
-            console.log(dataDetails)
+            // console.log(dataDetails)
             var data = {
                 "link":dataDetails["link"],
                 "linkType": dataDetails["type"],
@@ -233,6 +296,53 @@
         } else {
             alert("Please enter a valid link.");
         }
+    }
+
+    function getQuestions(parseId){
+        // parseId is the id on input element
+
+        const question = document.getElementById(`${parseId}`).value
+
+        const cohort = document.getElementById(`${parseId}Cohort`).value
+        // var formatedQuestion = JSON.parse(question)
+        const courseIdHtml = document.getElementById("setCourseiD")
+        const courseId = courseIdHtml.getAttribute("data-course-id")
+        const time = document.querySelector(`.time${parseId}`).value
+        console.log(time)
+        var formatedData = {
+            "questionType":parseId,
+            "courseId":courseId,
+            "cohort": cohort,
+            "questionObject": question,
+            "time":time
+
+        }
+        var data = {
+            "type": "questions",
+            "data": formatedData
+        }
+
+
+        fetch("http://127.0.0.1:5000/admincourseInterface",{
+            method:"POST",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if(!response.ok){
+                throw new Error("api failed to send question details to server")
+            }
+            return response.json()
+        })
+        .then(data =>{
+            console.log( "response from sever ",data)
+        })
+        .catch(error =>{
+            console.log(error)
+        })
+
     }
 
 

@@ -1,4 +1,5 @@
 
+import json
 import sqlite3
 class StudentDatabases:
     def __init__(self, studentId, firstname,sirName, gender,phoneNumber,email, school,country,password, intake) -> None:
@@ -587,10 +588,14 @@ class LiveSessions:
 
 
 class Exams:
-    def __init__(self, questionObject,courseId, examId) -> None:
-        self.questionObject = questionObject
+    def __init__(self, questionObject,courseId, examId, cohort,duration) -> None:
+        self.questionObject =  questionObject
         self.courseId = courseId
         self.examId = examId
+        self.duration = duration
+        self.cohort = cohort
+        print(type(self.questionObject ))
+        
     def createTables(self):
         try:
             with sqlite3.connect("examDataBase.db") as db:
@@ -601,7 +606,9 @@ class Exams:
                         QuestionsId INTEGER PRIMARY KEY AUTOINCREMENT,
                         ExamId VARCHAR(200),
                         CourseId TEXT,
-                        Question TEXT       
+                        Question TEXT,
+                        Cohort VARCHAR(500),
+                        Duration VARCHAR(300)      
                     )
                         
                 """)
@@ -643,7 +650,9 @@ class Exams:
             return f"exam data base error:{error}"
     
     def insertIntoTable(self):
+        
         for object in self.questionObject:
+            # print("e",object)
             try:
                 with sqlite3.connect("examDataBase.db") as db:
                     cursor = db.cursor()
@@ -651,10 +660,12 @@ class Exams:
                         INSERT INTO  questionDetails(
                             ExamId,
                             CourseId,
-                            Question         
-                        ) VALUES (?,?,?)
+                            Question,
+                            Cohort,
+                            Duration         
+                        ) VALUES (?,?,?,?,?)
                             
-                    """,(self.examId,self.courseId, object["question"]))
+                    """,(self.examId,self.courseId, object["question"],self.cohort,self.duration))
                     StringOptions = ",".join(object["options"])
                     cursor.execute("""
                         INSERT INTO  options(
@@ -772,10 +783,12 @@ class ExamStudentAnswes:
 
 
 class Test:
-    def __init__(self, questionObject,courseId, testId) -> None:
+    def __init__(self, questionObject,courseId, testId, cohort,duration) -> None:
         self.questionObject = questionObject
         self.courseId = courseId
         self.testId = testId
+        self.cohort = cohort
+        self.duration = duration
     def createTables(self):
         try:
             with sqlite3.connect("testDataBase.db") as db:
@@ -786,7 +799,9 @@ class Test:
                         QuestionsId INTEGER PRIMARY KEY AUTOINCREMENT,
                         TestId VARCHAR(200),
                         CourseId TEXT,
-                        Question TEXT       
+                        Question TEXT,
+                        CohortId TEXT,
+                        Duration VARCHAR(300)    
                     )
                         
                 """)
@@ -837,10 +852,12 @@ class Test:
                         INSERT INTO  questionDetails(
                             TestId,
                             CourseId,
-                            Question         
-                        ) VALUES (?,?,?)
+                            Question,
+                            CohortId,
+                            Duration       
+                        ) VALUES (?,?,?,?,?)
                             
-                    """,(self.testId,self.courseId, object["question"]))
+                    """,(self.testId,self.courseId, object["question"],self.cohort, self.duration))
                     StringOptions = ",".join(object["options"])
                     cursor.execute("""
                         INSERT INTO  options(

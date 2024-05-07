@@ -20,23 +20,24 @@
 
 async function generateHtml(){
     var  jsonData = await fetchStudentDetailsData()
-    // console.log("ssys",jsonData)
+    console.log("ssys",jsonData)
 
     var firstName = jsonData["firstName"]
     var secondName = jsonData["lastName"]
     var courseDetails =  jsonData["courseDetails"]
+    var cohort = jsonData["intake"]
     var fullName = firstName + " ." + secondName[0]
     var generatedHtml = " "
     document.querySelector(".logedInstudentName")
         .innerHTML = fullName
     if(courseDetails.length > 0){
-        console.log(courseDetails)
+        // console.log(courseDetails)
         courseDetails.forEach( (object, index)=> {
-            console.log(object['courseID'])
+            // console.log(object['courseID'])
             generatedHtml += `
                 <section class="generated-course">
                     
-                    <a id="${index}" onclick="activateEventListner('${index}');" class="portalclass"  data-course-id="${object['courseID']}" href="http://127.0.0.1:5000/loadPaidcourseOnstudentPortal">
+                    <a id="${index}" data-cohort="${cohort}" onclick="activateEventListner('${index}');" class="portalclass"  data-course-id="${object['courseID']}" href="http://127.0.0.1:5000/loadPaidcourseOnstudentPortal">
                         <div class="course-image-section">
                         <img class="course-image" src="${object['imageLink']}">
                         </div>
@@ -76,16 +77,21 @@ function activateEventListner(id){
     
     // var i_d = this.getAttribute('data-course-id')
     var i_d = idElement.getAttribute('data-course-id')
+    var cohort = idElement.getAttribute('data-cohort')
 
             
             // console.log(i_d)
-            fetch("http://127.0.0.1:5000/recieveLoadedCourseIdOnStudentPortal", {
+            fetch("http://127.0.0.1:5000//loadPaidcourseOnstudentPortal", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "courseId": i_d
+                    "type":"student-paid-course",
+                    "data":{ 
+                        "courseId": i_d,
+                        "cohort":cohort
+                    }
                 })
             })
             .then(response => response.json())

@@ -28,12 +28,12 @@ courseObj = {
 
 }
 
-db = Courses(courseObject= courseObj)
+# db = Courses(courseObject= courseObj)
 
 # create tables
-db.createTables()
+# db.createTables()
 # insert into tables
-db.insertIntoTables()
+# db.insertIntoTables()
 
 
 """ note that the url used here referes to the route, and it is the same for all courses"""
