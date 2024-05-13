@@ -10,7 +10,7 @@
 <body>
     <header class=" form-header">
         <a class="back-tohome" href="{{url_for('homePage')}}">
-            ALX
+            ALC
         </a>
     </header>
 
@@ -40,30 +40,50 @@
             </div>
 
             <div class="divission-two">
-                <label class="form-labels">{{form.investment_amount.label}}</label>
-                {{form.investment_amount(class="form-input")}}
-
                 <label class="form-labels">{{form.type_of_partnernship.label}} </label>
-                {{form.type_of_partnernship(class="form-input")}}
+                {{form.type_of_partnernship(class="form-input partnershipType", onclick="accessPartnershipType()")}}
+                <div class="other-details">
+                   
 
-                <label class="form-labels">{{form.purpose_of_partnership.label}}</label>
-                {{form.purpose_of_partnership(class="form-input")}}
+                    
 
-                <label class="form-labels">{{form.expection_from_partnership.label}}</label>
-                {{form.expection_from_partnership(class="form-input")}}
+                </div>
 
-                <label class="form-labels">{{form.more_info.label}}</label>
-                {{form.more_info(class="form-input")}}
+                
 
                 {{form.submit(class="form-submit")}}
             </div>
         </div>
-
-        
-        
-        
-
-
     </form>
+
+    <script>
+
+        function accessPartnershipType() {
+            var chosenTypeOfPartnership = document.querySelector(".partnershipType").value;
+            if (chosenTypeOfPartnership === "grant") {
+                // Set the HTML content of .other-details div
+                document.querySelector(".other-details").innerHTML = `
+                    <label class="form-labels">{{form.investment_amount.label}}</label>
+                    {{form.investment_amount(class="form-input")}}
+                    
+                    <label class="form-labels">{{form.purpose_of_partnership.label}}</label>
+                    {{form.purpose_of_partnership(class="form-input")}}
+
+                    <label class="form-labels">{{form.expection_from_partnership.label}}</label>
+                    {{form.expection_from_partnership(class="form-input")}}
+
+                    <label class="form-labels">{{form.more_info.label}}</label>
+                    {{form.more_info(class="form-input")}}
+                    
+                `;
+            }
+            else{
+                document.querySelector(".other-details").innerHTML = `<label class="form-labels">{{form.more_info.label}}</label>
+                    {{form.more_info(class="form-input")}}`
+            }
+        }
+        
+
+    </script>
 </body>
 </html>

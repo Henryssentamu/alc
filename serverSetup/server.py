@@ -11,8 +11,8 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import ExamStudentAnswes, Exams, Courses, SchoolDatabes, Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
-from createStudentId import CreatePaperIds, CreateStudentId
+from databases import PartnershipDatabase, ExamStudentAnswes, Exams, Courses, StudentCourseProjectRepoDetails,SchoolDatabes,StudentCourseProject ,Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
+from createStudentId import CreatePaperIds, CreateStudentId, GenerateProjectId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,ALC_SECURITY
@@ -79,10 +79,10 @@ class PartnerForm(FlaskForm):
     current_affriation = StringField(label="Organization/Company (if any)")
     position = StringField(label="Position/Title")
     investment_amount = StringField(label="Investment Amount (USD)")
-    type_of_partnernship = SelectField(label="Type of partnership",choices=[("grant","Grant Partner"),("corporate_ally","Corporate Ally")])
+    type_of_partnernship = SelectField(label="Type of partnership",choices=[("options","choose the type"),("grant","Grant Partner"),("corporate_ally","Corporate Ally")])
     purpose_of_partnership = StringField(label="Purpose of Financial Partnership ")
     expection_from_partnership = StringField(label="Expected Benefits or Returns from the Partnership (if any):")
-    more_info = StringField(label="Is there anything else you would like us to know about your interest in a financial partnership with ALC? ")
+    more_info = StringField(label="Is there anything else you would like us to know about your interest in  partnership with ALC? ")
 
     submit = SubmitField()
 
@@ -237,8 +237,78 @@ def studentScores():
 
     return render_template("studentscores.html")
 
-@app.route("/projectpage")
+@app.route("/projectpage", methods = ["POST","GET"])
 def projectPage():
+    if request.method == "POST":
+        postType = request.json.get("type")
+        if postType == "fromadmin":
+            data = request.json.get("data")
+            if data:
+                courseId = data["courseId"]
+                cohort = data["cohort"]
+                projectDetails = data["projectDetails"]
+                projectDetailsFormated = json.loads(projectDetails)
+
+                """get project id """
+
+                projectIdObject = GenerateProjectId(courseId=courseId,cohort=cohort)
+                projectId = projectIdObject.projectid()
+
+                projectObject = StudentCourseProject(projectObject=projectDetailsFormated,cohort=cohort,courseId=courseId,projectId=projectId)
+                projectObject.createTables()
+                projectObject.insertIntoTable()
+                
+                return jsonify({"project status":"recieved"})
+        elif postType == "ProjectRepo":
+            data = request.json.get("data")
+            if data:
+                studentId = current_user.id
+                ProjectRepo = data
+
+                repoObject = StudentCourseProjectRepoDetails(reponseObject=ProjectRepo,studentId=studentId)
+                repoObject.createTable()
+                repoObject.inserIntotable()
+                return jsonify({"status":"project rep recieved"})
+            else:
+                return jsonify({"status":"Norep"})
+    elif request.method == "GET":
+        getType = request.args.get("type")
+        if getType == "projectInstruction":
+            courseDetails = session.get("courseDetails_loadedOnStudentPortal")
+            cohort = courseDetails["cohort"]
+            courseId = courseDetails["courseId"]
+            try:
+                with sqlite3.connect("CourseProjectInstructions.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            ProjectId,
+                            CourseId,
+                            Cohort,
+                            ProjectTitle,
+                            ProjectDescription,
+                            Deadline,
+                            StartDate
+                        FROM
+                            projectDetails
+                        WHERE
+                            CourseId ==? AND Cohort== ?
+                            
+                    
+                            
+                                   
+                    """,(courseId,cohort))
+                    data = cursor.fetchone()
+                if data:
+                    return jsonify({"data":data})
+                else:
+                    return jsonify({"status":"NO PROJECT SET YET"})
+            except sqlite3.Error as e:
+                raise RuntimeError(f"connection error on course project instruction db:{e}")
+            except Exception as e:
+                raise RuntimeError(f"faced error while accessing course project instruction db: {e}") 
+
+
 
     return render_template("projectPage.html")
 
@@ -349,7 +419,7 @@ def registerPartners():
         
         if form.validate_on_submit():
             """populating function variables"""
-            firsNname = form.firstName.data
+            firstName = form.firstName.data
             sirName = form.sirName.data
             number = form.phoneNumber.data
             email = form.email.data
@@ -361,7 +431,21 @@ def registerPartners():
             purpose_of_partnership =  form.purpose_of_partnership.data
             expection_from_partnership = form.expection_from_partnership.data
             more_info = form.more_info.data
-            flash(f"{firsNname,sirName,affriation}")
+
+           
+
+            if firstName and sirName and email and number:
+                
+                PartnershipData = {"firstName":firstName, "sirName":sirName,"phoneNumber":number,"email": email, "country":country,"typeOfPartnership":type_of_partnernship}
+                try:
+                    partnershipObject = PartnershipDatabase(dataObject= PartnershipData)
+                    partnershipObject.CreateTables()
+                    partnershipObject.insertIntoTable()
+
+                    # will handle sending emails to both the partner and to the alc webmail account
+                except Exception as error:
+                    raise RuntimeError(f"error while calling partnership db:{error}")
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
             """re initailise the function variable so that when a person leaves the registration page, on re accessing it, it be empty"""
 
             firstName = ""
@@ -400,7 +484,7 @@ def login():
                 """session bellow stores logged instudent id which is to be used getBioDataAndCourseDetails route """
                 
                 login_user(user=user)
-                session["logged_student_id"] = current_user.id
+                # session["logged_student_id"] = current_user.id
                 next_url = session.pop("payment_url", None)
                 # if request.referrer and "/payments" in request.referrer:
                 if next_url and "/payments" in next_url:
@@ -588,7 +672,8 @@ def getBioDataAndCourseDetails():
         """
             bellow we are accessing student bio data by initailizing student object then call studentBio function
         """
-        studentId = session.get("logged_student_id")
+        # studentId = session.get("logged_student_id")
+        studentId = current_user.id
                 
         student  = FetchStudentData(studentId= studentId)
         studentData = student.studentBio()
@@ -762,7 +847,8 @@ def handleRecordedLinks():
 @app.route("/handleOnlinetests", methods=["GET","POST"])
 def handleOnlineTests():
     if request.method == "GET":
-        studentId = session.get("logged_student_id")
+        # studentId = session.get("logged_student_id")
+        studentId = current_user.id
         try:
             courseDetails = session["courseDetails_loadedOnStudentPortal"]
             courseId = courseDetails["courseId"]
@@ -820,7 +906,8 @@ def handleOnlineTests():
 @app.route("/handleOnlineExams", methods=["GET","POST"])
 def handleOnlineExams():
     if request.method == "GET":
-        studentId = session.get("logged_student_id")
+        # studentId = session.get("logged_student_id")
+        studentId = current_user.id
         try:
             courseDetails = session["courseDetails_loadedOnStudentPortal"]
             courseId = courseDetails["courseId"]
@@ -899,7 +986,7 @@ def handleCourseYouTubeLink():
                         courseId == ?         
                 """,(courseId,))
                 data = cursor.fetchone()
-            print(f"youtube link:{data}")
+            # print(f"youtube link:{data}")
             return jsonify({"link":data})
         except sqlite3.Error as error:
             return f"api failed to connect to courseDatabase in loadPaidcourseOnstudentPortal route: {error}"
@@ -917,7 +1004,8 @@ def handleCourseYouTubeLink():
 def handleStudentscores():
     if request.method == "GET":
         courseId = session.get("course_id_studentPortal")
-        studentId = session.get("logged_student_id")
+        # studentId = session.get("logged_student_id")
+        studentId = current_user.id
         # compiledResults= {}
         if courseId and studentId:
             # print(f"sid:{studentId} and cis:{courseId}")

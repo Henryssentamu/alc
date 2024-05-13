@@ -1,4 +1,5 @@
 
+from ast import Raise
 import json
 import sqlite3
 class StudentDatabases:
@@ -1368,9 +1369,173 @@ def formateSchoolData(object):
 
 
 
+class StudentCourseProject:
+    def __init__(self, projectObject,courseId,cohort, projectId) -> None:
+        self.projectObject = projectObject
+        self.courseId = courseId
+        self.cohort = cohort
+        self.projectId = projectId
+    def createTables(self):
+        try:
+            with sqlite3.connect("CourseProjectInstructions.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS projectDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ProjectId VARCHAR(500) PRIMARY KEY,
+                        CourseId TEXT,
+                        Cohort VARCHAR(500),
+                        ProjectTitle TEXT,
+                        ProjectDescription TEXT,
+                        Deadline VARCHAR(200),
+                        StartDate VARCHAR(200)      
+                    )
+                """)
+        except sqlite3.Error as e:
+            raise RuntimeError(f"sqlite connection issues:{e}")
+        except Exception as error:
+            raise RuntimeError(f"faced error while creating student project database:{error}")
+    def insertIntoTable(self):
+        try:
+            with sqlite3.connect("CourseProjectInstructions.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO projectDetails(
+                        ProjectId,
+                        CourseId,
+                        Cohort,
+                        ProjectTitle,
+                        ProjectDescription,
+                        Deadline,
+                        StartDate          
+                    ) VALUES (?,?,?,?,?,?,?)
+                """,(self.projectId,self.courseId,self.cohort, self.projectObject["projectTitle"],self.projectObject["ProjectDescrpition"],self.projectObject["deadLine"],self.projectObject["startDate"]))
+                db.commit()
+        except sqlite3.Error as e:
+            raise RuntimeError(f" connection error while inserting into course project instruction db: {e}")
+        except Exception as e:
+            raise RuntimeError(f"Error while inserting into  course project instruction db: {e}")
+        
 
 
-                    
+
+class StudentCourseProjectRepoDetails:
+    def __init__(self,reponseObject, studentId) -> None:
+        self.responseObject = reponseObject
+        self.courseId = self.responseObject["courseId"]
+        self.projectLink = self.responseObject["projectlink"]
+        self.projectId = self.responseObject["projectId"]
+        self.cohort = self.responseObject["cohort"]
+        self.studentId = studentId
+        
+    def createTable(self):
+        try:
+            with sqlite3.connect("StudentCourseProjectDetails.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS StudentProjectResponse(
+                            Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            StudentId VARCHAR(300),
+                            CourseID TEXT,
+                            Cohort VARCHAR(300),
+                            ProjectId VARCHAR(500) PRIMARY KEY,
+                            GithubProjectRepoLink TEXT
+                    )
+                """)
+        except sqlite3.Error as e:
+            raise RuntimeError(f"connection error while creating student course project response db: {e}")
+        except Exception as e:
+            raise RuntimeError(f"error while creating  student course project response db: {e}")
+    def inserIntotable(self):
+        try:
+            with sqlite3.connect("StudentCourseProjectDetails.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO StudentProjectResponse(
+                            StudentId,
+                            CourseID,
+                            Cohort,
+                            ProjectId,
+                            GithubProjectRepoLink 
+                    ) VALUES (?,?,?,?,?)
+                """,(self.studentId,self.courseId,self.cohort,self.projectId,self.projectLink))
+        except sqlite3.Error as e:
+            raise RuntimeError(f"connection error while inserting into student course project response db: {e}")
+        except Exception as e:
+            raise RuntimeError(f"error while inserting into student course project response db: {e}")
+        
+
+
+class PartnershipDatabase:
+    def __init__(self, dataObject) -> None:
+        self.dataObject = dataObject
+        self.firstName = self.dataObject["firstName"]
+        self.sirName = self.dataObject["sirName"]
+        self.phoneNumber = self.dataObject["phoneNumber"]
+        self.email = self.dataObject["email"]
+        self.country = self.dataObject["country"]
+        self.typeOfPartnership = self.dataObject["typeOfPartnership"]
+    def CreateTables(self):
+        try:
+            with sqlite3.connect("partnersDetails.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS partnerDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ResponseId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        FirstName VARCHAR(200),
+                        LastName VARCHAR(200)         
+                    )
+                """)
+
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS partnersContacts(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ResponseId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        PhoneNumber VARCHAR(200),
+                        Email VARCHAR(500),
+                        CountryLocation VARCHAR(500)
+                    )
+                """)
+
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS morePartnershipDetails(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ResponseId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        TypeOfPartnership VARCHAR(200)          
+                    )
+                """)
+
+        except sqlite3.Error as error:
+            raise RuntimeError(f"Connection error while connecting to partnership db: {error}")
+        except Exception as error:
+            raise RuntimeError(f"Faced error while creating partnership details db: {error}")
+    def insertIntoTable(self):
+        try:
+            with sqlite3.connect("partnersDetails.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO partnerDetails(
+                        FirstName,
+                        LastName 
+                    ) VALUES (?,?)
+                """,(self.firstName, self.sirName))
+                cursor.execute("""
+                    INSERT INTO partnersContacts(
+                        PhoneNumber,
+                        Email,
+                        CountryLocation          
+                    ) VALUES(?,?,?)
+                """,(self.phoneNumber,self.email,self.country))
+                cursor.execute("""
+                    INSERT INTO morePartnershipDetails(
+                        TypeOfPartnership          
+                    ) VALUES(?)
+                """,(self.typeOfPartnership,))
+        except sqlite3.Error as error:
+            raise RuntimeError(f"connection error while inserting into partnership db: {error}")
+        except Exception as error:
+            raise RuntimeError(f"error while inserting into partnership db:{error}")
 
 
 

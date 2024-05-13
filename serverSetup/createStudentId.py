@@ -46,6 +46,11 @@ class CreatePaperIds:
     def examId(self):
         exam = "exam" + self.year + self.courseId[5: ] + self.cohort
         return exam
-
-        
     
+class GenerateProjectId(CreatePaperIds):
+    def __init__(self, courseId, cohort) -> None:
+        super().__init__(courseId, cohort)
+
+    def projectid(self):
+        id = self.year + "proj"+self.courseId[8: ] + self.cohort[3:]
+        return id

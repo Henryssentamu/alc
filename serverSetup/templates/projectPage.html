@@ -79,6 +79,28 @@
             padding: 20px 0;
         }
 
+        .projectlink{
+            width: calc(80% - 100px);
+            padding: 18px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+
+        }
+        .submitProject{
+            padding: 18px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+
+        }
+
+        .bold{
+            font-weight: bold;
+        }
+
         /* Responsive Styles */
         @media screen and (max-width: 600px) {
             .container {
@@ -118,7 +140,7 @@
 <body>
     <header>
         <div>
-            Recorded Sessions
+            Course Project
         </div>
         <div class="goback">
             <a href="{{url_for('loadPaidCourseONPortal')}}"> 
@@ -129,29 +151,109 @@
         </div>
     </header>
     <div class="container">
-        <div class="project">
-            <h2>Project Title 1</h2>
-            <div class="project-details">
-                <p>Deadline: March 31, 2024</p>
-            </div>
-            <div class="upload-section">
-                <label for="projectFile1">Upload Project File:</label>
-                <input type="file" id="projectFile1" name="projectFile1">
-            </div>
-        </div>
-
-        <div class="project">
-            <h2>Project Title 2</h2>
-            <div class="project-details">
-                <p>Deadline: April 15, 2024</p>
-            </div>
-            <div class="upload-section">
-                <label for="projectFile2">Upload Project File:</label>
-                <input type="file" id="projectFile2" name="projectFile2">
-            </div>
-        </div>
+        
 
         <!-- Add more project sections as needed -->
     </div>
+
+    <script>
+        function fetchProjectInstruction(){
+            return fetch("http://127.0.0.1:5000/projectpage?type=projectInstruction")
+                .then(response =>{
+                    if(!response.ok){
+                        throw new Error("api failed to fetch course project instructions")
+                    }
+                    return response.json()
+                })
+                .then(data =>{
+                    var details = data["data"]
+                    if(details){
+                        var data_details = {"projectId":details[0],"courseId":details[1], "cohort":details[2], "projectTitle":details[3], "projectDescription":details[4], "startDate":details[6],"Deadline":details[5]}
+                        var Html = `
+            
+                                <div class="project" data-cohort="${data_details["cohort"]}", data-course-id="${data_details["courseId"]}", data-project-id="${data_details["projectId"]}">
+                                    <h2> Project Title : ${data_details["projectTitle"]}</h2>
+                                    <div class="project-details">
+                                        <div>
+                                            <span class="bold">Project Description </span>: ${data_details["projectDescription"]}    
+                                        </div>
+                                        <p>Starting Date: ${data_details["startDate"]} </p>
+                                        <p>Deadline: ${data_details["Deadline"]}</p>
+                                    </div>
+                                    <div class="upload-section">
+                                        <label class="inputLabel ">Pest Project Github Repository Link Here</label>
+                                        <div>
+                                            <input type="text" class="projectlink">
+                                            <button onclick="submitGithubDetails()" class= "submitProject">
+                                                submit    
+                                            </button>   
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                        `
+                        return Html
+
+                    }
+                    else{
+                        var dt = data["status"]
+                        return dt
+                    }
+            
+
+                })
+                .catch(error =>{
+                    console.log(error)
+                })
+        }
+
+        async function generateHtml(){
+            const data = await fetchProjectInstruction()
+            // console.log(data)
+        document.querySelector(".container")
+            .innerHTML = data
+        }
+
+        function submitGithubDetails(){
+            var githubLink = document.querySelector(".projectlink").value
+            var cohortElement = document.querySelector(".project")
+            var projectId  = cohortElement.getAttribute("data-project-id")
+            var courseId = cohortElement.getAttribute("data-course-id")
+            var cohort = cohortElement.getAttribute("data-cohort")
+            // console.log(cohort)
+            var projectDetails = {
+                "projectlink":githubLink,
+                "courseId":courseId,
+                "projectId":projectId,
+                "cohort":cohort
+            }
+            var data = {"type":"ProjectRepo","data":projectDetails}
+
+            fetch("http://127.0.0.1:5000/projectpage",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body:JSON.stringify(data)
+            })
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("api failed to send project Repo")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                console.log("server response:",data)
+            })
+            .catch(error =>{
+                console.log(error)
+            })
+
+            githubLink = ""
+        }
+
+        generateHtml()
+    </script>
 </body>
 </html>

@@ -134,6 +134,33 @@
         margin-left: 200px;
         font-size: x-large;
     }
+
+    .courseproject-section{
+        align-items: center;
+    }
+    .projectinput{
+        width: calc(80% - 100px);
+        padding: 18px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+    }
+    .submit-project{
+        padding: 18px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #courseProject{
+        padding: 18px;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+    }
    
 </style>
 </head>
@@ -203,6 +230,27 @@
         </div>
         
 
+    </div>
+
+    <div class="box">
+        <h1>course project section</h1>
+        <div class="courseproject-section">
+            <div>
+                {"projectTitle":"v", "ProjectDescrpition": "v", "deadLine":"v", "startDate":"v"}
+            </div>
+            <div>
+                <select id="courseProject">
+                    <option value="cohort1">Cohort 1</option>
+                    <option value="cohort2">Cohort 2</option>
+                    <option value="cohort3">Cohort 3</option>
+                </select>
+                <input id="projectinputid"  class="projectinput" type="(text)" placeholder="project Details">
+                <button onclick="sendprojectDetails()" class="submit-project">submit</button>
+            </div>
+            
+
+        </div>
+        
     </div>
 
 
@@ -342,6 +390,48 @@
         .catch(error =>{
             console.log(error)
         })
+
+    }
+
+
+    function sendprojectDetails(){
+        var selectedCohort = document.getElementById("courseProject").value
+        var courseIdElement = document.querySelector(".container")
+        var courseId = courseIdElement.getAttribute("data-course-id")
+        var projectElement = document.getElementById("projectinputid")
+        var project_d = projectElement.value
+
+        const data ={
+            "type":"fromadmin",
+            "data":{
+                "cohort":selectedCohort,
+                "courseId":courseId,
+                "projectDetails":project_d
+            }
+        }
+
+        fetch("http://127.0.0.1:5000/projectpage",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(data)
+        })
+        .then(response =>{
+            if(!response.ok){
+                throw new Error("api failed to send project details to server")
+            }
+            response.json()
+        })
+        .then(data =>{
+            console.log(data)
+        })
+        .catch(error =>{
+            console.log(error)
+        })
+
+        projectElement.value == ""
+
 
     }
 

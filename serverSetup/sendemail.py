@@ -2,6 +2,8 @@
 import smtplib
 from email.message import EmailMessage
 
+
+
 def sendEmail(Email,sPassword,studentRigNo):
     # studentEmail ="henryphillip61@gmail.com"
     # studentPassword = "weeeee"
@@ -23,5 +25,10 @@ def sendEmail(Email,sPassword,studentRigNo):
             # print("sent")
     except Exception as error:
         print(f"failed to send student credentials:{str(error)}")
+
+class sendPartnershipEmails:
+    def __init__(self) -> None:
+        pass
+
         
 
