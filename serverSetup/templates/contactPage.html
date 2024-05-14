@@ -85,7 +85,9 @@
         <p>For immediate assistance, you can also contact us via phone or email:</p>
         <p><strong>Office Number:</strong> +2567981066</p>
         <p><strong>Admin's Webmail:</strong> admin@alcschool.edu</p>
-        <form action="url_for('contactPage')" method="post">
+
+
+        <div class="form-section">
             <label for="name">Your Name:</label>
             <input type="text" id="name" name="name" required>
 
@@ -98,8 +100,29 @@
             <label for="message">Your Message:</label>
             <textarea id="message" name="message" rows="4" required></textarea>
 
-            <button type="submit">Submit</button>
-        </form>
+            <button onclick="sendQuerryToServer()">Submit</button>
+
+        </div>
+    
+            
+       
     </main>
+
+    <script>
+
+        function getinputDetails(){
+            var name = document.getElementById("name").value
+            var Email = document.getElementById("email").value
+            var phoneNumber = document.getElementById("phone").value
+            var message = document.getElementById("message").value
+            return {"Name":name,"Email":Email,"PhoneNumber":phoneNumber,"Message":message}
+        }
+
+        async function sendQuerryToServer(){
+            var messageDetails = await getinputDetails()
+            console.log(messageDetails)
+        }
+
+    </script>
 </body>
 </html>

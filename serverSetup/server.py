@@ -17,7 +17,7 @@ from createStudentId import CreatePaperIds, CreateStudentId, GenerateProjectId
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,ALC_SECURITY
 import stripe
-from sendemail import sendEmail
+from sendemail import sendEmail,SendPartnershipEmails
 
 
 
@@ -194,8 +194,13 @@ def admissionDetails():
 def aboutUsPage():
     return render_template("aboutUs.html")
 
-@app.route("/contact")
+@app.route("/contact", methods=["POST","GET"])
 def contactPage():
+    if request.method == "POST":
+        data = request.data
+    elif request.method == "GET":
+        pass
+        
     return render_template("contactPage.html")
 
 @app.route("/pythonCourse")
@@ -385,19 +390,25 @@ def registrationPage():
                     """inserting values into the created tables"""
                     studentDataBase.insertIntoTables()
                     # print(emailAddress,studentId,password)
+
+                    """send student login details to their email"""
                     
                     sendEmail(Email=emailAddress, sPassword=studentPassword, studentRigNo=studentId)
-                    return redirect(url_for('login'))
+                    return redirect(url_for('checkYourLoginCredentials'))
                 else:
                     return redirect(url_for('registrationPage'))
             except ValueError as error:
-                print(f"possibly password did not match or student database wasnt properly created. check the error:{error}")
+                raise RuntimeError(f"possibly password did not match or student database wasnt properly created. check the error:{error}")
         else:
             print(f"the submit button on the form has issues: {form.errors}")
     except Exception as error:
         print(f"the register form structure call failed: {error}")
     
     return render_template("registrationPage.html",RegForm= form)
+
+@app.route("/checkYourLoginCredentials")
+def checkYourLoginCredentials():
+    return render_template("checkYourLoginCredentials.html")
 
 
 @app.route("/registerPartners",methods=["GET","POST"])
@@ -437,10 +448,36 @@ def registerPartners():
             if firstName and sirName and email and number:
                 
                 PartnershipData = {"firstName":firstName, "sirName":sirName,"phoneNumber":number,"email": email, "country":country,"typeOfPartnership":type_of_partnernship}
+                PartnershipMessageData = {
+                    "moreInfo":more_info,
+                    "expectionFromPartnership":expection_from_partnership,
+                    "affriation": affriation,
+                    "position": position,
+                    "funding":investment_amount,
+                    "purposeOfpartnership": purpose_of_partnership,
+                    "firstName":firstName, 
+                    "sirName":sirName,
+                    "phoneNumber":number,
+                    "email": email, 
+                    "country":country,
+                    "typeOfPartnership":type_of_partnernship
+                    }
+
                 try:
+                    """ populating partnership database """
                     partnershipObject = PartnershipDatabase(dataObject= PartnershipData)
                     partnershipObject.CreateTables()
                     partnershipObject.insertIntoTable()
+                    try:
+                        """sending partner's details to alc webmail and thanks message to partner """
+                        messageObject = SendPartnershipEmails(partnersDetails= PartnershipMessageData)
+                        #sends to acl
+                        messageObject.sendPartnersDetailsTo_ALC_account()
+                        #sends to partner
+                        messageObject.sendMessageReceivedResponseToPartner()
+                        return redirect(url_for('thankyouPartner'))
+                    except Exception as error:
+                        raise RuntimeError(f"error while send partner's details to emails: {error}")
 
                     # will handle sending emails to both the partner and to the alc webmail account
                 except Exception as error:
@@ -463,9 +500,14 @@ def registerPartners():
         else:
             print(f"the submit button on the form has issues: {form.errors}")
     except Exception as error:
-        print(f"the register form structure call failed: {error}")
+        raise RuntimeError(f"the register form structure call failed: {error}")
     
     return render_template("partnerPage.html", form=form)
+
+
+@app.route("/thankyouPartner")
+def thankyouPartner():
+    return render_template("thankyouPartner.html")
 
 
 @app.route("/login", methods=["GET","POST"])
