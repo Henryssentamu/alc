@@ -17,7 +17,7 @@ from createStudentId import CreatePaperIds, CreateStudentId, GenerateProjectId
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,ALC_SECURITY
 import stripe
-from sendemail import sendEmail,SendPartnershipEmails
+from sendemail import sendEmail,SendPartnershipEmails,SendInqurry
 
 
 
@@ -197,7 +197,14 @@ def aboutUsPage():
 @app.route("/contact", methods=["POST","GET"])
 def contactPage():
     if request.method == "POST":
-        data = request.data
+        requesttype = request.json.get("type")
+        if requesttype == "inquiry":
+            inquiryData = request.json.get("data")
+            """ send message to alc webmail """
+            if inquiryData:
+                inquiryObject = SendInqurry(inqurryDetails=inquiryData)
+                inquiryObject.sendInquery()
+            return jsonify({"inquryResponse":" inqury message recieved"})
     elif request.method == "GET":
         pass
         
@@ -838,8 +845,8 @@ def handleLiveSessionLinks():
 #     try:
 #         if request.method == "POST":
 #             data = request.json
-#             # print(data)
-#             session["cohort"] = data["cohort"]
+#             print(data)
+#             # session["cohort"] = data["cohort"]
 #             session["course_id_studentPortal"] = data["courseId"]
 #             # print(f"the real one :{data}")
 #     except Exception as error:
@@ -909,6 +916,8 @@ def handleOnlineTests():
     
                         WHERE
                             q.CourseId == ? AND CohortId == ?
+                        ORDER BY
+                            q.QuestionsId DESC
                     """, (courseId,cohort))
                     data = cursor.fetchall()
                 if data:
@@ -939,7 +948,7 @@ def handleOnlineTests():
             testResults.insertIntotable()
         except Exception as error:
             return f"error on dealing with student test respons:{error}"
-    return jsonify({"api status":"handleOnlineExam api failure"})
+    return jsonify({"api status":"handleOnlinetest api failure"})
 """ retrive test questions from the data base and send them to client server
     access the course to retrive quesions for from the course if which is stored in the
     session under handlerecorded link route
@@ -960,7 +969,7 @@ def handleOnlineExams():
                     cursor = db.cursor()
                     cursor.execute("""
                         SELECT
-                            q.ExamId,q.CourseId,q.Question,o.Options
+                            q.ExamId,q.CourseId,q.Question,o.Options,q.Duration
                         FROM
                             questionDetails AS q
                         JOIN
@@ -968,6 +977,8 @@ def handleOnlineExams():
     
                         WHERE
                             q.CourseId == ? AND Cohort == ?
+                        ORDER BY
+                            q.QuestionsId DESC
                     """, (courseId, cohort))
                     data = cursor.fetchall()
                 if data:
@@ -979,9 +990,11 @@ def handleOnlineExams():
                             "ExamId":questionObject[0],
                             "courseId": questionObject[1],                           
                             "Question":questionObject[2],
+                            "duration":questionObject[4],
                             "Options": questionObject[3].split(",")
                         })
-                    # print(formatedData)
+                    
+                    
 
                     return jsonify(formatedData)
                 else:
@@ -991,6 +1004,7 @@ def handleOnlineExams():
             return f"session in handleonlineExam route failed {error}"
     else:
         studentAnswers = request.json
+        # print(F" WERRRRRREEEE: {studentAnswers}")
         answer = ExamStudentAnswes(studentAnswers)
         answer.createTable()
         answer.insertIntoTable()
@@ -1045,12 +1059,10 @@ def handleCourseYouTubeLink():
 @app.route("/handleStudentscores", methods =["GET"])
 def handleStudentscores():
     if request.method == "GET":
-        courseId = session.get("course_id_studentPortal")
-        # studentId = session.get("logged_student_id")
+        courseId = session.get("courseId_loadedOnStudentPortal")
         studentId = current_user.id
-        # compiledResults= {}
         if courseId and studentId:
-            # print(f"sid:{studentId} and cis:{courseId}")
+            print(f"sid:{studentId} and cis:{courseId}")
             try:
                 student = AssessmentResults(studentId= studentId, courseId= courseId)
                 # student.formateStudentAnswerData()

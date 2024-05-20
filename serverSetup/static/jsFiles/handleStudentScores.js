@@ -7,6 +7,7 @@ async function fetchScores(){
             return response.json()
         })
         .then(data =>{
+            console.log(data)
             return data
         })
         .catch(error =>{
@@ -16,6 +17,7 @@ async function fetchScores(){
 
 async function loadScores(){
     var score = await fetchScores()
+    console.log(score)
     var html = ""
     score.forEach((object)=>{
         for(var key in object){

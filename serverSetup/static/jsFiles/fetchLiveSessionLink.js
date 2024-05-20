@@ -19,6 +19,7 @@ async function fetchLiveSessionLink(){
 async function loadLiveSessionLink(){
     
     var liveSessionLink = await fetchLiveSessionLink();
+    console.log(liveSessionLink)
 
     let generatedhtml = `
         <div class="session-card">

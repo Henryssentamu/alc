@@ -21,9 +21,8 @@ async function fetchExamData() {
 
 async function loadPage(){
     let data = await fetchExamData()
-	// console.log(data)
-	// alert(data)
-	
+	console.log(data)
+		
 	if ("Exam Status" in data){	
 		// Show no exam message and return
 		document.getElementById('timer-container').style.display = "none";
@@ -33,12 +32,16 @@ async function loadPage(){
 		return;
 	}
 
-    // Timer duration in milliseconds (e.g., 5 minutes)
-    const timerDuration = 0.30 * 60 * 1000; // 5 minutes
-    let timeLeft = timerDuration / 1000; // Convert milliseconds to seconds
-    let timerInterval;
 
-   	// function to generate html for all questions
+	 // Timer duration in milliseconds
+	 let setTime = data[0]["duration"]
+	 var formatedToint = parseInt(setTime,10)
+	 
+	 const timerDuration =  formatedToint *  60 * 1000;
+	 let timeLeft = timerDuration / 1000; // Convert milliseconds to seconds
+	 let timerInterval;
+ 
+		// function to generate html for all questions
 
     function generatehtml(){
 		let html
@@ -65,7 +68,7 @@ async function loadPage(){
       
 	}
 
-	 // Function to render trivia questions on the page
+	 // Function to render  questions on the page
     function renderQuestions() {
 		document.getElementById('questions-section')
 			.innerHTML += generatehtml()

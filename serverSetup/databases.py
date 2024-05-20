@@ -744,7 +744,7 @@ class ExamStudentAnswes:
         except Exception as error:
             return f"This error is related to studentExamAnswers database:{error} "
     def insertIntoTable(self):
-        print(f"exa:{self.answerObject}")
+        # print(f"exa:{self.answerObject}")
         try:
             with sqlite3.connect("studentExamAnswers.db") as db:
                 cursor = db.cursor()
@@ -753,7 +753,7 @@ class ExamStudentAnswes:
                         StudentId    
                     ) VALUES (?)
                 """,(self.answerObject["studentId"],))
-                db.commit()
+                # db.commit()
                 cursor = db.cursor()
                 cursor.execute("""
                     INSERT INTO ExamDetails(
@@ -762,7 +762,7 @@ class ExamStudentAnswes:
                         ExamId   
                     ) VALUES (?,?,?)
                 """,(self.answerObject["studentId"],self.answerObject["courseId"],self.answerObject["ExamId"]))
-                db.commit()
+                # db.commit()
                 stringedAnswerObject = ",".join(self.answerObject["answers"])
                 # print(f" cytu:{stringedAnswerObject}")
 

@@ -100,7 +100,7 @@
             <label for="message">Your Message:</label>
             <textarea id="message" name="message" rows="4" required></textarea>
 
-            <button onclick="sendQuerryToServer()">Submit</button>
+            <button onclick="sendQuerryToServer()">Send</button>
 
         </div>
     
@@ -120,7 +120,29 @@
 
         async function sendQuerryToServer(){
             var messageDetails = await getinputDetails()
-            console.log(messageDetails)
+            var message = {"type":"inquiry","data":messageDetails}
+            fetch("http://127.0.0.1:5000/contact",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(message)
+            })
+            .then(response =>{
+                if (!response.ok){
+                    throw new Error("api failed to send inquiry message")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                console.log("server response:",data)
+            })
+            .catch(error =>{
+                console.log(error)
+            })
+            alert("your message is sent  to ALC Customer Care")
+
+            window.location.href = "http://127.0.0.1:5000"
         }
 
     </script>

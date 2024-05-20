@@ -70,6 +70,30 @@ class SendPartnershipEmails:
                 smsconnection.login(user=self.sender,password=self.password)
                 smsconnection.send_message(msg=msg)
         except Exception as error:
-            raise RuntimeError(f"failed to send thanks message to partner:{error}") 
+            raise RuntimeError(f"failed to send thanks message to partner:{error}")
+
+
+class SendInqurry:
+    def __init__(self, inqurryDetails) -> None:
+        self.Name = inqurryDetails["Name"]
+        self.Email = inqurryDetails["Email"]
+        self.phoneNumber = inqurryDetails["PhoneNumber"]
+        self.message = inqurryDetails["Message"]
+        self.sender = "ssentamuhenry00@gmail.com"
+        self.password = "wohg wzqz zmte pyqp"
+    def sendInquery(self):
+        InqueryMessage = EmailMessage()
+        InqueryMessage.set_content(f"A person with the following details sent this message.\n\n Name: {self.Name},\n\n Message:{self.message}\n\n CONTACT DETAILS \n\n PhoneNumber: {self.phoneNumber}\n\n Email:{self.Email}\n\n ")
+        InqueryMessage["Subject"] = "Message From Contact Us Page"
+        InqueryMessage["From"] = self.sender
+        InqueryMessage["To"] = self.Email
+        try:
+            with smtplib.SMTP("smtp.gmail.com",port=587) as connection:
+                connection.starttls()
+                connection.login(user= self.sender,password=self.password)
+                connection.send_message(msg=InqueryMessage)
+        except Exception as error:
+            raise RuntimeError(f"failed to send message/ inquirry to alc webmail:{error}")
+        
         
 
