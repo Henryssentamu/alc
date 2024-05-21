@@ -1060,9 +1060,6 @@ class AssessmentResults:
         self.correctAnswers = []
         self.studentId = studentId
         self.courseId = courseId
-        self.studentResults = None
-        self.correctResults = None
-        # self.examResults = None
 
     def fetchRightAnswers(self):
         try:
@@ -1079,10 +1076,15 @@ class AssessmentResults:
                         q.CourseId == ?  
                 """,(self.courseId,))
                 TestData = cursor.fetchall()
+
                 if TestData:
-                    self.correctAnswers.append({"test":TestData})
-                else:
-                    self.correctAnswers.append({"test":"no test"})
+                    try:
+                        courseId = TestData[0][1]
+                        testID = TestData[0][0]
+                        correctAnswers = [obj[2] for obj in TestData if obj[0] == testID and obj[1] == courseId]
+                        self.correctAnswers.append({"testDetails":{"courseID":courseId,"testId":testID,"answers":correctAnswers}})
+                    except Exception as error:
+                        raise RuntimeError(f" error while indexing correct test answer:{error}")
             with sqlite3.connect("examDataBase.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
@@ -1096,14 +1098,20 @@ class AssessmentResults:
                         q.CourseId == ?           
                 """,(self.courseId,))
                 Examdata = cursor.fetchall()
+                
                 if Examdata:
-                    self.correctAnswers.append({"exam":Examdata})
-                else:
-                    self.correctAnswers.append({"exam":"no answers"})
+                    try:
+                        examId = Examdata[0][0]
+                        courseId = Examdata[0][1]
+                        Examanswers = [obj[2] for obj in Examdata if obj[0]== examId and obj[1] == courseId]
+                        self.correctAnswers.append({"examDetails":{"courseId":courseId,"ExamId":examId,"answers":Examanswers}})
+                    except Exception as error:
+                        raise RuntimeError(f" error while indexing correct exam answers: {error}")
+        
         except sqlite3.Error as error:
-            return f"fetchRightAnswers api failed to connect to  specified database:{error}"
+            raise RuntimeError(f"fetchRightAnswers api failed to connect to  specified database:{error}")
         except Exception as error:
-            return f"Error on fetching RightAnswers from the specified database:{error}"
+            raise RuntimeError(f"Error on fetching RightAnswers from the specified database:{error}")
        
 
     def fetchStudentAnswers(self):
@@ -1126,11 +1134,19 @@ class AssessmentResults:
                         s.Studentid == ? AND c.CourseId == ?
                     
                 """,(self.studentId, self.courseId))
+
                 TestData = cursor.fetchall()
+                
             if TestData:
-                self.studentAnswersDetails.append({"test":TestData})
-            else:
-                self.studentAnswersDetails.append({"test":"no answers"})
+                try:
+                    courseId = TestData[0][1]
+                    testId = TestData[0][2]
+                    # studentId = TestData[0][0]
+                    answers = TestData[0][3]
+                    formatedAnswers = answers.split(',')
+                    self.studentAnswersDetails.append({"testDetails":{"courseId":courseId,"testId":testId,"answers":formatedAnswers}})
+                except Exception as error:
+                    raise RuntimeError(f"error while indexing student test answers:{error}")
 
             with sqlite3.connect("studentExamAnswers.db") as db:
                 cursor = db.cursor()
@@ -1148,139 +1164,82 @@ class AssessmentResults:
                 """,(self.studentId,self.courseId))
                 ExamData = cursor.fetchall()
             if ExamData:
-                self.studentAnswersDetails.append({"exam":ExamData})
-            else:
-                self.studentAnswersDetails.append({"exam":"no results"})
+                try:
+                    # studentId = ExamData[0][0]
+                    courseId = ExamData[0][1]
+                    examId = ExamData[0][2]
+                    examsnswers = ExamData[0][3]
+                    formatedAnswer = examsnswers.split(',')
+                    self.studentAnswersDetails.append({"examDetails":{"courseId":courseId,"examId":examId,"answers":formatedAnswer}})
+                except Exception as e:
+                    raise RuntimeError(f"error while indexing exam student answers details:{e}")
 
         except sqlite3.Error as error:
-            return f" sql Error on fetchRightAnswer api:{error}"
+            raise RuntimeError(f" sql Error on fetchRightAnswer api:{error}")
         except Exception as error:
-            return f"Error on fetchRightAnswer api:{error}"
-    def formateStudentAnswerData(self):
-        self.fetchStudentAnswers()
-        # print(self.studentAnswersDetails)
-        answers = []
-        testanswersList = []
-        examanswersList = []
-        for answerobj in self.studentAnswersDetails:
-            key = list(answerobj.keys())[0]
-            if key == "test":
-                testnaswers = answerobj[key]
-                for details in testnaswers:
-                    if len(testanswersList) == 0:
-                        testanswersList.append({
-                        "testId":details[2],
-                        "answers":details[3].split(",")
-                        
-                        })
-                    else:
-                        
-                        for ans in testanswersList:
-                            if ans["testId"] == details[2]:
-                                continue
-                            else:
-                                testanswersList.append({
-                                    "testId":details[2],
-                                    "answers":details[3].split(",")
-                                    
-                                    })
-
-            else:
-                examanswers = answerobj[key]
-                for details in examanswers:
-                    
-                    if len(examanswersList) == 0:
-                        examanswersList.append({
-                        "examId":details[2],
-                        "answers":details[3].split(",")
-                        
-                        })
-                    else:
-                        
-                        for ans in examanswersList:
-                            if ans["examId"] == details[2]:
-                                continue
-                            else:
-                                examanswersList.append({
-                                    "examId":details[2],
-                                    "answers":details[3].split(",")
-                                    
-                                    })
-
-        for answ in testanswersList:
-            answers.append(answ)
-        else:
-            for answ in examanswersList:
-                answers.append(answ)
-
-        self.studentResults = answers
+            raise RuntimeError( f"Error on fetchRightAnswer api:{error}")
         
-    def formateAnswers(self):
-        self.fetchRightAnswers()
-        self.formateStudentAnswerData()
-        self.correctResults =  formateCorrectAnswer(self.correctAnswers)
-
     def markResults(self):
-        self.formateAnswers()
-        
-        def makeResultsStructure():
-            scores = []
-            for object in self.studentResults:
-                for key in object:
-                    if key == "testId":
-                        if len(scores) == 0:
-                            scores.append(
-                                {
-                                    "testId":object[key],
-                                    "scores": 0
-                                }
-                            )
-                        else:
-                            for obj in scores:
-                                for key in obj:
-                                    if key == "testId":
-                                        if obj[key] == object[key]:
-                                            continue
-                                        else:
-                                            scores.append(
-                                                {
-                                                    "testId":object[key],
-                                                    "scores": 0
-                                                }
-                                            )
+        """fetching answers"""
+        self.fetchRightAnswers()
+        self.fetchStudentAnswers()
+        def getAnswers():
+            Testscores = 0
+            Examscores = 0
+            for index, obj in enumerate(self.correctAnswers):
+                for key in obj:
+                    if key == "testDetails":
+                        testDetails = obj["testDetails"]
+                        courseId = testDetails["courseID"]
+                        testId = testDetails["testId"]
+                        answers = testDetails["answers"]
+                        # accessing student test answer details
+                        studentTestAnswers  = self.studentAnswersDetails[index]
+                        sTestAnsDetails = studentTestAnswers["testDetails"]
+                        sCourseId = sTestAnsDetails["courseId"]
+                        sTestId = sTestAnsDetails["testId"]
+                        sAnswers = sTestAnsDetails["answers"]
+
+                        if courseId == sCourseId and testId == sTestId:
+                            try:
+                                for index in range(len(answers)):
+                                    if answers[index] == sAnswers[index]:
+                                        Testscores += 1
                                     else:
-                                        continue
-                    elif key == "examId":                      
-                        scores.append(
-                            {
-                                "examId":object[key],
-                                "scores": 0
-                            }
-                        )
-                    else:
-                        continue
-            return scores
-        
-        
+                                        Testscores = Testscores
+                            except Exception as error:
+                                raise RuntimeError(f": {error}")
+                    elif key == "examDetails":
+                        examdetails = obj["examDetails"]
+                        EcourseId = examdetails["courseId"]
+                        examId = examdetails["ExamId"]
+                        Eanswers = examdetails["answers"]
 
-        scoreBody = makeResultsStructure()
-        for object in self.studentResults:
-            value = list(object.values())
-            id = value[0]
-            answer = value[1]
-            
+                        # accessing student exam answer details
+                        studentExamAnswers = self.studentAnswersDetails[index]
+                        sExamAnswerDetails = studentExamAnswers["examDetails"]
+                        sEcourseId = sExamAnswerDetails["courseId"]
+                        sExamId = sExamAnswerDetails["examId"]
+                        sEanswers = sExamAnswerDetails["answers"]
 
-            for correctObj in self.correctResults:
-                correctValues = list(correctObj.values())
-                if id in correctValues:
-                    correct = correctValues[1]
-                    for obj in scoreBody:
-                        for key in obj:
-                            if obj[key] == id:
-                                obj["scores"] = marks(answer,correct)
-                else:
-                    continue
-        return scoreBody
+                        if EcourseId == sEcourseId and examId == sExamId:
+                            try:
+                                for index in range(len(Eanswers)):
+                                    if Eanswers[index] == sEanswers[index]:
+                                        
+                                        Examscores += 1
+                                    else:
+                                        Examscores = Examscores
+                            except Exception as error:
+                                raise RuntimeError(f": {error}")
+            print(Testscores,Examscores)               
+        getAnswers()
+
+
+                
+
+
+
     
 
 class SchoolDatabes:

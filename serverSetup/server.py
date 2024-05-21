@@ -1062,15 +1062,12 @@ def handleStudentscores():
         courseId = session.get("courseId_loadedOnStudentPortal")
         studentId = current_user.id
         if courseId and studentId:
-            print(f"sid:{studentId} and cis:{courseId}")
             try:
                 student = AssessmentResults(studentId= studentId, courseId= courseId)
-                # student.formateStudentAnswerData()
                 results = student.markResults()
-                
                 return jsonify(results)
             except Exception as error:
-                return f"Error in handleStudentResults route{error}"
+                raise RuntimeError(f"Error in handleStudentResults route{error}")
         else:
             return jsonify({"student and course IDs":"not suplied"})
         
