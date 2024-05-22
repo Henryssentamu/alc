@@ -230,8 +230,6 @@ def rProgrammingCourse():
 
 @app.route("/onlinetests")
 def onlinetests():
-
-    
     return render_template("onlineTestPage.html")
 
 @app.route("/onlineexam")
@@ -908,20 +906,16 @@ def handleOnlineTests():
                     cursor = db.cursor()
                     cursor.execute("""
                         SELECT
-                            q.TestId,q.CourseId,q.Question,o.Options
+                            q.TestId,q.CourseId,q.Question,q.Options
                         FROM
                             questionDetails AS q
-                        JOIN
-                            options AS o ON o.CourseId == q.CourseId AND o.TestId == q.TestId
     
                         WHERE
                             q.CourseId == ? AND CohortId == ?
-                        ORDER BY
-                            q.QuestionsId DESC
                     """, (courseId,cohort))
                     data = cursor.fetchall()
                 if data:
-                    # print(data)
+                    print(f"cheek:{data}")
                     formatedData = []
                     for questionObject in data:
                         formatedData.append({
@@ -969,16 +963,12 @@ def handleOnlineExams():
                     cursor = db.cursor()
                     cursor.execute("""
                         SELECT
-                            q.ExamId,q.CourseId,q.Question,o.Options,q.Duration
+                            q.ExamId,q.CourseId,q.Question,q.Options,q.Duration
                         FROM
                             questionDetails AS q
-                        JOIN
-                            options AS o ON o.CourseId == q.CourseId AND o.ExamId == q.ExamId
     
                         WHERE
                             q.CourseId == ? AND Cohort == ?
-                        ORDER BY
-                            q.QuestionsId DESC
                     """, (courseId, cohort))
                     data = cursor.fetchall()
                 if data:
@@ -1065,6 +1055,7 @@ def handleStudentscores():
             try:
                 student = AssessmentResults(studentId= studentId, courseId= courseId)
                 results = student.markResults()
+                # print(results)
                 return jsonify(results)
             except Exception as error:
                 raise RuntimeError(f"Error in handleStudentResults route{error}")
@@ -1376,7 +1367,8 @@ def admincourseInterface():
                     Examcohort = data["cohort"]
                     time = data["time"]
                     examQuestionObject = data["questionObject"]
-                    examQuestionObject = json.loads(examQuestionObject)                    
+                    examQuestionObject = json.loads(examQuestionObject)
+                    # print(examQuestionObject)                   
 
                     paperIds = CreatePaperIds(courseId=courseID,cohort=Examcohort)
                     examID = paperIds.examId()

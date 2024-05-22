@@ -1,6 +1,7 @@
 
 from ast import Raise
 import json
+from lib2to3.pgen2.literals import test
 import sqlite3
 class StudentDatabases:
     def __init__(self, studentId, firstname,sirName, gender,phoneNumber,email, school,country,password, intake) -> None:
@@ -607,92 +608,45 @@ class Exams:
                         QuestionsId INTEGER PRIMARY KEY AUTOINCREMENT,
                         ExamId VARCHAR(200),
                         CourseId TEXT,
-                        Question TEXT,
                         Cohort VARCHAR(500),
-                        Duration VARCHAR(300)      
-                    )
-                        
-                """)
-
-            with sqlite3.connect("examDataBase.db") as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS options(
-                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        OptionId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        CourseId TEXT,
-                        ExamId TEXT,
+                        Duration VARCHAR(300),
+                        Question TEXT,
                         Options TEXT,
-                        FOREIGN KEY(CourseId) REFERENCES questionDetails(CourseId),
-                        FOREIGN KEY(ExamId) REFERENCES questionDetails(ExamId) 
-                    )
-                        
+                        Answer TEXT       
+                    )      
                 """)
-
-            with sqlite3.connect("examDataBase.db") as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS answer(
-                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        AnswerId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        CourseId TEXT,
-                        ExamId TEXT,
-                        Answer TEXT,
-                        FOREIGN KEY(CourseId) REFERENCES questionDetails(CourseId),
-                        FOREIGN KEY(ExamId) REFERENCES questionDetails(ExamId)  
-                    )
-                        
-                """)
+            
         except sqlite3.Error as error:
-            print(f"failed to connect to exam database:{error}")
-            return f"failed to connect to exam database:{error}"
+            raise RuntimeError(f"failed to connect to exam database:{error}")
         except Exception as error:
-            print(f"exam data base error:{error}")
-            return f"exam data base error:{error}"
+            raise RuntimeError(f"exam data base error:{error}")
     
     def insertIntoTable(self):
         
         for object in self.questionObject:
-            # print("e",object)
+            StringOptions = ",".join(object["options"])
             try:
+                
                 with sqlite3.connect("examDataBase.db") as db:
                     cursor = db.cursor()
                     cursor.execute("""
                         INSERT INTO  questionDetails(
                             ExamId,
                             CourseId,
-                            Question,
                             Cohort,
-                            Duration         
-                        ) VALUES (?,?,?,?,?)
+                            Duration,
+                            Question,
+                            Options,
+                            Answer         
+                        ) VALUES (?,?,?,?,?,?,?)
                             
-                    """,(self.examId,self.courseId, object["question"],self.cohort,self.duration))
-                    StringOptions = ",".join(object["options"])
-                    cursor.execute("""
-                        INSERT INTO  options(
-                            CourseId,
-                            ExamId,
-                            Options         
-                        ) VALUES (?,?,?)
-                            
-                    """,(self.courseId, self.examId, StringOptions))
-                    
-                    cursor.execute("""
-                        INSERT INTO  answer(
-                            CourseId,
-                            ExamId,
-                            Answer        
-                        ) VALUES (?,?,?)
-                            
-                    """,(self.courseId, self.examId, object["correct_answer"]))
+                    """,(self.examId,self.courseId, self.cohort, self.duration, object["question"],StringOptions,object["correct_answer"]))
                     db.commit()
                 
             except sqlite3.Error as error:
-                print(f"Error On inserting into Exam databese :{error}")
-                return f"Error On inserting into Exam databese :{error}"
+                raise RuntimeError(f"Error On inserting into Exam databese :{error}")
             except Exception as error:
-                print(f"Error On inserting into Exam databese :{error}")
-                return f"Error On inserting into Exam databese :{error}"
+                raise RuntimeError(f"Error On inserting into Exam databese :{error}")
             
 
 class ExamStudentAnswes:
@@ -740,9 +694,9 @@ class ExamStudentAnswes:
                     )
                 """)
         except sqlite3.Error as error:
-            return f"failed to connect to  studentExamAnswers.db:{error}"
+            raise RuntimeError(f"failed to connect to  studentExamAnswers.db:{error}")
         except Exception as error:
-            return f"This error is related to studentExamAnswers database:{error} "
+            raise RuntimeError(f"This error is related to studentExamAnswers database:{error} ")
     def insertIntoTable(self):
         # print(f"exa:{self.answerObject}")
         try:
@@ -777,9 +731,9 @@ class ExamStudentAnswes:
                 """,(self.answerObject["studentId"],self.answerObject["courseId"],self.answerObject["ExamId"],stringedAnswerObject))
                 db.commit()
         except sqlite3.Error as error:
-            return f"failed to connect to  studentExamAnswers.db:{error}"
+            raise RuntimeError(f"failed to connect to  studentExamAnswers.db:{error}")
         except Exception as error:
-            return f"This error is related to studentExamAnswers database:{error} "
+            raise RuntimeError(f"This error is related to studentExamAnswers database:{error} ")
 
 
 
@@ -800,91 +754,44 @@ class Test:
                         QuestionsId INTEGER PRIMARY KEY AUTOINCREMENT,
                         TestId VARCHAR(200),
                         CourseId TEXT,
+                        CohortId VARCHAR(200),
+                        Duration VARCHAR(300),
                         Question TEXT,
-                        CohortId TEXT,
-                        Duration VARCHAR(300)    
-                    )
-                        
-                """)
-
-            with sqlite3.connect("testDataBase.db") as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS options(
-                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        OptionId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        CourseId TEXT,
-                        TestId TEXT,
                         Options TEXT,
-                        FOREIGN KEY(CourseId) REFERENCES questionDetails(CourseId),
-                        FOREIGN KEY(TestId) REFERENCES questionDetails(TestId) 
-                    )
-                        
-                """)
-
-            with sqlite3.connect("testDataBase.db") as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    CREATE TABLE IF NOT EXISTS answer(
-                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        AnswerId INTEGER PRIMARY KEY AUTOINCREMENT,
-                        CourseId TEXT,
-                        TestId TEXT,
-                        Answer TEXT,
-                        FOREIGN KEY(CourseId) REFERENCES questionDetails(CourseId),
-                        FOREIGN KEY(TestId) REFERENCES questionDetails(TestId)  
-                    )
-                        
+                        Answer TEXT      
+                    )    
                 """)
         except sqlite3.Error as error:
-            # print(f"failed to connect to test database:{error}")
-            return f"failed to connect to test database:{error}"
+            raise RuntimeError(f"failed to connect to test database:{error}")
         except Exception as error:
-            # print(f"test data base error:{error}")
-            return f"test data base error:{error}"
+            raise RuntimeError(f"test data base error:{error}")
     
     def insertIntoTable(self):
         
         for object in self.questionObject:
             try:
+                StringOptions = ",".join(object["options"])
                 with sqlite3.connect("testDataBase.db") as db:
+                    
                     cursor = db.cursor()
                     cursor.execute("""
                         INSERT INTO  questionDetails(
                             TestId,
                             CourseId,
-                            Question,
                             CohortId,
-                            Duration       
-                        ) VALUES (?,?,?,?,?)
+                            Duration,
+                            Question,
+                            Options,
+                            Answer     
+                        ) VALUES (?,?,?,?,?,?,?)
                             
-                    """,(self.testId,self.courseId, object["question"],self.cohort, self.duration))
-                    StringOptions = ",".join(object["options"])
-                    cursor.execute("""
-                        INSERT INTO  options(
-                            CourseId,
-                            TestId,
-                            Options         
-                        ) VALUES (?,?,?)
-                            
-                    """,(self.courseId, self.testId, StringOptions))
-                    
-                    cursor.execute("""
-                        INSERT INTO  answer(
-                            CourseId,
-                            TestId,
-                            Answer        
-                        ) VALUES (?,?,?)
-                            
-                    """,(self.courseId, self.testId, object["correct_answer"]))
+                    """,(self.testId, self.courseId,self.cohort,self.duration, object["question"],StringOptions,object["correct_answer"] ))
                     db.commit()
                 
             except sqlite3.Error as error:
-                # print(f"Error On inserting into test databese :{error}")
-                return f"Error On inserting into test databese :{error}"
+                raise RuntimeError( f"Error On inserting into test databese :{error}")
             except Exception as error:
-                # print(f"Error On inserting into test databese :{error}")
-                return f"Error On inserting into test databese :{error}"
+                raise RuntimeError(f"Error On inserting into test databese :{error}")
             
 
 class TestStudentAnswes:
@@ -1067,15 +974,14 @@ class AssessmentResults:
                 cursor = db.cursor()
                 cursor.execute("""
                     SELECT
-                        q.TestId,q.CourseId, a.Answer
+                        q.TestId,q.CourseId, q.Answer
                     FROM
                         questionDetails AS q
-                    JOIN
-                        answer AS a ON a.CourseId == q.CourseId
                     WHERE
                         q.CourseId == ?  
                 """,(self.courseId,))
                 TestData = cursor.fetchall()
+                # print(" Right corAnsTst",TestData)
 
                 if TestData:
                     try:
@@ -1089,15 +995,14 @@ class AssessmentResults:
                 cursor = db.cursor()
                 cursor.execute("""
                     SELECT
-                        q.ExamId,q.CourseId,a.Answer
+                        q.ExamId,q.CourseId,q.Answer
                     FROM
                         questionDetails AS q
-                    JOIN
-                        answer AS a ON a.CourseId == q.CourseId
                     WHERE
                         q.CourseId == ?           
                 """,(self.courseId,))
                 Examdata = cursor.fetchall()
+                # print(f" Right corAnsExa: {Examdata}")
                 
                 if Examdata:
                     try:
@@ -1117,75 +1022,85 @@ class AssessmentResults:
     def fetchStudentAnswers(self):
 
         try:
-            with sqlite3.connect("testanswers.db") as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    SELECT
-                        s.Studentid,c.CourseId, t.TestId, a.Answers
-                    FROM
-                        studentdetails as s
-                    JOIN
-                        courseDetails AS c ON c.Studentid == s.Studentid
-                    JOIN
-                        testDetails AS t ON t.CourseId == c.CourseId
-                    JOIN
-                        answers AS a ON a.TestId == t.TestId
-                    WHERE
-                        s.Studentid == ? AND c.CourseId == ?
+            try:
+                with sqlite3.connect("testanswers.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            s.Studentid,c.CourseId, t.TestId, a.Answers
+                        FROM
+                            studentdetails as s
+                        JOIN
+                            courseDetails AS c ON c.Studentid == s.Studentid
+                        JOIN
+                            testDetails AS t ON t.CourseId == c.CourseId
+                        JOIN
+                            answers AS a ON a.TestId == t.TestId
+                        WHERE
+                            s.Studentid == ? AND c.CourseId == ?
+                        
+                    """,(self.studentId, self.courseId))
+
+                    TestData = cursor.fetchall()
                     
-                """,(self.studentId, self.courseId))
-
-                TestData = cursor.fetchall()
-                
-            if TestData:
-                try:
-                    courseId = TestData[0][1]
-                    testId = TestData[0][2]
-                    # studentId = TestData[0][0]
-                    answers = TestData[0][3]
-                    formatedAnswers = answers.split(',')
-                    self.studentAnswersDetails.append({"testDetails":{"courseId":courseId,"testId":testId,"answers":formatedAnswers}})
-                except Exception as error:
-                    raise RuntimeError(f"error while indexing student test answers:{error}")
-
-            with sqlite3.connect("studentExamAnswers.db") as db:
-                cursor = db.cursor()
-                cursor.execute("""
-                    SELECT
-                        s.StudentId,c.courseID,c.ExamId,a.Answers
-                    FROM
-                        studentDetails AS s
-                    JOIN
-                        ExamDetails AS c ON c.StudentId == s.StudentId 
-                    JOIN
-                        Answers  AS a ON a.ExamId == c.ExamId
-                    WHERE
-                        s.StudentId == ? AND c.courseID == ? 
-                """,(self.studentId,self.courseId))
-                ExamData = cursor.fetchall()
-            if ExamData:
-                try:
-                    # studentId = ExamData[0][0]
-                    courseId = ExamData[0][1]
-                    examId = ExamData[0][2]
-                    examsnswers = ExamData[0][3]
-                    formatedAnswer = examsnswers.split(',')
-                    self.studentAnswersDetails.append({"examDetails":{"courseId":courseId,"examId":examId,"answers":formatedAnswer}})
-                except Exception as e:
-                    raise RuntimeError(f"error while indexing exam student answers details:{e}")
-
-        except sqlite3.Error as error:
-            raise RuntimeError(f" sql Error on fetchRightAnswer api:{error}")
+                if TestData:
+                    try:
+                        courseId = TestData[0][1]
+                        testId = TestData[0][2]
+                        studentId = TestData[0][0]
+                        answers = TestData[0][3]
+                        formatedAnswers = answers.split(',')
+                        self.studentAnswersDetails.append({"testDetails":{"studentId":studentId,"courseId":courseId,"testId":testId,"answers":formatedAnswers}})
+                    except Exception as error:
+                        raise RuntimeError(f"error while indexing student test answers:{error}")
+            except sqlite3.Error as e:
+                return f" sql connection error:{e}"
+            except Exception as e:
+                return f"error on querrying student test answers:{e}"
+            
+            try:
+                with sqlite3.connect("studentExamAnswers.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            s.StudentId,c.courseID,c.ExamId,a.Answers
+                        FROM
+                            studentDetails AS s
+                        JOIN
+                            ExamDetails AS c ON c.StudentId == s.StudentId 
+                        JOIN
+                            Answers  AS a ON a.ExamId == c.ExamId
+                        WHERE
+                            s.StudentId == ? AND c.courseID == ? 
+                    """,(self.studentId,self.courseId))
+                    ExamData = cursor.fetchall()
+                if ExamData:
+                    try:
+                        studentId = ExamData[0][0]
+                        courseId = ExamData[0][1]
+                        examId = ExamData[0][2]
+                        examsnswers = ExamData[0][3]
+                        formatedAnswer = examsnswers.split(',')
+                        self.studentAnswersDetails.append({"examDetails":{ "studentId":studentId,"courseId":courseId,"examId":examId,"answers":formatedAnswer}})
+                    except Exception as e:
+                        raise RuntimeError(f"error while indexing exam student answers details:{e}")
+            except sqlite3.Error as e:
+                return f"sql connection error: {e}"
+            except Exception as e:
+                return f"error on querrying student exam answers: {e}"
+            
         except Exception as error:
-            raise RuntimeError( f"Error on fetchRightAnswer api:{error}")
+            raise RuntimeError(f" error on fetching Student Answers :{error}")
         
     def markResults(self):
         """fetching answers"""
         self.fetchRightAnswers()
         self.fetchStudentAnswers()
-        def getAnswers():
+        print(f"st: {self.studentAnswersDetails}")
+        # print(f"cor: {self.correctAnswers}")
+        def markTest():
             Testscores = 0
-            Examscores = 0
+            
             for index, obj in enumerate(self.correctAnswers):
                 for key in obj:
                     if key == "testDetails":
@@ -1209,31 +1124,50 @@ class AssessmentResults:
                                         Testscores = Testscores
                             except Exception as error:
                                 raise RuntimeError(f": {error}")
-                    elif key == "examDetails":
-                        examdetails = obj["examDetails"]
-                        EcourseId = examdetails["courseId"]
-                        examId = examdetails["ExamId"]
-                        Eanswers = examdetails["answers"]
+                    else:
+                        continue
+            results = f"{round((Testscores/len(self.correctAnswers) * 100), 1)}%"
+            return {"testScors":results}
+        def markExam():
+            for index, obj in enumerate(self.correctAnswers):
+                Examscores = 0
+                for key in obj:
+                    if key == "examDetails":
+                                examdetails = obj["examDetails"]
+                                EcourseId = examdetails["courseId"]
+                                examId = examdetails["ExamId"]
+                                Eanswers = examdetails["answers"]
 
-                        # accessing student exam answer details
-                        studentExamAnswers = self.studentAnswersDetails[index]
-                        sExamAnswerDetails = studentExamAnswers["examDetails"]
-                        sEcourseId = sExamAnswerDetails["courseId"]
-                        sExamId = sExamAnswerDetails["examId"]
-                        sEanswers = sExamAnswerDetails["answers"]
+                                # accessing student exam answer details
+                                studentExamAnswers = self.studentAnswersDetails[index]
+                                sExamAnswerDetails = studentExamAnswers["examDetails"]
+                                sEcourseId = sExamAnswerDetails["courseId"]
+                                sExamId = sExamAnswerDetails["examId"]
+                                sEanswers = sExamAnswerDetails["answers"]
 
-                        if EcourseId == sEcourseId and examId == sExamId:
-                            try:
-                                for index in range(len(Eanswers)):
-                                    if Eanswers[index] == sEanswers[index]:
-                                        
-                                        Examscores += 1
-                                    else:
-                                        Examscores = Examscores
-                            except Exception as error:
-                                raise RuntimeError(f": {error}")
-            print(Testscores,Examscores)               
-        getAnswers()
+                                if EcourseId == sEcourseId and examId == sExamId:
+                                    try:
+                                        for index in range(len(Eanswers)):
+                                            if Eanswers[index] == sEanswers[index]:
+                                                
+                                                Examscores += 1
+                                            else:
+                                                Examscores = Examscores
+                                    except Exception as error:
+                                        raise RuntimeError(f": {error}")
+                    else:
+                        continue
+            results = f"{round((Examscores/len(self.correctAnswers) * 100), 1)}%"
+            return {"examScors":results}
+        testResults = markTest()
+        examResults = markExam()
+        if testResults or examResults:
+            scores = [testResults, examResults]
+            return scores
+            
+        
+        
+                                
 
 
                 
