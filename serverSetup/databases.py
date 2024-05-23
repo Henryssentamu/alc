@@ -1051,6 +1051,7 @@ class AssessmentResults:
                         answers = TestData[0][3]
                         formatedAnswers = answers.split(',')
                         self.studentAnswersDetails.append({"testDetails":{"studentId":studentId,"courseId":courseId,"testId":testId,"answers":formatedAnswers}})
+        
                     except Exception as error:
                         raise RuntimeError(f"error while indexing student test answers:{error}")
             except sqlite3.Error as e:
@@ -1096,10 +1097,15 @@ class AssessmentResults:
         """fetching answers"""
         self.fetchRightAnswers()
         self.fetchStudentAnswers()
-        print(f"st: {self.studentAnswersDetails}")
+
+        # print(f"st: {self.studentAnswersDetails}")
         # print(f"cor: {self.correctAnswers}")
         def markTest():
             Testscores = 0
+            student_id = None
+            course_id = None
+            test_id = None
+            # print(self.correctAnswers)
             
             for index, obj in enumerate(self.correctAnswers):
                 for key in obj:
@@ -1108,12 +1114,21 @@ class AssessmentResults:
                         courseId = testDetails["courseID"]
                         testId = testDetails["testId"]
                         answers = testDetails["answers"]
+
+                        # updating function varibale 
+                        course_id = courseId
+                        test_id = testId
+
                         # accessing student test answer details
                         studentTestAnswers  = self.studentAnswersDetails[index]
                         sTestAnsDetails = studentTestAnswers["testDetails"]
                         sCourseId = sTestAnsDetails["courseId"]
                         sTestId = sTestAnsDetails["testId"]
                         sAnswers = sTestAnsDetails["answers"]
+                        studentId = sTestAnsDetails["studentId"]
+                        # updating function variable
+                        student_id = studentId
+            
 
                         if courseId == sCourseId and testId == sTestId:
                             try:
@@ -1127,23 +1142,40 @@ class AssessmentResults:
                     else:
                         continue
             results = f"{round((Testscores/len(self.correctAnswers) * 100), 1)}%"
-            return {"testScors":results}
+            formatedResults =  {"studentId":student_id,"courseId": course_id,"testId":test_id,"testScors":results}
+            """initializing test results database and populating it"""
+            if formatedResults:
+                try:
+                    resultsDatabaseObject = StudentScoresDb(details= formatedResults)
+                    resultsDatabaseObject.creatTable()
+                    resultsDatabaseObject.insertintoTestdb()
+                except Exception as e:
+                    raise RuntimeError(f"error while initializing test results database object:{e}")
         def markExam():
             for index, obj in enumerate(self.correctAnswers):
                 Examscores = 0
+                student_id = None
+                course_id = None
+                exam_id = None
                 for key in obj:
                     if key == "examDetails":
                                 examdetails = obj["examDetails"]
                                 EcourseId = examdetails["courseId"]
                                 examId = examdetails["ExamId"]
                                 Eanswers = examdetails["answers"]
-
+                                course_id = EcourseId
+                                exam_id = examId
+                                
                                 # accessing student exam answer details
                                 studentExamAnswers = self.studentAnswersDetails[index]
                                 sExamAnswerDetails = studentExamAnswers["examDetails"]
                                 sEcourseId = sExamAnswerDetails["courseId"]
                                 sExamId = sExamAnswerDetails["examId"]
                                 sEanswers = sExamAnswerDetails["answers"]
+                                studentId = sExamAnswerDetails["studentId"]
+
+                                #  updating 
+                                student_id = studentId
 
                                 if EcourseId == sEcourseId and examId == sExamId:
                                     try:
@@ -1158,12 +1190,98 @@ class AssessmentResults:
                     else:
                         continue
             results = f"{round((Examscores/len(self.correctAnswers) * 100), 1)}%"
-            return {"examScors":results}
-        testResults = markTest()
-        examResults = markExam()
-        if testResults or examResults:
-            scores = [testResults, examResults]
-            return scores
+            formatedResults =  {"studentId":student_id, "courseId":course_id,"examid":exam_id,"examScors":results}
+            """initializing exam results database and populating it"""
+            if formatedResults:
+                try:
+                    
+                    resultsDatabaseObject = StudentScoresDb(details= formatedResults)
+                    resultsDatabaseObject.creatTable()
+                    resultsDatabaseObject.insertintoExamdb()
+                except Exception as e:
+                    raise RuntimeError(f"error while initailizing exam  results database object: {e}")
+        try:
+            markTest()
+        except Exception as e:
+            raise RuntimeError(e)
+        try:
+
+            markExam()
+        except Exception as e:
+            raise RuntimeError(e)
+        
+        
+
+class StudentScoresDb:
+    def __init__(self, details) -> None:
+        self.details = details
+        self.studentId = self.details["studentId"]
+        self.courseId = self.details["courseId"]
+    def creatTable(self):
+        try:
+            with sqlite3.connect("studentScoresDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS testREsults(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        ResultsId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        StudentId VARCHAR(200),
+                        CourseId TEXT,
+                        TestId TEXT,
+                        Scores VARCHAR(100)          
+                    )
+                """)
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS examResults(
+                               
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        RestultsId INTEGER PRIMARY KEY AUTOINCREMENT,
+                        StudentId VARCHAR(200),
+                        CourseId TEXT,
+                        ExamId TEXT,
+                        Scores VARCHAR(100)
+                    )
+                """)
+            
+        except sqlite3.Error as error:
+            raise RuntimeError(f" sql connection error: {error}")
+        except Exception as error:
+            raise RuntimeError(f" error while creating studentscores:{error}")
+    def insertintoTestdb(self):
+        try:
+            with sqlite3.connect("studentScoresDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO testREsults(
+                        StudentId,
+                        CourseId,
+                        TestId,
+                        Scores 
+                    ) VALUES(?,?,?,?)
+                """,(self.studentId,self.courseId, self.details["testId"],self.details["testScors"]))
+        except sqlite3.Error as e:
+            raise RuntimeError(f"sql connection error while inserting in test results db: {e}")
+        except Exception as e:
+            raise RuntimeError(f"error while inserting in test results db: {e}")
+    def insertintoExamdb(self):
+        try:
+            with sqlite3.connect("studentScoresDatabase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO examResults(
+                        StudentId,
+                        CourseId,
+                        ExamId,
+                        Scores 
+                    ) VALUES(?,?,?,?)
+                """,(self.studentId,self.courseId, self.details["examid"],self.details["examScors"]))
+        except sqlite3.Error as e:
+            raise RuntimeError(f"sql connection error while inserting in Exam results db: {e}")
+        except Exception as e:
+            raise RuntimeError(f"error while inserting in Exam results db: {e}")
+                
+    
             
         
         

@@ -893,55 +893,63 @@ def handleRecordedLinks():
 
 @app.route("/handleOnlinetests", methods=["GET","POST"])
 def handleOnlineTests():
-    if request.method == "GET":
-        # studentId = session.get("logged_student_id")
-        studentId = current_user.id
-        try:
-            courseDetails = session["courseDetails_loadedOnStudentPortal"]
-            courseId = courseDetails["courseId"]
-            cohort = courseDetails["cohort"]
-            if courseId:
-                # print(courseId)
-                with sqlite3.connect("testDataBase.db") as db:
-                    cursor = db.cursor()
-                    cursor.execute("""
-                        SELECT
-                            q.TestId,q.CourseId,q.Question,q.Options
-                        FROM
-                            questionDetails AS q
-    
-                        WHERE
-                            q.CourseId == ? AND CohortId == ?
-                    """, (courseId,cohort))
-                    data = cursor.fetchall()
-                if data:
-                    print(f"cheek:{data}")
-                    formatedData = []
-                    for questionObject in data:
-                        formatedData.append({
-                            "studentId": studentId,
-                            "TestId":questionObject[0],
-                            "courseId": questionObject[1],                           
-                            "Question":questionObject[2],
-                            "Options": questionObject[3].split(",")
-                        })
-                    # print(formatedData)
+    studentId = current_user.id
+    try:
+        courseDetails = session["courseDetails_loadedOnStudentPortal"]
+        courseId = courseDetails["courseId"]
+        cohort = courseDetails["cohort"]
+    except Exception as error:
+            raise RuntimeError(f"session in handleonlineTest route failed {error}")
+    if request.method == "GET":  
+        if courseId:
+            # print(courseId)
+            with sqlite3.connect("testDataBase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        q.TestId,q.CourseId,q.Question,q.Options
+                    FROM
+                        questionDetails AS q
 
-                    return jsonify(formatedData)
-                else:
-                    return jsonify({"Test Status":"No test yet"})
+                    WHERE
+                        q.CourseId == ? AND CohortId == ?
+                """, (courseId,cohort))
+                data = cursor.fetchall()
+            if data:
+                print(f"cheek:{data}")
+                formatedData = []
+                for questionObject in data:
+                    formatedData.append({
+                        "studentId": studentId,
+                        "TestId":questionObject[0],
+                        "courseId": questionObject[1],                           
+                        "Question":questionObject[2],
+                        "Options": questionObject[3].split(",")
+                    })
+                # print(formatedData)
 
-        except Exception as error:
-            return f"session in handleonlineTest route failed {error}"
+                return jsonify(formatedData)
+            else:
+                return jsonify({"Test Status":"No test yet"})
+            
     else:
         Results = request.json
-        # print(f"test answers  wano :{Results}")
         try:
             testResults = TestStudentAnswes(Results)
             testResults.createTable()
             testResults.insertIntotable()
+            if Results:
+                """
+                    making results after populating the student test answer  database
+                """
+                try:
+                    student = AssessmentResults(studentId= studentId, courseId= courseId)
+                    student.markResults()
+                except Exception as e:
+                    raise RuntimeError(e)
         except Exception as error:
-            return f"error on dealing with student test respons:{error}"
+            raise RuntimeError(f"error on dealing with student test respons:{error}")
+        
     return jsonify({"api status":"handleOnlinetest api failure"})
 """ retrive test questions from the data base and send them to client server
     access the course to retrive quesions for from the course if which is stored in the
@@ -950,56 +958,63 @@ def handleOnlineTests():
 
 @app.route("/handleOnlineExams", methods=["GET","POST"])
 def handleOnlineExams():
-    if request.method == "GET":
-        # studentId = session.get("logged_student_id")
-        studentId = current_user.id
-        try:
-            courseDetails = session["courseDetails_loadedOnStudentPortal"]
-            courseId = courseDetails["courseId"]
-            cohort = courseDetails["cohort"]
 
-            if courseId:
-                with sqlite3.connect("examDataBase.db") as db:
-                    cursor = db.cursor()
-                    cursor.execute("""
-                        SELECT
-                            q.ExamId,q.CourseId,q.Question,q.Options,q.Duration
-                        FROM
-                            questionDetails AS q
+    studentId = current_user.id
+    try:
+        courseDetails = session["courseDetails_loadedOnStudentPortal"]
+        courseId = courseDetails["courseId"]
+        cohort = courseDetails["cohort"]
+    except Exception as error:
+        return f"session in handleonlineExam route failed {error}"
     
-                        WHERE
-                            q.CourseId == ? AND Cohort == ?
-                    """, (courseId, cohort))
-                    data = cursor.fetchall()
-                if data:
-                    # print(data)
-                    formatedData = []
-                    for questionObject in data:
-                        formatedData.append({
-                            "studentId": studentId,
-                            "ExamId":questionObject[0],
-                            "courseId": questionObject[1],                           
-                            "Question":questionObject[2],
-                            "duration":questionObject[4],
-                            "Options": questionObject[3].split(",")
-                        })
-                    
-                    
+    if request.method == "GET":
+        if courseId:
+            with sqlite3.connect("examDataBase.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    SELECT
+                        q.ExamId,q.CourseId,q.Question,q.Options,q.Duration
+                    FROM
+                        questionDetails AS q
 
-                    return jsonify(formatedData)
-                else:
-                    return jsonify({"Exam Status":"No exam yet"})
+                    WHERE
+                        q.CourseId == ? AND Cohort == ?
+                """, (courseId, cohort))
+                data = cursor.fetchall()
+            if data:
+                # print(data)
+                formatedData = []
+                for questionObject in data:
+                    formatedData.append({
+                        "studentId": studentId,
+                        "ExamId":questionObject[0],
+                        "courseId": questionObject[1],                           
+                        "Question":questionObject[2],
+                        "duration":questionObject[4],
+                        "Options": questionObject[3].split(",")
+                    })
+                
+                
 
-        except Exception as error:
-            return f"session in handleonlineExam route failed {error}"
+                return jsonify(formatedData)
+            else:
+                return jsonify({"Exam Status":"No exam yet"})
+            
     else:
         studentAnswers = request.json
-        # print(F" WERRRRRREEEE: {studentAnswers}")
         answer = ExamStudentAnswes(studentAnswers)
         answer.createTable()
         answer.insertIntoTable()
 
-        # print(studentAnswers)
+        """
+            making results after populating the student exam answer  database
+        """
+        try:
+            student = AssessmentResults(studentId= studentId, courseId= courseId)
+            student.markResults()
+        except Exception as e:
+            raise RuntimeError(e)
+
     return jsonify({"api status":"handleOnlineExam api failure"})
 
 
@@ -1049,16 +1064,53 @@ def handleCourseYouTubeLink():
 @app.route("/handleStudentscores", methods =["GET"])
 def handleStudentscores():
     if request.method == "GET":
+        studentMarks = []
         courseId = session.get("courseId_loadedOnStudentPortal")
         studentId = current_user.id
         if courseId and studentId:
             try:
-                student = AssessmentResults(studentId= studentId, courseId= courseId)
-                results = student.markResults()
-                # print(results)
-                return jsonify(results)
+                with sqlite3.connect("studentScoresDatabase.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            s.Scores
+                        FROM
+                            testREsults AS s
+                        WHERE
+                            s.StudentId == ? and s.CourseId == ?     
+                    """,(studentId, courseId))
+                    data = cursor.fetchone()
+                if data:
+                    studentMarks.append({"test":data[0]})
+
+            except sqlite3.Error as e:
+                raise RuntimeError(f"sql connection error: {e}")
             except Exception as error:
-                raise RuntimeError(f"Error in handleStudentResults route{error}")
+                raise RuntimeError(f"Error while retriving student test scores {error}")
+            
+            try:
+                with sqlite3.connect("studentScoresDatabase.db") as db:
+                    cursor = db.cursor()
+                    cursor.execute("""
+                        SELECT
+                            e.Scores
+                        FROM
+                            examResults AS e
+                        WHERE
+                            StudentId == ? AND CourseId == ?
+                    """,(studentId, courseId))
+                    data = cursor.fetchone()
+                    if data:
+                        studentMarks.append({"exam":data[0]})
+
+            except sqlite3.Error as e:
+                raise RuntimeError(f"sql connection error: {e}")
+            except Exception as error:
+                raise RuntimeError(f"Error while retriving student exam scores {error}")
+            
+
+            return jsonify(studentMarks)
+                
         else:
             return jsonify({"student and course IDs":"not suplied"})
         

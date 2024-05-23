@@ -7,7 +7,7 @@ async function fetchScores(){
             return response.json()
         })
         .then(data =>{
-            console.log(data)
+            // console.log(data)
             return data
         })
         .catch(error =>{
@@ -17,26 +17,25 @@ async function fetchScores(){
 
 async function loadScores(){
     var score = await fetchScores()
-    console.log(score)
     var html = ""
     score.forEach((object)=>{
         for(var key in object){
-            if (key == "testId"){
+            if (key == "test"){
                 html += `<div class="section">
                     
                     <div class="subsection">
                         <h2> Test </h2>
-                        <p>Score: ${object["scores"]}%</p> <!-- Calculate the overall total score and display here -->
+                        <p>Score: ${object[key]}</p> <!-- Calculate the overall total score and display here -->
                     </div>
                 </div>
                 `
             }
-            else if(key == "examId"){
+            else if(key == "exam"){
                 html += `<div class="section">
                     
                     <div class="subsection">
                         <h2> Exam </h2>
-                        <p>Score: ${object["scores"]}%</p> <!-- Calculate the overall total score and display here -->
+                        <p>Score: ${object[key]}</p> <!-- Calculate the overall total score and display here -->
                     </div>
                 </div>
                 `
@@ -48,9 +47,6 @@ async function loadScores(){
     })
     document.querySelector(".container")
         .innerHTML = html
-
-
-    console.log("here are scores:",score)
 }
 
 loadScores()
