@@ -1,39 +1,156 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Profile</title>
-<link rel="stylesheet" href="../static/studentProfile_css.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .profile-container {
+            max-width: 500px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .profile-container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #fafafa;
+        }
+        .section-title {
+            font-size: 1.4em;
+            color: #555;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #ddd;
+        }
+        .profile-details {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .profile-details li {
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+        }
+        .profile-details li:last-child {
+            border-bottom: none;
+        }
+        .profile-details span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        button{
+          background-color: transparent;
+          text-align: center;
+          color: black;
+          padding: 5px;
+          border-radius: 10px;
+        }
+
+    </style>
 </head>
 <body>
-  <header>
-    <!-- Header content if needed -->
-  </header>
-  
-  <main class="profile-container">
-    <div class="profile-header">
-      <h1>Student Profile</h1>
+
+    <div class="profile-container">
+      <p>
+        <button>
+          <a href="{{url_for('studentDashboard')}}">Back</a>
+        </button>
+      </p>
+        
     </div>
-    <div class="profile-info">
-      <div class="info-row">
-        <span class="info-label">Full Name:</span>
-        <span class="info-value">John Doe</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Country of Origin:</span>
-        <span class="info-value">Uganda</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Contact:</span>
-        <span class="info-value">john.doe@example.com</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">School Enrolled:</span>
-        <span class="info-value">School of Engineering</span>
-      </div>
-      <!-- Add more info rows as needed -->
-    </div>
-  </main>
+
+    <script>
+
+      function fetchStudentDetails(){
+        return fetch("http://127.0.0.1:5000/studentProfile?type=studentDetails")
+          .then(response =>{
+            if(!response.ok){
+              throw new Error("api failed to fetch student details")
+            }
+            return response.json()
+          })
+          .then(data =>{
+            return data
+          })
+          .catch(error =>{
+            console.log(error)
+          })
+
+      }
+
+      async function generateHtml(){
+        var studentData = await  fetchStudentDetails()
+        var html = `
+                    <div class="section">
+                      <div class="section-title">  <span>${ studentData["sName"]}</span> <span>${ studentData["fName"]}</span> </div>
+
+          
+                    </div>
+        
+                    <div class="section">
+                      <div class="section-title">Contact Details</div>
+                      <ul class="profile-details">
+                          <li><span>Email:</span> <span>${studentData["email"]}</span></li>
+                          <li><span>Phone:</span> <span>${studentData["phone"]}</span></li>
+                      </ul>
+                    </div>
+
+        <div class="section">
+            <div class="section-title">Academic Details</div>
+            <ul class="profile-details">
+                <li><span>School:</span> <span>${ studentData["school"]}</span></li>
+                <li><span>Cohort:</span> <span>${studentData["cohort"]}</span></li>
+            </ul>
+        </div>`
+
+
+      return html
+
+
+      }
+
+      async function loadhtml(){
+        var htmlData = await generateHtml()
+        document.querySelector(".profile-container")
+          .innerHTML += htmlData
+        
+      }
+
+      loadhtml()
+
+
+
+      
+
+      
+      
+    </script>
+
 </body>
 </html>

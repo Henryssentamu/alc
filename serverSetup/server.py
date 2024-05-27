@@ -531,7 +531,6 @@ def login():
                 """session bellow stores logged instudent id which is to be used getBioDataAndCourseDetails route """
                 
                 login_user(user=user)
-                # session["logged_student_id"] = current_user.id
                 next_url = session.pop("payment_url", None)
                 # if request.referrer and "/payments" in request.referrer:
                 if next_url and "/payments" in next_url:
@@ -764,14 +763,14 @@ def getBioDataAndCourseDetails():
                             """, (id,))
                             details.append(cursor.fetchone())
                     except sqlite3.Error as error:
-                        print(f"error in accessing course database in login route:{error}")
+                        raise RuntimeError(f"error in accessing course database in login route:{error}")
                 # print(details)
                 
                 
         except sqlite3.Error as error:
-            print(f"failed to connect to sqlite in the login route:{error}")
+            raise RuntimeError(f"failed to connect to sqlite in the login route:{error}")
         except Exception as error:
-            print(f"there was aproblem in accessing student paid course details under login route:{error}")
+            raise RuntimeError(f"there was aproblem in accessing student paid course details under login route:{error}")
         formated_details = [{"courseID":item[0],"courseName":item[1], "imageLink":item[2]} for item in details]
         allDetails = {
             "firstName":studentData[0],
@@ -1119,8 +1118,21 @@ def handleStudentscores():
     return jsonify({"api status":" handleStudentResults api failed"})
 
 
-@app.route("/studentProfile")
+@app.route("/studentProfile", methods=["GET", "POST"])
 def studentProfile():
+    if request.method == "GET":
+        requestType = request.args.get("type")
+        if requestType == "studentDetails":
+            studentId = current_user.id
+            try:
+                student = FetchStudentData(studentId= studentId)
+                studentData = student.studentBio()
+                details = {"fName": studentData[0], "sName":studentData[1], "school":studentData[2],"cohort":studentData[3],"phone":studentData[4],"email":studentData[5]}
+                return jsonify(details)
+                
+            except Exception as error:
+                raise RuntimeError(f"error while initiating FetchStudentData class:{error}")
+
 
     return render_template("studentProfile.html")
 

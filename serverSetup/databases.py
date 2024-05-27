@@ -470,26 +470,29 @@ class FetchStudentData:
                             S.FirstName,
                             S.SirName,
                             X.school,
-                            I.Intake
+                            I.Intake,
+                            C.phoneNUmber,
+                            C.email
+                            
                         FROM 
                             studentDetails AS S
                         JOIN
                             studentSchools AS X ON X.studentId == S.studentId
                         JOIN
                             studentIntake AS I ON I.studentId == S.studentId
+                        JOIN
+                            studentContacts AS C ON C.studentId == S.studentId
                         WHERE
                             S.studentId == ?
                                    
                     """,(self.studentId,))
                     student_details = cursor.fetchone()
+                return student_details
                     
-            except sqlite3.Error as error:
-                print(f"sqlite under fetch student details in stdent details class failed:{error}")
-                return None
+            except sqlite3.Error as e:
+                raise RuntimeError(f"sql connection error while connecting to student database:{e}")
             except Exception as error:
-                print(f"faced problames in fetching student details under student details class:{error}")
-                return None
-            return student_details
+                raise RuntimeError(f"error while retriving student details from studemt databse:{error}")
         else:
             return "either you did't provide student id or you provided empty one"
 
