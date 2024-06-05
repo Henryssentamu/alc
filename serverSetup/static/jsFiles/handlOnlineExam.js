@@ -1,5 +1,5 @@
 async function fetchExamData() {
-    return await fetch("http://127.0.0.1:5000/handleOnlineExams")
+    return await fetch("handleOnlineExams")
       .then(response =>{
           if(! response.ok){
             throw new Error("handleOnlinExam api failed")
@@ -84,7 +84,7 @@ async function loadPage(){
     
 	// Function to redirect user to the provided page
     function redirectToProvidedPage() {
-      window.location.href = 'http://127.0.0.1:5000/loadPaidcourseOnstudentPortal';
+      window.location.href = 'loadPaidcourseOnstudentPortal';
     }
 
 	// Function to send answers to the server
@@ -92,7 +92,7 @@ async function loadPage(){
 		var courseId = data[1]["courseId"]
 		var studentId = data[0]["studentId"]
 		var ExamId = data[0]["ExamId"]
-		fetch("http://127.0.0.1:5000/handleOnlineExams",{
+		fetch("handleOnlineExams",{
 			method: "POST",
 			headers:{
 				'Content-Type': 'application/json'

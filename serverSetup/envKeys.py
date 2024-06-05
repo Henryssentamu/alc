@@ -3,4 +3,4 @@ strip_key = "sk_test_51OfIo5FEzGEPgpDS70hh7vTU0HSCG6Kp3J8dX9Nc3eVDYGPSKEfIzqDdjI
 stripwhookkey = 'whsec_f98b915535bc5c05f4173c8b1e847aead40014396adbe9892a1c9907844976d9'
 
 
-ALC_SECURITY = "3cdc5frM8YJ9,09KI"
+saikolearn_SECURITY = "3cdc5frM8YJ9,09KI"

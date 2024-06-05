@@ -37,7 +37,7 @@
     }
 
     .resource-form input[type="text"] {
-        width: calc(100% - 100px);
+        width: csaikolearn(100% - 100px);
         padding: 18px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
@@ -93,7 +93,7 @@
         
     }
     .input-section{
-        width: calc(100% - 100px);
+        width: csaikolearn(100% - 100px);
         padding: 18px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
@@ -139,7 +139,7 @@
         align-items: center;
     }
     .projectinput{
-        width: calc(80% - 100px);
+        width: csaikolearn(80% - 100px);
         padding: 18px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
@@ -260,7 +260,7 @@
 <script>
 
     async function getCourseDEtails(){
-            return await fetch("http://127.0.0.1:5000/admincourseInterface?type=courseDetails")
+            return await fetch("admincourseInterface?type=courseDetails")
                 .then(response =>{
                     if(!response.ok){
                         throw new Error("api failed to retrive course data from server")
@@ -320,7 +320,7 @@
                 "data":data
             }
             console.log(data)
-            fetch("http://127.0.0.1:5000/admincourseInterface",{
+            fetch("admincourseInterface",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -371,7 +371,7 @@
         }
 
 
-        fetch("http://127.0.0.1:5000/admincourseInterface",{
+        fetch("admincourseInterface",{
             method:"POST",
             headers:{
                 "Content-Type": "application/json"
@@ -410,7 +410,7 @@
             }
         }
 
-        fetch("http://127.0.0.1:5000/projectpage",{
+        fetch("projectpage",{
             method:"POST",
             headers:{
                 "Content-Type":"application/json"

@@ -8,8 +8,9 @@ async function sendPurchasedCourseDetails(){
     // this api sends student id and paid course id to the studentPaidCourseRecords
     //  route so that course padid 
     // data base is updated
-
-    fetch("http://127.0.0.1:5000/studentPaidCourseRecords", {
+ 
+    // fetch("studentPaidCourseRecords", {
+    fetch("studentPaidCourseRecords", {
         method: "POST",
         headers :{
             'Content-Type': 'application/json',

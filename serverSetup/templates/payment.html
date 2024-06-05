@@ -35,7 +35,7 @@
 
         input[type="text"],
         input[type="email"] {
-        width: calc(100% - 22px); /* Adjusted width to account for padding and border */
+        width: csaikolearn(100% - 22px); /* Adjusted width to account for padding and border */
         padding: 10px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
@@ -64,7 +64,7 @@
     </style>
 </head>
 <body>
-        <h1>ALC Payment Information Form</h1>
+        <h1>saikolearn Payment Information Form</h1>
     <form method="POST" action="{{ url_for('payment') }}">
         {{ form.hidden_tag() }}
 

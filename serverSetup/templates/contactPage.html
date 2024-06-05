@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALC Online School - Contact Us</title>
+    <title>saikolearn Online School - Contact Us</title>
     <style>
         a{
             text-decoration: none;
@@ -75,7 +75,7 @@
     <header>
         <h1>
             <a href="{{url_for('homePage')}}">
-                ALC
+                saikolearn
             </a>
         </h1>
     </header>
@@ -84,7 +84,7 @@
         <p>If you have any questions or concerns, feel free to reach out to us using the contact form below:</p>
         <p>For immediate assistance, you can also contact us via phone or email:</p>
         <p><strong>Office Number:</strong> +2567981066</p>
-        <p><strong>Admin's Webmail:</strong> admin@alcschool.edu</p>
+        <p><strong>Admin's Webmail:</strong> admin@saikolearnschool.edu</p>
 
 
         <div class="form-section">
@@ -121,7 +121,7 @@
         async function sendQuerryToServer(){
             var messageDetails = await getinputDetails()
             var message = {"type":"inquiry","data":messageDetails}
-            fetch("http://127.0.0.1:5000/contact",{
+            fetch("contact",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -140,7 +140,7 @@
             .catch(error =>{
                 console.log(error)
             })
-            alert("your message is sent  to ALC Customer Care")
+            alert("your message is sent  to saikolearn Customer Care")
 
             window.location.href = "http://127.0.0.1:5000"
         }

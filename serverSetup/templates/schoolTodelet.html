@@ -22,7 +22,7 @@
     <script >
         // Assume you have admin details available from the server
         async function fetchSchoolData(){
-            return await fetch("http://127.0.0.1:5000/handleAdminSchoolDeletion?type=get_data",{
+            return await fetch("handleAdminSchoolDeletion?type=get_data",{
                 method:"GET",
                 headers:{
                     "Content-Type": "application/json" 
@@ -50,7 +50,7 @@
                 "type": "delete"
             }
 
-            fetch("http://127.0.0.1:5000/handleAdminSchoolDeletion",{
+            fetch("handleAdminSchoolDeletion",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"

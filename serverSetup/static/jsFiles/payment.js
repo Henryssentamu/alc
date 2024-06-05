@@ -4,7 +4,7 @@
 // var socket = io.connect('http://127.0.0.1:5000');
 
 // async function getSocketAlert(){
-//     const response = await fetch("http://127.0.0.1:5000/payments")
+//     const response = await fetch("payments")
 //     .then(response =>{
 //         if(!response.ok){
 //             throw new Error("socketio event was not sent to the client server")
@@ -79,7 +79,7 @@
 
 // async function getSocketAlert() {
 //     try {
-//         const response = await fetch("http://127.0.0.1:5000/payments");
+//         const response = await fetch("payments");
 //         if (!response.ok) {
 //             throw new Error("socketio event was not sent to the client server");
 //         }
@@ -91,7 +91,7 @@
 //     }
 // }
 
-// let my_endpoint = "http://127.0.0.1:5000/fetchPaymentDetails";
+// let my_endpoint = "fetchPaymentDetails";
 
 // var socket = io.connect('http://127.0.0.1:5000');
 

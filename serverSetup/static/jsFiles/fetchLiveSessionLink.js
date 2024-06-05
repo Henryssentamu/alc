@@ -1,5 +1,5 @@
 async function fetchLiveSessionLink(){
-    return await fetch("http://127.0.0.1:5000/handleLiveSessionLinks")
+    return await fetch("handleLiveSessionLinks")
         .then(response =>{
             if(! response.ok){
                 throw new Error("handleLiveSessionLinks route (api) didn't send data")

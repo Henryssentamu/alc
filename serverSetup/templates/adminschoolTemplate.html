@@ -105,7 +105,7 @@
             <!-- to be filled with js  -->
             
         </h2>
-        <div>Total number of available courses: <span id="totalCourses">0</span></div>
+        <div>Total number of available courses: <span id="totsaikolearnourses">0</span></div>
         <div>Total number of students: <span id="numStudents">0</span></div>
     </div>
 
@@ -133,7 +133,7 @@
 
 <script>
     async  function fetchSchoolname(){
-        return await fetch("http://127.0.0.1:5000/adminschoolTemplate?type=schoolName")
+        return await fetch("adminschoolTemplate?type=schoolName")
             .then(response =>{
                 if(!response.ok){
                     throw new Error("api failed to fetch school name")
@@ -150,7 +150,7 @@
     }
 
     async function fetchCourseDetails(){
-        return await fetch("http://127.0.0.1:5000/adminschoolTemplate?type=courseDdetails")
+        return await fetch("adminschoolTemplate?type=courseDdetails")
             .then(response =>{
                 if(!response.ok){
                     throw new Error("faced error whill fetching course details")
@@ -199,7 +199,7 @@
 
         document.querySelector(".course-container")
             .innerHTML = html
-            document.getElementById("totalCourses")
+            document.getElementById("totsaikolearnourses")
                 .innerHTML = numberOfSchools
 
     }
@@ -215,7 +215,7 @@
                 "type":"addCourse",
                 "body":courseDetails
             }
-            fetch("http://127.0.0.1:5000/adminschoolTemplate",{
+            fetch("adminschoolTemplate",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -251,7 +251,7 @@
             //     "type":"DeletCourse",
             //     "Details":courseToDeletDetails
             // }
-            // fetch("http://127.0.0.1:5000/adminschoolTemplate",{
+            // fetch("adminschoolTemplate",{
             //     method:"POST",
             //     headers:{
             //         "Content-Type":"application/json"
@@ -282,7 +282,7 @@
                 "type":"DeletCourse",
                 "Details":courseToDeletDetails
             }
-            fetch("http://127.0.0.1:5000/courseTodelete",{
+            fetch("courseTodelete",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -313,7 +313,7 @@
                 "type":"courseId",
                 "body":Course_id
             }
-            fetch("http://127.0.0.1:5000/admincourseInterface",{
+            fetch("admincourseInterface",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"

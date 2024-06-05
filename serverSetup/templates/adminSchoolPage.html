@@ -42,7 +42,7 @@
 
 
             async function fetchSchoolData(){
-                return await fetch("http://127.0.0.1:5000/handleAdminSchoolPage")
+                return await fetch("handleAdminSchoolPage")
                     .then(response =>{
                         if (!response.ok){
                             throw new Error("api failed to fetch school details from server");
@@ -113,7 +113,7 @@
                 // console.log(schoolDetails)
                 
                 // Make a POST request using the Fetch API
-                fetch('http://127.0.0.1:5000/handleAdminSchoolPage', {
+                fetch('handleAdminSchoolPage', {
                     method: 'POST',
                     body:schoolDetails
                     
@@ -148,7 +148,7 @@
                 "data":schoolId
             }
 
-            fetch("http://127.0.0.1:5000/handleAdminSchoolDeletion",{
+            fetch("handleAdminSchoolDeletion",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -180,7 +180,7 @@
                 "type":"schoolId",
                 "id":schoolId
             }
-            fetch("http://127.0.0.1:5000/adminschoolTemplate",{
+            fetch("adminschoolTemplate",{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"

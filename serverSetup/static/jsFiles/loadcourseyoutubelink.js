@@ -1,5 +1,5 @@
 async function FetchYoutubeLink(){
-    return await fetch("http://127.0.0.1:5000/handleCourseYouTubeLink")
+    return await fetch("handleCourseYouTubeLink")
         .then(response =>{
             if(!response.ok){
                 throw new Error("api failed to fetch course youtube link ")

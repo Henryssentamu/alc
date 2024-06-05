@@ -20,7 +20,7 @@
 //         customizations: {
 //         title: "ARICIA LEARNING CENTER",
 //         description: "Payment for Python for Data scientist",
-//         logo: "ALC",
+//         logo: "saikolearn",
 //         },
 //     });
 //     }
@@ -28,7 +28,7 @@
 
 
 // async function fetchPaymentReferenceNUmber(){
-//     let reference = await fetch("http://127.0.0.1:5000/fetchPaymentDetails",{method:"GET"})
+//     let reference = await fetch("fetchPaymentDetails",{method:"GET"})
 //         .then(response =>{
 //             if (!response.ok){S
 //                 throw new Error("api didnt return any results")

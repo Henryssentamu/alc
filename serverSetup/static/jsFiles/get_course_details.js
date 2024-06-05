@@ -3,7 +3,7 @@
 
 export let response = async  function courseData() {
     // this api get student id and the course id of the purchased course from fetchCourseDetails route
-    return  await fetch("http://127.0.0.1:5000/fetchCourseDetails")
+    return  await fetch("fetchCourseDetails")
     .then(response => {
         if (!response.ok) {
             throw new Error("Backend server didn't send course details");

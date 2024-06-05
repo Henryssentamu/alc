@@ -1,7 +1,6 @@
 
 
-from ast import Pass
-from crypt import methods
+
 import json
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
 from flask_wtf import FlaskForm
@@ -15,7 +14,7 @@ from databases import PartnershipDatabase, ExamStudentAnswes, Exams, Courses, St
 from createStudentId import CreatePaperIds, CreateStudentId, GenerateProjectId
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
-from envKeys import strip_key,stripwhookkey,ALC_SECURITY
+from envKeys import strip_key,stripwhookkey,saikolearn_SECURITY
 import stripe
 from sendemail import sendEmail,SendPartnershipEmails,SendInqurry
 
@@ -38,7 +37,7 @@ stripe.api_key = strip_key
 # )
 
 try:
-    security = ALC_SECURITY
+    security = saikolearn_SECURITY
     app.config["SECRET_KEY"] = security
 
 except ValueError as error:
@@ -82,7 +81,7 @@ class PartnerForm(FlaskForm):
     type_of_partnernship = SelectField(label="Type of partnership",choices=[("options","choose the type"),("grant","Grant Partner"),("corporate_ally","Corporate Ally")])
     purpose_of_partnership = StringField(label="Purpose of Financial Partnership ")
     expection_from_partnership = StringField(label="Expected Benefits or Returns from the Partnership (if any):")
-    more_info = StringField(label="Is there anything else you would like us to know about your interest in  partnership with ALC? ")
+    more_info = StringField(label="Is there anything else you would like us to know about your interest in  partnership with saikolearn? ")
 
     submit = SubmitField()
 
@@ -200,7 +199,7 @@ def contactPage():
         requesttype = request.json.get("type")
         if requesttype == "inquiry":
             inquiryData = request.json.get("data")
-            """ send message to alc webmail """
+            """ send message to saikolearn webmail """
             if inquiryData:
                 inquiryObject = SendInqurry(inqurryDetails=inquiryData)
                 inquiryObject.sendInquery()
@@ -474,17 +473,17 @@ def registerPartners():
                     partnershipObject.CreateTables()
                     partnershipObject.insertIntoTable()
                     try:
-                        """sending partner's details to alc webmail and thanks message to partner """
+                        """sending partner's details to saikolearn webmail and thanks message to partner """
                         messageObject = SendPartnershipEmails(partnersDetails= PartnershipMessageData)
                         #sends to acl
-                        messageObject.sendPartnersDetailsTo_ALC_account()
+                        messageObject.sendPartnersDetailsTo_saikolearn_account()
                         #sends to partner
                         messageObject.sendMessageReceivedResponseToPartner()
                         return redirect(url_for('thankyouPartner'))
                     except Exception as error:
                         raise RuntimeError(f"error while send partner's details to emails: {error}")
 
-                    # will handle sending emails to both the partner and to the alc webmail account
+                    # will handle sending emails to both the partner and to the saikolearn webmail account
                 except Exception as error:
                     raise RuntimeError(f"error while calling partnership db:{error}")
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      

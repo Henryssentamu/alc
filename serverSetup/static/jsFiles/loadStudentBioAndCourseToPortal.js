@@ -2,7 +2,7 @@
 // // student portal then adds event listen which makes api that send the course id to the server on click to the handlerecorded link route
 
  async  function fetchStudentDetailsData(){
-    return await fetch("http://127.0.0.1:5000/getBioDataAndCourseDetails")
+    return await fetch("getBioDataAndCourseDetails")
     .then(response => {
         if (! response.ok){
             throw new Error("api in getBioDataAndCourseDetails route did return data")
@@ -37,7 +37,7 @@ async function generateHtml(){
             generatedHtml += `
                 <section class="generated-course">
                     
-                    <a id="${index}" data-cohort="${cohort}" onclick="activateEventListner('${index}');" class="portalclass"  data-course-id="${object['courseID']}" href="http://127.0.0.1:5000/loadPaidcourseOnstudentPortal">
+                    <a id="${index}" data-cohort="${cohort}" onclick="activateEventListner('${index}');" class="portsaikolearnlass"  data-course-id="${object['courseID']}" href="loadPaidcourseOnstudentPortal">
                         <div class="course-image-section">
                         <img class="course-image" src="${object['imageLink']}">
                         </div>
@@ -81,7 +81,7 @@ function activateEventListner(id){
 
             
             // console.log(i_d)
-            fetch("http://127.0.0.1:5000//loadPaidcourseOnstudentPortal", {
+            fetch("/loadPaidcourseOnstudentPortal", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

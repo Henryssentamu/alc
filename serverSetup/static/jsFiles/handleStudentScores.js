@@ -1,5 +1,5 @@
 async function fetchScores(){
-    return await fetch("http://127.0.0.1:5000/handleStudentscores")
+    return await fetch("handleStudentscores")
         .then(response =>{
             if(!response.ok){
                 throw new Error("fetch score api failed")
@@ -25,7 +25,7 @@ async function loadScores(){
                     
                     <div class="subsection">
                         <h2> Test </h2>
-                        <p>Score: ${object[key]}</p> <!-- Calculate the overall total score and display here -->
+                        <p>Score: ${object[key]}</p> <!-- Csaikolearnulate the overall total score and display here -->
                     </div>
                 </div>
                 `
@@ -35,7 +35,7 @@ async function loadScores(){
                     
                     <div class="subsection">
                         <h2> Exam </h2>
-                        <p>Score: ${object[key]}</p> <!-- Calculate the overall total score and display here -->
+                        <p>Score: ${object[key]}</p> <!-- Csaikolearnulate the overall total score and display here -->
                     </div>
                 </div>
                 `

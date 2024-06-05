@@ -80,7 +80,7 @@
         }
 
         .projectlink{
-            width: calc(80% - 100px);
+            width: csaikolearn(80% - 100px);
             padding: 18px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -158,7 +158,7 @@
 
     <script>
         function fetchProjectInstruction(){
-            return fetch("http://127.0.0.1:5000/projectpage?type=projectInstruction")
+            return fetch("projectpage?type=projectInstruction")
                 .then(response =>{
                     if(!response.ok){
                         throw new Error("api failed to fetch course project instructions")
@@ -230,7 +230,7 @@
             }
             var data = {"type":"ProjectRepo","data":projectDetails}
 
-            fetch("http://127.0.0.1:5000/projectpage",{
+            fetch("projectpage",{
                 method:"POST",
                 headers:{
                     "Content-Type": "application/json"

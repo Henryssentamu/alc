@@ -11,7 +11,7 @@ def sendEmail(Email,sPassword,studentRigNo):
     sender = "ssentamuhenry00@gmail.com"
     password = "wohg wzqz zmte pyqp"
     msg = EmailMessage()
-    msg.set_content(f"Your alc login details\n\n Your RegNo:{studentRigNo}\n password:{sPassword}")
+    msg.set_content(f"Your saikolearn login details\n\n Your RegNo:{studentRigNo}\n password:{sPassword}")
     msg["Subject"] ="Student Credentials"
     msg["From"] = sender
     msg["To"] = Email
@@ -43,7 +43,7 @@ class SendPartnershipEmails:
         self.funding = partnersDetails["funding"]
         self.purposeOfpartnership = partnersDetails["purposeOfpartnership"]
         
-    def sendPartnersDetailsTo_ALC_account(self):
+    def sendPartnersDetailsTo_saikolearn_account(self):
         
         msgObject = EmailMessage()
         msgObject.set_content(f"NEW PARTNER \n\n Name: { self.partnerFirstName}, {self.partnerSirName} \n\n CONTACTS DETAILS:\n\n PhoneNumber: {self.partnerPhoneNumber}\n\n Email: {self.partnerEmail}\n\n Country Of origin: {self.partnerCountry} \n\n Type of partnership: {self.typeOfPartnership} \n\n Purpose of the partnership: {self.purposeOfpartnership}\n\n Expectation from the partnership: {self.expectation}\n\n PARTNER' CURRENT OCCUPTION DETAILS \n\n Occuption: {self.affriation},\n\n Position: {self.position}.\n\n MORE INFO ABOUT THE PARTNERSHIP:\n\n More Info: {self.moreInfor}")
@@ -57,11 +57,11 @@ class SendPartnershipEmails:
                 smsConnect.login(user=self.sender,password= self.password)
                 smsConnect.send_message(msg= msgObject)
         except Exception as error:
-            raise RuntimeError(f"failed to send partner's details to alc email:{error}")
+            raise RuntimeError(f"failed to send partner's details to saikolearn email:{error}")
     def sendMessageReceivedResponseToPartner(self):
         msg = EmailMessage()
-        msg.set_content(f"Dear: {self.partnerSirName} \n\n Thank you immensely for offering to support ALICIA LEARNING CENTER's (ALC) program. Your interest in providing scholarships to our \n\n students is deeply appreciated. We're eager to discuss collaboration and will be reaching out shortly to \n\n coordinate. Your generosity will undoubtedly transform lives.\n\n Warm regards \n\n ALC")
-        msg["Subject"] = "Heartfelt Thanks for Your Support Offer To ALC"
+        msg.set_content(f"Dear: {self.partnerSirName} \n\n Thank you immensely for offering to support ALICIA LEARNING CENTER's (saikolearn) program. Your interest in providing scholarships to our \n\n students is deeply appreciated. We're eager to discuss collaboration and will be reaching out shortly to \n\n coordinate. Your generosity will undoubtedly transform lives.\n\n Warm regards \n\n saikolearn")
+        msg["Subject"] = "Heartfelt Thanks for Your Support Offer To saikolearn"
         msg["From"] = self.sender
         msg["To"] = self.partnerEmail
         try:
@@ -93,7 +93,7 @@ class SendInqurry:
                 connection.login(user= self.sender,password=self.password)
                 connection.send_message(msg=InqueryMessage)
         except Exception as error:
-            raise RuntimeError(f"failed to send message/ inquirry to alc webmail:{error}")
+            raise RuntimeError(f"failed to send message/ inquirry to saikolearn webmail:{error}")
         
         
 
