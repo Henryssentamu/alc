@@ -270,6 +270,7 @@ class Courses:
     def __init__(self, courseObject) -> None:
         self.courseObject = courseObject
         
+        
     def createTables(self):
         try:
 
@@ -280,18 +281,11 @@ class Courses:
                         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         courseId TEXT PRIMARY KEY,
                         schoolId VARCHAR(300),
-                        courseName VARCHAR(200)
+                        courseName VARCHAR(200),
+                        courseDuration VARCHAR(300),
+                        routFunction VARCHAR(500)
                     )
                 """)
-
-                # cursor.execute("""
-                #     CREATE TABLE IF NOT EXISTS CourseSchoolIdentity(
-                #         Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                #         courseId TEXT,
-                #         SchoolId VARCHAR(300),
-                #         FOREIGN KEY(courseId) REFERENCES courseDetails(courseId) ON DELETE CASCADE
-                #     )
-                # """)
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
@@ -337,25 +331,24 @@ class Courses:
                     )
                 """)
         except Exception as error:
-            # print(f"somthing happened in creating course detail database: {error}")
-            return f"somthing happened in creating course detail database: {error}"
+            
+            raise RuntimeError(f"somthing happened in creating course detail database: {error}")
     def insertIntoTables(self):
+        # print(self.courseObject["courseId"], self.courseObject["courseDuration"])
+        # print(self.courseObject["schoolId"], self.courseObject["courseName"], self.courseObject["courseDuration"])
         try:
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
                 cursor.execute("""
                     INSERT INTO courseDetails(
-                        courseID,
+                        courseId,
                         schoolId,
-                        courseName
-                    ) VALUES(?,?,?)
-                """,(self.courseObject["courseId"], self.courseObject["schoolId"], self.courseObject["courseName"]))
-                # cursor.execute("""
-                #     INSERT INTO CourseSchoolIdentity(
-                #         courseId,
-                #         SchoolId
-                #     ) VALUES(?,?)
-                # """,(self.courseObject["courseId"],self.courseObject["schoolId"]))
+                        courseName,
+                        courseDuration,
+                        routFunction
+                    ) VALUES(?,?,?,?,?)
+                """,(self.courseObject["courseId"], self.courseObject["schoolId"], self.courseObject["courseName"], self.courseObject["courseDuration"], self.courseObject["routeFunction"]))
+
                 db.commit()
             with sqlite3.connect("courseDatabase.db") as db:
                 cursor = db.cursor()
@@ -396,17 +389,16 @@ class Courses:
                 """,(self.courseObject["courseId"],self.courseObject["youtubeLink"]))
                 db.commit()
         except Exception as error:
-            # print(f"faced chalenge in inserting data into course details. {error}")
-            return f"faced chalenge in inserting data into course details. {error}"
+            raise RuntimeError(f"faced chalenge in inserting data into course details. {error}")
 
 
-class PurchasedCourseDetails:
+class EnrolledInCourses:
     def __init__(self,studentId, courseId) -> None:
         self.studentId = studentId
         self.courseId = courseId
     def createTables(self):
         try:
-            with sqlite3.connect("purchasedCourseDetails.db") as db:
+            with sqlite3.connect("EnrolledInCourses.db") as db:
                 cursur = db.cursor()
                 cursur.execute("""
                     CREATE TABLE IF NOT EXISTS studentDetails(
@@ -415,7 +407,7 @@ class PurchasedCourseDetails:
                             StudentId VARCHAR(300)
                     )
                 """)
-            with sqlite3.connect("purchasedCourseDetails.db") as db:
+            with sqlite3.connect("EnrolledInCourses.db") as db:
                 cursur = db.cursor()
                 cursur.execute("""
                     CREATE TABLE IF NOT EXISTS purchasedCourse(
@@ -432,7 +424,7 @@ class PurchasedCourseDetails:
 
     def insertIntoTables(self):
         try:
-            with sqlite3.connect("purchasedCourseDetails.db") as db:
+            with sqlite3.connect("EnrolledInCourses.db") as db:
                 cursur = db.cursor()
                 cursur.execute("""
                     INSERT INTO studentDetails(
@@ -441,7 +433,7 @@ class PurchasedCourseDetails:
                 """, (self.studentId,))
                 db.commit()
 
-            with sqlite3.connect("purchasedCourseDetails.db") as db:
+            with sqlite3.connect("EnrolledInCourses.db") as db:
                 cursur = db.cursor()
                 cursur.execute("""
                     INSERT INTO purchasedCourse(
@@ -451,7 +443,7 @@ class PurchasedCourseDetails:
                 """,(self.courseId,self.studentId))
                 db.commit()
         except sqlite3.Error as e:
-            print(f" error occured while insert in the purchasedCourseDetails :{e}")
+            print(f" error occured while insert in the EnrolledInCourses :{e}")
         except Exception as error:
             print(f"possibility of failling to populate the specifed table:{error}")
 

@@ -61,3 +61,5 @@ availableSchools = [{
 
 # print(f"crreate: {created}")
 # print(f"insert: {inserted}")
+
+{"cId":"prod_PcWpcg8596849j", "sId":"SOSE", "cName":"Introduction To Programming With Python", "cPriceId":"price_1OnHmBFEzGEPgpDScDoYHd6M", "cPrice":"5", "Dscrp":"This course covers introduction to programming. You learn from scratch to advanced level", "imgLnk":"./static/images/facebook.png", "utubeLnk":"https://www.youtube.com/watch?v=6i3EGqOBRiU&list=PLdo5W4Nhv31bZSiqiOL5ta39vSnBxpOPT", "cDuration":"6 months", "routeFunction":"pythonCourse"}

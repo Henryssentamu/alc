@@ -118,7 +118,7 @@
         <h2>Add or Remove Course</h2>
         <div class="add-remove-section">
             <div class="add-remove-form">
-                {"cId":"v", "sId":"v", "cName":"v", "cPriceId":"v", "cPrice":"v", "Dscrp":"v", "imgLnk":"v", "utubeLnk":"v"}
+                {"cId":"v", "sId":"v", "cName":"v", "cPriceId":"v", "cPrice":"v", "Dscrp":"v", "imgLnk":"v", "utubeLnk":"v", "cDuration":"v", "routeFunction":"v"}
                 <input type="text" id="addCourseNameInput" placeholder="Copy the formate above">
                 <button id="addCourseBtn">Add Course</button>
             </div>
@@ -149,7 +149,7 @@
             })
     }
 
-    async function fetchCourseDetails(){
+    async function processDataForEnrolledCourse(){
         return await fetch("adminschoolTemplate?type=courseDdetails")
             .then(response =>{
                 if(!response.ok){
@@ -181,7 +181,7 @@
 
     // Function to render available courses
     async function renderCourses() {
-        var courseData = await fetchCourseDetails()
+        var courseData = await processDataForEnrolledCourse()
         let Coursedetails = courseData["data"] 
         var numberOfSchools = Coursedetails.length
         console.log(numberOfSchools)

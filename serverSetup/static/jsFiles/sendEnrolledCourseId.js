@@ -14,24 +14,30 @@ let courseId = function () {
 
 async function send_courseId (){
     let id = await courseId()
-    // console.log(id)
-    // alert(id)
+    var body = {
+        "type": "courseIdDetails",
+        "data":id
+    }
 
 
-   return fetch("fetchCourseDetails",{
+   return fetch("processDataForEnrolledCourse",{
         method:"POST",
         headers: {
             'Content-Type': 'application/json'
         },
-        body:JSON.stringify({"send_courseId":id})
+        body:JSON.stringify(body)
     })
         .then(response =>{
             if(!response.ok){
                 throw new Error("it is possible that the course id is not sent to the backend server")
             }
             return id
+            
         })
         
 }
 
 send_courseId()
+
+
+

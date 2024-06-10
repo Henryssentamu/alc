@@ -85,16 +85,15 @@
         <section class="course-cost-section">
             <div class="registration">
                 <div class="cost-title">
-                    Registration
+                    On completion
                 </div>
                 <div>
                     <h1>
-                        $ 27 USD
+                        Earn a discount
                     </h1>
                 </div>
                 <div>
-                    Secure your spot by paying now and pay only $ 27 USD/ Ugx 100k instead of the standard $49.36 registration fee. 
-                </div>
+                    Complete any course with us, and enjoy a 20% discount on all paid courses. Start learning and saving today!                </div>
             </div>
             <div class="registration">
                 <div class="cost-title">
@@ -103,24 +102,25 @@
 
                 <div>
                     <h1 class="cost-cancled">
-                        $ 100 USD
+                        $ 0 USD
                     </h1>
                 </div>
 
                 <div>
-                    Great news for all registered students! We're excited to announce that every registered student automatically qualifies for a scholarship.
+                    Great news for all registered students! We're excited to announce that the course is now free of charge for every registered student!.
                 </div>
             </div>
 
             <div class="course-register-button-section">
                 <div class="course-register-button">
-                    <a href="{{url_for('handlePayments')}}">
+                    <a href="{{url_for('payment')}}">
                         <button class="course-enroll-button" data-product-id="prod_PcWpcg8596849j">Enroll Now</button>
                     </a>
+            
                 </div>
             </div>
         </section>
     </main>
-    <script src="../static/jsFiles/get_course_id.js"></script>
+    <script src="../static/jsFiles/sendEnrolledCourseId.js"></script>
 </body>
 </html>

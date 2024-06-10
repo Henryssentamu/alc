@@ -1,8 +1,11 @@
 
 
 
+from ast import Not, Pass
+from crypt import methods
 import json
 from flask import Flask, render_template,request,redirect, session,url_for,jsonify,flash
+from flask.cli import routes_command
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin,login_user,login_required,logout_user,current_user
 from wtforms import SelectField,StringField,SubmitField,EmailField,PasswordField
@@ -10,8 +13,9 @@ from wtforms.validators import DataRequired
 import pycountry
 import os
 import sqlite3
-from databases import PartnershipDatabase, ExamStudentAnswes, Exams, Courses, StudentCourseProjectRepoDetails,SchoolDatabes,StudentCourseProject ,Test,TestStudentAnswes,AssessmentResults, StudentDatabases, PurchasedCourseDetails, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
+from databases import PartnershipDatabase, ExamStudentAnswes, Exams, Courses, StudentCourseProjectRepoDetails,SchoolDatabes,StudentCourseProject ,Test,TestStudentAnswes,AssessmentResults, StudentDatabases, EnrolledInCourses, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
 from createStudentId import CreatePaperIds, CreateStudentId, GenerateProjectId
+from fetchCoursesApi import FetchAvaibleCourses, CheckPaidCourse,CourseDetailsApi
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,saikolearn_SECURITY
@@ -27,7 +31,7 @@ app = Flask("__name__")
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-YOUR_DOMAIN = 'http://127.0.0.1:5000'
+YOUR_DOMAIN = 'https://saikolearn.org'
 stripe.api_key = strip_key
 # stripe.Product.create(name="database")
 # stripe.Price.create(
@@ -173,16 +177,33 @@ testQuestions = [
 
 
 
+
+
 @app.route("/")
 def homePage():
     return render_template("homePage.html")
 
-@app.route("/schoolSoftwareEngineering")
+@app.route("/schoolSoftwareEngineering", methods =["GET","POST"])
 def schoolSoftwareEngineering():
+    if request.method == "GET":
+        requestType = request.args.get("type")
+        if requestType == "availableCourses":
+            courseIdObj = {"schoolId": "SOSE"}
+            coureses = FetchAvaibleCourses(object=courseIdObj)
+            data = coureses.availabCourses()
+            data = [{"courseId":obj[0], "schoolId":obj[1], "coursName":obj[2],  "courseDuration":obj[3], "routeFunction":obj[4],"tuition":obj[5], "priceId":obj[6],"courseImage":obj[7], "courseDiscription":obj[8]} for obj in data ]
+            return jsonify({"data":data})
     return render_template("softwareEngineeringSchool.html")
 
 @app.route("/schoolDataScience")
 def schoolDataScience():
+    requestType = request.args.get("type")
+    if requestType == "availableCourses":
+        coureses = CourseDetailsApi()
+        data = coureses.fetchAvaibleCourses(schoolId= "SODS")
+        data = [{"courseId":obj[0], "schoolId":obj[1], "coursName":obj[2],  "courseDuration":obj[3], "routeFunction":obj[4],"tuition":obj[5], "priceId":obj[6],"courseImage":obj[7], "courseDiscription":obj[8]} for obj in data ]
+        # print(data)
+        return jsonify({"data":data})
     return render_template("dataScienceSchool.html")
 
 @app.route("/admissionDetails")
@@ -209,21 +230,37 @@ def contactPage():
         
     return render_template("contactPage.html")
 
+@login_required
 @app.route("/pythonCourse")
 def pythonCourse():
+    if not current_user.is_authenticated:
+        session["pythonCourse"] = request.url
+        return redirect(url_for('login'))
     return render_template("coursePython.html")
 
+@login_required
 @app.route("/introductionToPrograming")
 def introductionToPrograming():
+    if not current_user.is_authenticated:
+        session["introToProgramming"] = request.url
+        return redirect(url_for('login'))
     return render_template("courseIntroductionToPrograming.html")
 
-
+@login_required
 @app.route("/databaseManagementCourse")
 def databaseManagementCourse():
+    if not current_user.is_authenticated:
+        session["DBMSurl"] = request.url
+        return redirect(url_for('login'))
     return render_template("courseSqlDatabase.html")
 
+@login_required
 @app.route("/rProgramming")
 def rProgrammingCourse():
+    if not current_user.is_authenticated:
+        session["rprograming"] = request.url
+        return redirect(url_for('login'))
+
     return render_template("courseRPrograming.html")
 
 
@@ -530,16 +567,26 @@ def login():
                 """session bellow stores logged instudent id which is to be used getBioDataAndCourseDetails route """
                 
                 login_user(user=user)
-                next_url = session.pop("payment_url", None)
-                # if request.referrer and "/payments" in request.referrer:
-                if next_url and "/payments" in next_url:
-
-                    return redirect(url_for('payment'))
+                if "DBMSurl" in session:
+                    referrer = session.pop("DBMSurl",None)
+                elif "pythonCourse" in session:
+                    referrer = session.pop("pythonCourse",None)
+                elif "introToProgramming" in session:
+                    referrer = session.pop("introToProgramming", None)
+                elif "rprograming" in session:
+                    referrer = session.pop("rprograming",None)
+                elif "payment_url" in session:
+                    referrer == session.pop("payment_url")
                 else:
-                    return redirect(url_for('studentDashboard'))
+                    referrer == None
+                
+                if referrer:
+                    return redirect(referrer)
+                else:
+                    return redirect(url_for('studentDashboard'))  
             return redirect(url_for('login'))
     except Exception as error:
-        print(f"possibility that student login class didnt work:{error}")
+        raise RuntimeError(f"possibility that student login class didnt work:{error}")
     return render_template("studentLogin.html",form=form)
 
 
@@ -555,118 +602,44 @@ def studentDashboard():
     
     return render_template("studentDashboard.html")
 
-
+@login_required
 @app.route("/payments",methods=["POST","GET"])
 def payment():
     if not current_user.is_authenticated:
+        # this url is used in login route to determin whether user was redirected from here,so that after 
+        # loging in is redirected back 
         session["payment_url"] = request.url
-        return redirect(url_for('login'))        
+        return redirect(url_for('login'))
     try:
-        priceId = session.get("fetched_course_pirce_details")
-        # print(f"price details here:{courseDetails}")
-        # id = courseDetails["priceId"]
-        # amount = courseDetails["price"]
-        # print(f"price id:{priceId}")
-    
-        session["current_student"] = current_user.id
-        
-        try:
-            checkout_session = stripe.checkout.Session.create(
-                line_items=[
-                    {
-                        # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                        'price': priceId,
-                        'quantity': 1,
-                    },
-                ],
-                mode='payment',
-                success_url=YOUR_DOMAIN + '/studentDashboard',
-                cancel_url=YOUR_DOMAIN + '/login'
-            )
-        except Exception as e:
-            return str(e)
-    except Exception as error:
-        print(f"course details not found in session:{error}")
-        return jsonify({"course details not found in session"}),400
-    
-    # if request.method == "POST":
-    #     payment_response  = request.data
-    #     print(f"resonse from strip: {payment_response}")
+        details= session.get("enrolledCourseDetails")
+        priceID = details["priceId"]
+        if priceID:
 
+            session["studentPaidCourseDetails"] = {"studentId":current_user.id, "courseId":details["courseID"]}
+            try:   
+                checkout_session = stripe.checkout.Session.create(
+                    line_items=[
+                        {
+                            # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                            'price': priceID,
+                            'quantity': 1,
+                        },
+                    ],
+                    mode='payment',
+                    success_url=YOUR_DOMAIN + '/OnsuccesfullPayment',
+                    cancel_url=YOUR_DOMAIN + '/login'
+                )
+            except Exception as error:
+                raise RuntimeError(f"error related to strip checkout page: {error}")
+    except Exception as e:
+        raise RuntimeError(f"error in payment route:{e}")
+                
     return redirect(checkout_session.url,code=303)
 
 
-
-@app.route("/fetchCourseDetails",methods=["POST","GET"])
-def fetchCourseDetails():
-    try:
-        if request.method == "POST":
-            data = request.json
-            # print(f"recieved data:{data}")
-            course_id = data.get("send_courseId")
-            if course_id:
-                # print(f"course id captured from the front end:{course_id}")
-                # Store course ID in session for later retrieval in GET request
-                session["course_id"] = course_id
-                return jsonify({"message": "Course ID received successfully"}), 200
-            else:
-                return jsonify({"error": "No course ID provided in the request"}), 400
-        elif request.method == "GET":
-            course_id = session.get("course_id")
-            # print(f"course id retrived from the session:{course_id}")
-            if course_id:
-                try:
-                    with sqlite3.connect("courseDatabase.db") as db:
-                        cursor = db.cursor()
-                        cursor.execute("""
-                            select
-                                c.courseId,p.coursePriceIds
-                            FROM
-                                courseDetails AS c
-                            JOIN
-                                coursePriceIdDetails AS P ON c.courseId == p.courseId
-                            WHERE
-                                c.courseId == ?
-                        """,(course_id,))
-                        course_details = cursor.fetchone()
-                        if course_details:
-                            courseId,priceId = course_details
-                            # print(f"courseID id here:{courseId} \n")
-                            session["fetched_course_pirce_details"] = priceId
-                            current_student = session.get("current_student")
-                            return jsonify({"studentId":current_student, "courseId":courseId, }),200
-                        return jsonify({"error":"course not found"}),400
-
-                except Exception as error:
-                    print(f"failed to retrive data from course Database:{error}"),400
-            else:
-                return jsonify({"error":"no course id in the session"}),400
-    except Exception as error:
-        print(f"it is possible that server didnt recieve course id from the client server:{error}"),400
-
-
-
-    
-
-    
-        
-@app.route("/handlePayments")
-def handlePayments():
-    return render_template("continueToPayment.html")
-
-@app.route("/studentPaidCourseRecords",methods=["GET","POST"])
-def paymentRecieved():
-    # this route updates the purchased course database when the payment is successfully made
-    if request.method == "POST":
-        data = request.json
-        if data:
-            student = data["studentId"]
-            course = data["courseId"]
-            paymentData = PurchasedCourseDetails(studentId= student, courseId= course)
-            paymentData.createTables()
-            paymentData.insertIntoTables()
-    return render_template("continueToDashboard.html")
-
+# The library needs to be configured with your account's secret key.
+# Ensure the key is kept out of any version control system you might be using.
+# # This is your Stripe CLI webhook secret for testing your endpoint locally.
 
 endpoint_secret = stripwhookkey
 
@@ -674,37 +647,126 @@ endpoint_secret = stripwhookkey
     after the payment hass been successfuly made.
 """
 
-# # This is your Stripe CLI webhook secret for testing your endpoint locally.
-# endpoint_secret = 'whsec_f98b915535bc5c05f4173c8b1e847aead40014396adbe9892a1c9907844976d9'
+
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    event = None
+    payload = request.data
+    sig_header = request.headers['STRIPE_SIGNATURE']
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise RuntimeError(e) 
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+         raise RuntimeError(e)
+
+    # Handle the event
+    if event['type'] == 'checkout.session.async_payment_failed':
+      session = event['data']['object']
+      print(session)
+    elif event['type'] == 'checkout.session.async_payment_succeeded':
+      session = event['data']['object']
+
+      """on successfull payment 
+        redirect to payment recieved route where enrolled in courses database is populated
+      """
+      return redirect(url_for('paymentRecieved'))
+    elif event['type'] == 'checkout.session.completed':
+      session = event['data']['object']
+    #   print(session)
+    elif event['type'] == 'checkout.session.expired':
+      session = event['data']['object']
+      print(session)
+    # ... handle other event types
+    else:
+      print('Unhandled event type {}'.format(event['type']))
+
+    return jsonify(success=True)
+
+@app.route("/OnsuccesfullPayment")
+def OnsuccesfullPayment():
+    return render_template("successfulPaymentMessage.html")
+
+
+    
 
 
 
-# @app.route('/webhook', methods=['POST'])
-# def webhook():
-#     event = None
-#     payload = request.data
-#     sig_header = request.headers['STRIPE_SIGNATURE']
+@app.route("/processDataForEnrolledCourse",methods=["POST","GET"])
+def processDataForEnrolledCourse():
+    try:
+        if request.method == "POST":
+            postType = request.json.get("type")
+            if postType and postType == "courseIdDetails":
+                courseId = request.json.get("data")
 
-#     try:
-#         event = stripe.Webhook.construct_event(
-#             payload, sig_header, endpoint_secret
-#         )
-#     except ValueError as e:
-#         # Invalid payload
-#         raise e
-#     except stripe.error.SignatureVerificationError as e:
-#         # Invalid signature
-#         raise e
+                """check payment details of the course to enroll to"""
+                paymentObject = CourseDetailsApi()
+                paymentDetails = paymentObject.courseTuitionDetails(courseId= courseId)
+                price = paymentDetails['price']
 
-#     # Handle the event
-#     if event['type'] == 'payment_intent.succeeded':
-#       payment_intent = event['data']['object']
-#       print(pay)
-#     # ... handle other event types
-#     else:
-#       print('Unhandled event type {}'.format(event['type']))
+                if isinstance(price, int) and price != 0:
+                    priceID = paymentDetails["priceId"]
+                    """ if the course is a paid course, user is redirected to strip checkout page"""
+                    session["enrolledCourseDetails"] = {"courseID":courseId,"priceId":priceID}
+                else:
+                    
+                    try:
+                        """ this means that the course is free, therefore the  enrolled in course database is populated 
+                        with student and course details
+                        """
+                        studentId = current_user.id
+                        courseID = courseId 
+                        paymentData = EnrolledInCourses(studentId= studentId, courseId= courseID)
+                        paymentData.createTables()
+                        paymentData.insertIntoTables()
+                    except Exception as error:
+                        raise RuntimeError(f" possibilies of user not being registered:{error}")
+            return jsonify({"responseStatus":"ok"})
+    except Exception as error:
+        raise RuntimeError(f" error in processing enrolled course:{error}")
 
-#     return jsonify(success=True)
+
+
+
+    
+
+@app.route("/studentPaidCourseRecords")
+def paymentRecieved():
+    """ this route handles all paid course.
+        On successful payment, the enrolled in course database is populated 
+        in the webhook
+    """
+    try:
+        paidCourseDetails = session.get("studentPaidCourseDetails")
+    except Exception as error:
+        raise RuntimeError(f"error while accessing paid course details session: {error}")
+    if paidCourseDetails:
+        studentId = paidCourseDetails["studentId"]
+        courseId = paidCourseDetails["courseId"]
+        try:
+            paymentData = EnrolledInCourses(studentId= studentId, courseId= courseId)
+            paymentData.createTables()
+            paymentData.insertIntoTables()
+        except Exception as error:
+            raise RuntimeError(f"error while populating purchased course database:{error}")
+
+    
+
+
+
+
+@app.route("/continueTodStudentDashBoard")
+def continueTodStudentDashBoard():
+    return render_template("continueToStudentDashboard.html")
+
+
 
 
 
@@ -729,7 +791,7 @@ def getBioDataAndCourseDetails():
                 on student portal. so it sends those details to a js file which handle rendering 
                 html content on student portal
             """
-            with sqlite3.connect("purchasedCourseDetails.db") as db:
+            with sqlite3.connect("EnrolledInCourses.db") as db:
                 curser = db.cursor()
                 curser.execute("""
                     SELECT DISTINCT
@@ -779,12 +841,9 @@ def getBioDataAndCourseDetails():
             "courseDetails":formated_details
 
         }
-        # print(f" sent data: {allDetails}")
         
         return jsonify(allDetails)
-        # elif request.method == "POST":
-        #     return "handle post request "
-    # return render_template("continueToDashboard.html")
+        
 
     
 @app.route("/handleLiveSessionLinks", methods=["GET", "POST"])
@@ -822,11 +881,10 @@ def handleLiveSessionLinks():
             else:
                 return jsonify({"No Link": "There is no live session link for this course"})
         except sqlite3.Error as error:
-            print(f"Error occurred while accessing the liveSession link database:{error}")
-            return jsonify({"error": "Database error"})
+            raise RuntimeError(f"Error occurred while accessing the liveSession link database:{error}")
         except Exception as error:
-            print(f"Error occurred while accessing the liveSession link database: {error}")
-            return jsonify({"error": "An unexpected error occurred"})
+            raise RuntimeError(f"Error occurred while accessing the liveSession link database: {error}")
+
     
     elif request.method == "POST":
         # Handle POST requests
@@ -1149,7 +1207,7 @@ def handleAdminSchoolPage():
     if request.method == "POST":
         data = request.data
         data = data.decode("utf-8")
-        print(data)
+        # print(data)
         formatedData = json.loads(data)
         s = formateSchoolData(formatedData)
         """ inserting school details to the school database """
@@ -1261,6 +1319,7 @@ def adminschoolTemplate():
         elif body == "addCourse":
             courseDetails = request.json.get("body")
             courseDetails = json.loads(courseDetails)
+            # print(courseDetails)
 
             if courseDetails:
                 try:
@@ -1272,6 +1331,8 @@ def adminschoolTemplate():
                     discription = courseDetails["Dscrp"]
                     courseImageLink = courseDetails["imgLnk"]
                     youtubeLink = courseDetails["utubeLnk"]
+                    courseDuration = courseDetails["cDuration"]
+                    routeFunction = courseDetails["routeFunction"]
                     courseObj = {
                         "courseId":courseId,
                         "schoolId": schoolId,
@@ -1280,8 +1341,9 @@ def adminschoolTemplate():
                         "coursePrice":coursePrice,
                         "discription":discription,
                         "courseImageLink":courseImageLink,
-                        "youtubeLink":youtubeLink
-
+                        "youtubeLink":youtubeLink,
+                        "courseDuration":courseDuration,
+                        "routeFunction":routeFunction
                     }
                     # print(courseObj)
 
@@ -1292,8 +1354,7 @@ def adminschoolTemplate():
                     # insert into tables
                     db.insertIntoTables()
                 except Exception as error:
-                    print(f"error whill populating course database:{error}")
-                    return f"error whill populating course database:{error}"
+                    raise RuntimeError(f"error whill populating course database:{error}")
             return jsonify({"requestStatus":"ok"}),200
         
         # elif body == "DeletCourse":
