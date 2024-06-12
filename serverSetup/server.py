@@ -566,24 +566,26 @@ def login():
                 user = User(studentId)
                 """session bellow stores logged instudent id which is to be used getBioDataAndCourseDetails route """
                 
-                login_user(user=user)
-                if "DBMSurl" in session:
-                    referrer = session.pop("DBMSurl",None)
-                elif "pythonCourse" in session:
-                    referrer = session.pop("pythonCourse",None)
-                elif "introToProgramming" in session:
-                    referrer = session.pop("introToProgramming", None)
-                elif "rprograming" in session:
-                    referrer = session.pop("rprograming",None)
-                elif "payment_url" in session:
-                    referrer == session.pop("payment_url")
-                else:
-                    referrer == None
-                
-                if referrer:
-                    return redirect(referrer)
-                else:
-                    return redirect(url_for('studentDashboard'))  
+                loginStatus = login_user(user=user)
+                if loginStatus:
+                    if "DBMSurl" in session:
+                        referrer = session.pop("DBMSurl",None)
+                    elif "pythonCourse" in session:
+                        referrer = session.pop("pythonCourse",None)
+                    elif "introToProgramming" in session:
+                        referrer = session.pop("introToProgramming", None)
+                    elif "rprograming" in session:
+                        referrer = session.pop("rprograming",None)
+                    elif "payment_url" in session:
+                        referrer = session.pop("payment_url")
+                    else:
+                        referrer = False
+                    
+                    if referrer:
+                        return redirect(referrer)
+                    else:
+                        return redirect(url_for('studentDashboard'))  
+                return redirect(url_for('login'))
             return redirect(url_for('login'))
     except Exception as error:
         raise RuntimeError(f"possibility that student login class didnt work:{error}")
@@ -595,6 +597,16 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('homePage'))
+
+@app.route("/adminLogin", methods=["POST","GET"])
+def adminLogin():
+    if request.method == "POST":
+        requestBody = request.json.get("type")
+        if requestBody == "adminlogins":
+            data = request.json.get("body")
+            print(data)
+        return jsonify({"RequestStatus": "ok"})
+    return render_template("adminlogin.html")
 
 @login_required
 @app.route("/studentDashboard", methods = ["POST","GET"])

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="../static/adminloginstyles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <h2>Admin Login</h2>
+            <form>
+                <div class="input-group">
+                    <label for="employee-id">Employee ID Number</label>
+                    <input type="text" id="employee-id" required>
+                </div>
+                <div class="input-group">
+                    <label for="admin-code">Admin Code</label>
+                    <input type="text" id="admin-code" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" onclick="sendToServer()">Login</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        function getInput(){
+            var employId = document.getElementById("employee-id").value
+            var adminCode = document.getElementById("admin-code").value
+            var password = document.getElementById("password").value
+
+            return {"employeeId":employId, "admincode":adminCode,"password":password}
+        }
+
+
+        async function sendToServer(){
+            var data = await getInput()
+            var body = {
+                "type":"adminlogins",
+                "body":data
+            }
+            fetch("adminLogin",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(body)
+            })
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error("error in sending admin logins")
+                }
+                return response.json()
+            })
+            .then(data =>{
+                var serversResponse = data
+            })
+            .catch(error =>{
+                console.log(error)
+            })
+            
+        }
+
+
+        
+    </script>
+</body>
+</html>

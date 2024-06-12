@@ -1,4 +1,4 @@
-from databases import Courses,SchoolDatabes
+from databases import Courses,SchoolDatabes, AdminCredientals
 # from databases import SchoolDatabes
 
 coursid = [("prod_PcWpcg8596849j","price_1OnHmBFEzGEPgpDScDoYHd6M","Introduction To Programming with Python"),
@@ -14,7 +14,7 @@ courseName = "Introduction to machine learning"
 coursePriceId = "price_1P5ml2FEzGEPgpDSvq5rYDAN"
 coursePrice = "150.00"
 discription = "Introduction to Software development with C"
-courseImageLink = "./static/images/facebook.png"
+courseImageLink = "./static/images/newimages/istockphoto-1059510610-2048x2048.jpg"
 youtubeLink = "https://www.youtube.com/watch?v=6i3EGqOBRiU&list=PLdo5W4Nhv31bZSiqiOL5ta39vSnBxpOPT"
 courseObj = {
     "courseId":courseId,
@@ -62,4 +62,13 @@ availableSchools = [{
 # print(f"crreate: {created}")
 # print(f"insert: {inserted}")
 
-{"cId":"prod_PcWpcg8596849j", "sId":"SOSE", "cName":"Introduction To Programming With Python", "cPriceId":"price_1OnHmBFEzGEPgpDScDoYHd6M", "cPrice":"5", "Dscrp":"This course covers introduction to programming. You learn from scratch to advanced level", "imgLnk":"./static/images/facebook.png", "utubeLnk":"https://www.youtube.com/watch?v=6i3EGqOBRiU&list=PLdo5W4Nhv31bZSiqiOL5ta39vSnBxpOPT", "cDuration":"6 months", "routeFunction":"pythonCourse"}
+{"cId":"prod_PdFc0uIbzgALKI", "sId":"SODS", "cName":"Python FOR DATA SCIENCE", "cPriceId":"price_1OiyqKFSzGEPgpDSiizAerA2", "cPrice":"FREE", "Dscrp":"This course covers python for data analysis. You learn Numpy,Pandas and Matplotlib", "imgLnk":"./static/images/newimages/istockphoto-1059510610-2048x2048.jpg", "utubeLnk":"https://www.youtube.com/watch?v=6i3EGqOBRiU&list=PLdo5W4Nhv31bZSiqiOL5ta39vSnBxpOPT", "cDuration":"5 months", "routeFunction":"databaseManagementCourse"}
+
+
+# populating admin db
+
+adminObj = {"employeeId":"esl1","FirstName":"henry","SirName":"cali","phoneNumber":"09847465","email":"cali@gmail.com","adminCode":"etytndn","password":"123"}
+
+obj = AdminCredientals(adminObject= adminObj)
+obj.createTables()
+obj.insertIntoTable()

@@ -1542,6 +1542,102 @@ class PartnershipDatabase:
             raise RuntimeError(f"connection error while inserting into partnership db: {error}")
         except Exception as error:
             raise RuntimeError(f"error while inserting into partnership db:{error}")
+        
+
+
+class AdminCredientals:
+    def __init__(self,adminObject) -> None:
+        self.adminObject = adminObject
+        data = {'employeeId': 'qwerty', 'admincode': 'q21332e3', 'password': 'weeeeww'}
+    def createTables(self):
+        try:
+            with sqlite3.connect("admincredentials.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS admin(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        EmployeeId TEXT PRIMARY KEY,
+                        FirstName VARCHAR(200),
+                        SirName VARCHAR(200)
+                    )
+                """)
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS adminContacts(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        EmployeeId TEXT,
+                        PhoneNumber VARCHAR(100),
+                        Email VARCHAR(200),
+                        FOREIGN KEY(EmployeeId) REFERENCES admin(EmployeeId) ON DELETE CASCADE
+                    )
+                """)
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS admincodeInfo(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        AdminCode TEXT PRIMARY KEY,
+                        EmployeeId TEXT,
+                        FOREIGN KEY(EmployeeId) REFERENCES admin(EmployeeId) ON DELETE CASCADE
+                    )
+                """)
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS passwords(
+                        Date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        EmployeeId TEXT,
+                        AdminCode TEXT,
+                        Password TEXT PRIMARY KEY,
+                        FOREIGN KEY(EmployeeId) REFERENCES admin(EmployeeId) ON DELETE CASCADE,
+                        FOREIGN KEY(AdminCode) REFERENCES admincodeInfo(admincodeInfo) ON DELETE CASCADE  
+                    )
+                """)
+        except sqlite3.Error as error:
+            raise RuntimeError(f"SQL error on admin credentials DB: {error}")
+        except Exception as error:
+            raise RuntimeError(f"Unexpected error while creating admincredentials.db: {error}")
+        
+    def insertIntoTable(self):
+        self.employeeId = self.adminObject["employeeId"]
+        self.FirstName = self.adminObject["FirstName"]
+        self.SirName = self.adminObject["SirName"]
+        self.phoneNumber = self.adminObject["phoneNumber"]
+        self.Email = self.adminObject["email"]
+        self.AdminCode = self.adminObject["adminCode"]
+        self.password = self.adminObject["password"]
+        try:
+            with sqlite3.connect("admincredentials.db") as db:
+                cursor = db.cursor()
+                cursor.execute("""
+                    INSERT INTO admin(
+                        EmployeeId,
+                        FirstName,
+                        SirName 
+                    ) VALUES(?,?,?)
+                """,(self.employeeId, self.FirstName, self.SirName))
+                cursor.execute("""
+                    INSERT INTO adminContacts(
+                        EmployeeId,
+                        PhoneNumber,
+                        Email
+                    ) VALUES(?,?,?)
+                """,(self.employeeId, self.phoneNumber, self.Email))
+                cursor.execute("""
+                    INSERT INTO admincodeInfo(
+                        AdminCode,
+                        EmployeeId         
+                    )VALUES(?,?)
+                """, (self.AdminCode, self.employeeId))
+                cursor.execute("""
+                    INSERT INTO passwords(
+                        EmployeeId,
+                        AdminCode,
+                        Password
+                    ) VALUES(?,?,?)
+                """,(self.employeeId, self.AdminCode, self.password))
+                db.commit()
+        except sqlite3.Error as e:
+            raise RuntimeError(f"sql connection error while inserting into admincredentials.db:{e} ")
+        except Exception as e:
+            raise RuntimeError(f"unexpected error while inserting into admincredentials.db : {e}")
+
+        
 
 
 
