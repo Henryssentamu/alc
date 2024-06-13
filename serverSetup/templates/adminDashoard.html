@@ -1,273 +1,6 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="../static/adminDashboard.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            min-height: 100vh; /* Ensure the content takes at least the full height of the viewport */
-        }
-
-        .sidebar {
-            background-color: #333;
-            color: #fff;
-            width: 250px;
-            padding: 20px;
-        }
-
-        .sidebar h2 {
-            margin-bottom: 20px;
-        }
-
-        .sidebar-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-btn {
-            background-color: transparent;
-            border: none;
-            color: #333;
-            padding: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .user-profile {
-            color: white;
-            display: flex;
-        }
-
-        .dropdown {
-            position: relative;
-        }
-
-        .dropbtn {
-            background-color: transparent;
-            color: #fff;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 120px;
-            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-        }
-
-        .dropdown-content a {
-            color: #333;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .layer {
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-        }
-
-        .container {
-            margin-bottom: 10px;
-        }
-
-        .container-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #777;
-            margin-bottom: 5px;
-        }
-
-        footer {
-            text-align: center;
-            color: #777;
-            margin-top: auto; /* Push the footer to the bottom */
-            padding: 20px 0;
-        }
-
-        /* special  */
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            background-color: #fff;
-            padding: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-        }
-
-        .dropdown-menu input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .dropdown-menu button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .dropdown-menu button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <div class="sidebar">
-        <h2>Admin Panel</h2>
-        <div class="sidebar-content">
-            <button class="sidebar-btn">Deregister Student</button>
-            <button class="sidebar-btn">Add Course</button>
-            <button class="sidebar-btn">Add School</button>
-            <button class="sidebar-btn" id="postLiveLinkBtn">Post Live Link</button>
-            <button class="sidebar-btn">Post Recorded Links</button>
-            <button class="sidebar-btn">Add Test Questions</button>
-            <button class="sidebar-btn">Add Exam Questions</button>
-            <button class="sidebar-btn">Enrolled Students</button>
-            <button class="sidebar-btn">Total Students in Schools</button>
-        </div>
-    </div>
-    <div class="dropdown-menu" id="liveLinkMenu">
-        <input type="text" placeholder="Paste live link here">
-        <button>Submit</button>
-    </div>
-
-    <div class="main">
-        <header>
-            <div class="user-profile">
-                <span>John Doe</span>
-                <div class="dropdown">
-                    <button class="dropbtn">&#9881;</button>
-                    <div class="dropdown-content">
-                        <a href="#">Profile</a>
-                        <a href="#" class="settings">Settings</a> <!-- Added a class "settings" --
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <section class="content">
-            <section class="layer">
-                <h2>Overview</h2>
-                <div class="container">
-                    <div class="container-title">Total Students:</div>
-                    <div>1000</div>
-                </div>
-                <div class="container">
-                    <div class="container-title">Total Courses:</div>
-                    <div>20</div>
-                </div>
-                <div class="container">
-                    <div class="container-title">Total Schools:</div>
-                    <div>5</div>
-                </div>
-            </section>
-
-            <section class="layer">
-                <h2>Total Users</h2>
-                <div class="container">Total Users: 2000</div>
-            </section>
-
-            <section class="layer">
-                <h2>Country-wise Distribution</h2>
-                <div class="container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Country</th>
-                                <th>Users</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>USA</td>
-                                <td>1000</td>
-                            </tr>
-                            <tr>
-                                <td>UK</td>
-                                <td>500</td>
-                            </tr>
-                            <tr>
-                                <td>Canada</td>
-                                <td>300</td>
-                            </tr>
-                            <tr>
-                                <td>Australia</td>
-                                <td>200</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </section>
-
-        <footer>
-            <p>&copy; 2024 Admin Dashboard. All rights reserved.</p>
-        </footer>
-    </div>
-
-    <script>
-        // JavaScript to toggle the visibility of the dropdown menu
-        document.getElementById("postLiveLinkBtn").addEventListener("click", function() {
-            var menu = document.getElementById("liveLinkMenu");
-            if (menu.style.display === "none" || menu.style.display === "") {
-                menu.style.display = "block";
-            } else {
-                menu.style.display = "none";
-
-            }
-        });
-    </script>
-</body>
-</html> -->
 
 
-
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -485,7 +218,7 @@
                     <button class="dropbtn">&#9881;</button>
                     <div class="dropdown-content">
                         <a href="#">Profile</a>
-                        <a href="#" class="settings">Settings</a> <!-- Added a class "settings" -->
+                        <a href="#" class="settings">Settings</a> <-- Added a class "settings" --
                     </div>
                 </div>
             </div>
@@ -584,4 +317,404 @@
         });
     </script>
 </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../static/adminDashboard.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            min-height: 100vh; /* Ensure the content takes at least the full height of the viewport */
+        }
+
+        .sidebar {
+            background-color: #333;
+            color: #fff;
+            width: 250px;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-btn {
+            background-color: #444;
+            border: none;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-btn a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .sidebar-btn:hover {
+            background-color: #555;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-profile {
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropbtn {
+            background-color: transparent;
+            color: #fff;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+            right: 0; /* Align to the right */
+            z-index: 1000; /* Ensure it's on top */
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .settings {
+            position: relative;
+
+        }
+
+        .logout-content {
+           
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            left: 100%;
+            top: 0;
+            z-index: 1001;
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+
+        .settings:hover .logout-content {
+            display: block;
+        }
+
+        .logout-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .logout-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .layer {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        .section-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .section-content h2 {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 9px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .container-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #777;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            text-align: center;
+            color: #777;
+            margin-top: auto; /* Push the footer to the bottom */
+            padding: 20px 0;
+        }
+
+        /* Special */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            top: 40px; /* Position below the button */
+            left: 220px;
+            z-index: 1000; /* Ensure it's on top */
+        }
+
+        .dropdown-menu input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .dropdown-menu button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu button:hover {
+            background-color: #45a049;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .section-content {
+                grid-template-columns: 1fr;
+            }
+
+            .dropdown-content, .logout-content {
+                left: auto;
+                right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .main {
+                padding: 10px;
+            }
+
+            .dropdown-menu {
+                left: 0;
+                right: 0;
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <div class="sidebar-content">
+            <button class="sidebar-btn">
+                <a href="{{url_for('adminSchoolPage')}}">
+                    Navigate To Course
+                </a>
+            </button>
+            <button class="sidebar-btn">Add Course</button>
+            <button class="sidebar-btn">Add School</button>
+            <button class="sidebar-btn" id="postLiveLinkBtn">Post Live Link</button>
+            <button class="sidebar-btn" id="postRecordedLinkBtn">Post Recorded Links</button>
+            <button class="sidebar-btn">Add Test Questions</button>
+            <button class="sidebar-btn">Add Exam Questions</button>
+            <button class="sidebar-btn">Add Course Youtube Link</button>
+            <button class="sidebar-btn">Total Students in Schools</button>
+        </div>
+    </div>
+    <div class="dropdown-menu" id="liveLinkMenu">
+        <input type="text" placeholder="Paste live link here">
+        <button id="liveLinkSubmitBtn">Submit</button>
+    </div>
+    <div class="dropdown-menu" id="recordedLinkMenu">
+        <input type="text" placeholder="Paste Recorded link here">
+        <button id="recordedLinkSubmitBtn">Submit</button>
+    </div>
+
+    <div class="main">
+        <header>
+            <div class="user-profile">
+                <span>John Doe</span>
+                <div class="dropdown">
+                    <button class="dropbtn">&#9881;</button>
+                    <div class="dropdown-content">
+                        <a href="#">Profile</a>
+                        <div class="settings">
+                            <a href="#">Settings</a>
+                            <div class="logout-content">
+                                <a href="{{url_for('logout')}}">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="content">
+            <section class="layer section-content">
+                <h2>Overview</h2>
+                <div class="container">
+                    <div class="container-title">Total Students:</div>
+                    <div>1000</div>
+                </div>
+                <div class="container">
+                    <div class="container-title">Total Courses:</div>
+                    <div>20</div>
+                </div>
+                <div class="container">
+                    <div class="container-title">Total Schools:</div>
+                    <div>5</div>
+                </div>
+            </section>
+
+            <section class="layer">
+                <h2>Total Users</h2>
+                <div class="container">Total Users: 2000</div>
+            </section>
+
+            <section class="layer">
+                <h2>Country-wise Distribution</h2>
+                <div class="container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Country</th>
+                                <th>Users</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>USA</td>
+                                <td>1000</td>
+                            </tr>
+                            <tr>
+                                <td>UK</td>
+                                <td>500</td>
+                            </tr>
+                            <tr>
+                                <td>Canada</td>
+                                <td>300</td>
+                            </tr>
+                            <tr>
+                                <td>Australia</td>
+                                <td>200</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Admin Dashboard. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript to toggle the visibility of the dropdown menu
+        document.getElementById("postLiveLinkBtn").addEventListener("click", function() {
+            var menu = document.getElementById("liveLinkMenu");
+            if (menu.style.display === "none" || menu.style.display === "") {
+                menu.style.display = "block";
+            } else {
+                menu.style.display = "none";
+            }
+        });
+
+        document.getElementById("postRecordedLinkBtn").addEventListener("click", function() {
+            var menu = document.getElementById("recordedLinkMenu");
+            if (menu.style.display === "none" || menu.style.display === "") {
+                menu.style.display = "block";
+            } else {
+                menu.style.display = "none";
+            }
+        });
+
+        // Make menu disappear after submission
+        document.getElementById("liveLinkSubmitBtn").addEventListener("click", function() {
+            var menu = document.getElementById("liveLinkMenu");
+            menu.style.display = "none";
+        });
+
+        document.getElementById("recordedLinkSubmitBtn").addEventListener("click", function() {
+            var menu = document.getElementById("recordedLinkMenu");
+            menu.style.display = "none";
+        });
+    </script>
+</body>
 </html>
+

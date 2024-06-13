@@ -16,6 +16,7 @@ import sqlite3
 from databases import PartnershipDatabase, ExamStudentAnswes, Exams, Courses, StudentCourseProjectRepoDetails,SchoolDatabes,StudentCourseProject ,Test,TestStudentAnswes,AssessmentResults, StudentDatabases, EnrolledInCourses, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
 from createStudentId import CreatePaperIds, CreateStudentId, GenerateProjectId
 from fetchCoursesApi import FetchAvaibleCourses, CheckPaidCourse,CourseDetailsApi
+from adminApi import AdminCredientalApi
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,saikolearn_SECURITY
@@ -564,7 +565,6 @@ def login():
             is_student = checkCredentials.is_authenticated()
             if is_student:
                 user = User(studentId)
-                """session bellow stores logged instudent id which is to be used getBioDataAndCourseDetails route """
                 
                 loginStatus = login_user(user=user)
                 if loginStatus:
@@ -604,9 +604,23 @@ def adminLogin():
         requestBody = request.json.get("type")
         if requestBody == "adminlogins":
             data = request.json.get("body")
-            print(data)
+            """check where admin exists"""
+            obj = AdminCredientalApi(adminObject= data)
+            response = obj.is_admin()
+            if response:
+                employeId = data["employeeId"]
+                user = User(id= employeId)
+                login_user(user= user)
+                nexUrl = session.pop("admin_referrer",None)
+                return redirect(nexUrl or url_for('admin'))
+            else:
+                return redirect(url_for("failedTologinAdmin")) 
         return jsonify({"RequestStatus": "ok"})
     return render_template("adminlogin.html")
+
+@app.route("/failedTologinAmin")
+def failedTologinAdmin():
+    return render_template("failedTologinAdmin.html")
 
 @login_required
 @app.route("/studentDashboard", methods = ["POST","GET"])
@@ -1205,9 +1219,12 @@ def studentProfile():
 
     return render_template("studentProfile.html")
 
-
-@app.route("/admin")
+@login_required
+@app.route("/admin", methods =["GET"])
 def admin():
+    if not  current_user.is_authenticated:
+        session["admin_referrer"] = request.url
+        return redirect(url_for('adminLogin'))
     return render_template("adminDashoard.html")
 
 @app.route("/adminSchoolPage")
