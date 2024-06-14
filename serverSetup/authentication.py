@@ -31,7 +31,7 @@ class GetStudent:
             print(f"investiage this error related to student datails database:{error}")
 
 
-user = GetStudent("/87","123")
-a = user.is_authenticated()
-print(a)
+# user = GetStudent("/87","123")
+# a = user.is_authenticated()
+# print(a)
         

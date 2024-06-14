@@ -15,8 +15,10 @@ import os
 import sqlite3
 from databases import PartnershipDatabase, ExamStudentAnswes, Exams, Courses, StudentCourseProjectRepoDetails,SchoolDatabes,StudentCourseProject ,Test,TestStudentAnswes,AssessmentResults, StudentDatabases, EnrolledInCourses, FetchStudentData, LiveSessions,ExamStudentAnswes, CoursePaymentsDataDase,SchoolDatabes,formateSchoolData
 from createStudentId import CreatePaperIds, CreateStudentId, GenerateProjectId
-from fetchCoursesApi import FetchAvaibleCourses, CheckPaidCourse,CourseDetailsApi
-from adminApi import AdminCredientalApi
+from saikoleearnApis import CourseDetailsApi, AdminCredientalApi,StudentApi,SchoolApi
+# from fetchCoursesApi import CourseDetailsApi
+# from adminApi import AdminCredientalApi
+# from studentDetailsApi import StudentApi
 # from createPaymentRefrenceNumber import GenerateCoursePaymentRefrenceNumber
 from authentication import GetStudent
 from envKeys import strip_key,stripwhookkey,saikolearn_SECURITY
@@ -71,6 +73,11 @@ class RegistrationFormStructure(FlaskForm):
 
 class StudentLoginForm(FlaskForm):
     studentId = StringField(label=" Your Student Id", validators=[DataRequired(message="It's a must")])
+    password = PasswordField(label="Your Password",validators=[DataRequired(message="you should provide this")])
+    submit = SubmitField()
+class AdminLoginForm(FlaskForm):
+    employeeId = StringField(label="Employee ID Number", validators=[DataRequired(message="It's a must")])
+    adminCode = StringField(label="Admin Code", validators=[DataRequired(message="It's a must")])
     password = PasswordField(label="Your Password",validators=[DataRequired(message="you should provide this")])
     submit = SubmitField()
 
@@ -189,9 +196,11 @@ def schoolSoftwareEngineering():
     if request.method == "GET":
         requestType = request.args.get("type")
         if requestType == "availableCourses":
-            courseIdObj = {"schoolId": "SOSE"}
-            coureses = FetchAvaibleCourses(object=courseIdObj)
-            data = coureses.availabCourses()
+            # courseIdObj = {"schoolId": "SOSE"}
+            # coureses = FetchAvaibleCourses(object=courseIdObj)
+            # data = coureses.availabCourses()
+            courses = CourseDetailsApi()
+            data = courses.fetchAvaibleCourses(schoolId="SOSE")
             data = [{"courseId":obj[0], "schoolId":obj[1], "coursName":obj[2],  "courseDuration":obj[3], "routeFunction":obj[4],"tuition":obj[5], "priceId":obj[6],"courseImage":obj[7], "courseDiscription":obj[8]} for obj in data ]
             return jsonify({"data":data})
     return render_template("softwareEngineeringSchool.html")
@@ -200,8 +209,10 @@ def schoolSoftwareEngineering():
 def schoolDataScience():
     requestType = request.args.get("type")
     if requestType == "availableCourses":
-        coureses = CourseDetailsApi()
-        data = coureses.fetchAvaibleCourses(schoolId= "SODS")
+        # coureses = CourseDetailsApi()
+        # data = coureses.fetchAvaibleCourses(schoolId= "SODS")
+        courses = CourseDetailsApi()
+        data = courses.fetchAvaibleCourses(schoolId="SODS")
         data = [{"courseId":obj[0], "schoolId":obj[1], "coursName":obj[2],  "courseDuration":obj[3], "routeFunction":obj[4],"tuition":obj[5], "priceId":obj[6],"courseImage":obj[7], "courseDiscription":obj[8]} for obj in data ]
         # print(data)
         return jsonify({"data":data})
@@ -586,7 +597,7 @@ def login():
                     else:
                         return redirect(url_for('studentDashboard'))  
                 return redirect(url_for('login'))
-            return redirect(url_for('login'))
+            return redirect(url_for('failedTologinStudent'))
     except Exception as error:
         raise RuntimeError(f"possibility that student login class didnt work:{error}")
     return render_template("studentLogin.html",form=form)
@@ -600,27 +611,35 @@ def logout():
 
 @app.route("/adminLogin", methods=["POST","GET"])
 def adminLogin():
-    if request.method == "POST":
-        requestBody = request.json.get("type")
-        if requestBody == "adminlogins":
-            data = request.json.get("body")
+    form = AdminLoginForm()
+    try:
+        if form.validate_on_submit():
+            employeeId = form.employeeId.data
+            adminCode = form.adminCode.data
+            password = form.password.data
+            data =  {'employeeId': employeeId, 'admincode': adminCode, 'password': password}
+
             """check where admin exists"""
             obj = AdminCredientalApi(adminObject= data)
             response = obj.is_admin()
             if response:
-                employeId = data["employeeId"]
+                employeId = employeeId
                 user = User(id= employeId)
                 login_user(user= user)
                 nexUrl = session.pop("admin_referrer",None)
                 return redirect(nexUrl or url_for('admin'))
             else:
-                return redirect(url_for("failedTologinAdmin")) 
-        return jsonify({"RequestStatus": "ok"})
-    return render_template("adminlogin.html")
+                return redirect(url_for("failedTologinAdmin"))
+    except Exception as e:
+        raise RuntimeError(f"error in logging in admin:{e}")
+    return render_template("adminlogin.html", form=form)
 
 @app.route("/failedTologinAmin")
 def failedTologinAdmin():
     return render_template("failedTologinAdmin.html")
+@app.route("/failedTologinStudent")
+def failedTologinStudent():
+    return render_template("failedTologinStudent.html")
 
 @login_required
 @app.route("/studentDashboard", methods = ["POST","GET"])
@@ -920,18 +939,7 @@ def handleLiveSessionLinks():
     return jsonify({"error": "Unsupported request method on handle live link route"})
 
 
-# @app.route("/recieveLoadedCourseIdOnStudentPortal", methods= ["post"])
-# def recieveLoadedCourseIdOnStudentPortal():
-#     try:
-#         if request.method == "POST":
-#             data = request.json
-#             print(data)
-#             # session["cohort"] = data["cohort"]
-#             session["course_id_studentPortal"] = data["courseId"]
-#             # print(f"the real one :{data}")
-#     except Exception as error:
-#         return f"api failed to fecth course i on the student portal :{error}"
-#     return jsonify({"api satus":"recieveLoadedCourseIdOnStudentPortal failed"})
+
 
 
 @app.route("/handleRecordedLinks", methods=["POST","GET"])
@@ -1227,6 +1235,27 @@ def admin():
         return redirect(url_for('adminLogin'))
     return render_template("adminDashoard.html")
 
+@app.route("/adminDashboardStatistics", methods=["GET","POST"])
+def adminDashboardStatistics():
+    if request.method == "GET":
+        requestBody = request.args.get("type")
+        if requestBody == "numberofCourses":
+            courseDetails = CourseDetailsApi()
+            numberOfCourses = courseDetails.numberOfAvailableCourses()
+            return jsonify(numberOfCourses)
+        elif requestBody == "numberofstudents":
+            students = StudentApi()
+            numberOFstudents = students.numberOfStudents()
+            return jsonify(numberOFstudents)
+        elif requestBody == "numberOfSchools":
+            school = SchoolApi()
+            numberOfschool = school.numberOfSchools()
+            return jsonify(numberOfschool)
+            
+
+
+    
+
 @app.route("/adminSchoolPage")
 def adminSchoolPage():
     return render_template("adminSchoolPage.html")
@@ -1334,7 +1363,9 @@ def handleAdminSchoolDeletion():
     return jsonify({"response":"success"}),200
 
 
-
+"""
+    To do list:   improve the code bellow
+"""
 
 @app.route("/adminschoolTemplate", methods = ["POST","GET"])
 def adminschoolTemplate():
@@ -1348,7 +1379,6 @@ def adminschoolTemplate():
         elif body == "addCourse":
             courseDetails = request.json.get("body")
             courseDetails = json.loads(courseDetails)
-            # print(courseDetails)
 
             if courseDetails:
                 try:
@@ -1385,13 +1415,6 @@ def adminschoolTemplate():
                 except Exception as error:
                     raise RuntimeError(f"error whill populating course database:{error}")
             return jsonify({"requestStatus":"ok"}),200
-        
-        # elif body == "DeletCourse":
-            # courseData = request.json.get("Details")
-            # courseData = json.loads(courseData)
-            # session["course_to_delete"] = courseData
-            # # print(courseData)
-            # return jsonify({"status":"ok"})
     elif request.method == "GET":
         typeAgr = request.args.get("type")
         schoolId= session["schoolToLoad"]
@@ -1415,35 +1438,17 @@ def adminschoolTemplate():
                         "name":results1[0]
                     })
                 except sqlite3.Error as error:
-                    print(f"connection  error on retriving school details:{error}")
-                    return f"connection  error on retriving school details:{error}"
+                    raise RuntimeError(f"connection  error on retriving school details:{error}")
                 except Exception as error:
-                    print(f"Error while retriving school details:{error}")
-                    return f"Error while retriving school details:{error}"
+                    raise RuntimeError(f"Error while retriving school details:{error}")
             elif typeAgr == "courseDdetails":
                 try:
-                    with sqlite3.connect("courseDatabase.db") as db:
-                        cursor = db.cursor()
-                        cursor.execute("""
-                            SELECT
-                                C.courseId,
-                                C.courseName,
-                                C.SchoolId
-                            FROM
-                                courseDetails AS C
-                            WHERE
-                                C.SchoolId == ?      
-                        """,(schoolId,))
-                        details = cursor.fetchall()
-                        data =[{"courseId":dataObj[0],"courseName":dataObj[1]}for dataObj in details]
-                    # print(data)
-                    return jsonify({"data":data})
-                except sqlite3.Error as error:
-                    print(f"sqlite connection error while fetching course details:{error}")
-                    return f"sqlite connection error while fetching course details:{error}"
+                    courseOb = CourseDetailsApi()
+                    data = courseOb.fetchAvaibleCourses(schoolId=schoolId)
+                    details = [{"courseId":course[0], "courseName":course[2]} for course in data]
+                    return jsonify({"data":details})
                 except Exception as error:
-                    print(f"faced error while fetching course details: {error}")
-                    return f"faced error while fetching course details: {error}"
+                    raise RuntimeError( f"faced error while dealing with Course details api in adminschoolTemplate route : {error}")
 
     return render_template("adminschoolTemplate.html")
 

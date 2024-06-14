@@ -629,15 +629,15 @@
                 <h2>Overview</h2>
                 <div class="container">
                     <div class="container-title">Total Students:</div>
-                    <div>1000</div>
+                    <div id="numberOfstudents"></div>
                 </div>
                 <div class="container">
                     <div class="container-title">Total Courses:</div>
-                    <div>20</div>
+                    <div id="numberOfAvailableCourses"></div>
                 </div>
                 <div class="container">
                     <div class="container-title">Total Schools:</div>
-                    <div>5</div>
+                    <div id="numberOfSchools"></div>
                 </div>
             </section>
 
@@ -685,35 +685,117 @@
     </div>
 
     <script>
+
+        function numberOfStudents(){
+            return fetch("adminDashboardStatistics?type=numberofstudents")
+                .then(response =>{
+                    if(!response.ok){
+                        throw new Error("studentDetailsApi returned error while fetching number of students")
+                    }
+                    return response.json()
+                })
+                .then(data =>{
+                    return data
+                })
+                .catch(error =>{
+                    console.log(error)
+                })
+        }
+
+
+        function numberOfCourses(){
+            return  fetch("adminDashboardStatistics?type=numberofCourses")
+                .then(response =>{
+                    if(!response.ok){
+                        throw new Error("api returned error on fetching number of courses from the server")
+                    }
+                    return response.json()
+                })
+                .then(data =>{
+                    return data
+                })
+                .catch(error =>{
+                    console.log(error)
+                })
+
+        }
+
+
+        function numberOfSchools(){
+            return  fetch("adminDashboardStatistics?type=numberOfSchools")
+                .then(response =>{
+                    if(!response.ok){
+                        throw new Error("api returned error on fetching number of schools from the server")
+                    }
+                    return response.json()
+                })
+                .then(data =>{
+                    return data
+                })
+                .catch(error =>{
+                    console.log(error)
+                })
+
+        }
+
+        async function loadNumberOFStudents(){
+            var number = await numberOfStudents()
+            document.getElementById("numberOfstudents")
+                .innerHTML = number["numberOfStudents"]
+
+            
+        }
+
+        async function loadNumberOFAvailabeCourses(){
+            var number = await numberOfCourses()
+            document.getElementById("numberOfAvailableCourses")
+                .innerHTML = number["numberOfAvailableCourses"]
+
+        }
+
+
+        async function loadNumberOFSchools(){
+            var number = await numberOfSchools()
+            document.getElementById("numberOfSchools")
+                .innerHTML = number["numberOfSchools"]
+        }
+
+        loadNumberOFAvailabeCourses()
+        loadNumberOFStudents()
+        loadNumberOFSchools()
+
+        
+
         // JavaScript to toggle the visibility of the dropdown menu
-        document.getElementById("postLiveLinkBtn").addEventListener("click", function() {
-            var menu = document.getElementById("liveLinkMenu");
-            if (menu.style.display === "none" || menu.style.display === "") {
-                menu.style.display = "block";
-            } else {
-                menu.style.display = "none";
-            }
-        });
+        // document.getElementById("postLiveLinkBtn").addEventListener("click", function() {
+        //     var menu = document.getElementById("liveLinkMenu");
+        //     if (menu.style.display === "none" || menu.style.display === "") {
+        //         menu.style.display = "block";
+        //     } else {
+        //         menu.style.display = "none";
+        //     }
+        // });
 
-        document.getElementById("postRecordedLinkBtn").addEventListener("click", function() {
-            var menu = document.getElementById("recordedLinkMenu");
-            if (menu.style.display === "none" || menu.style.display === "") {
-                menu.style.display = "block";
-            } else {
-                menu.style.display = "none";
-            }
-        });
+        // document.getElementById("postRecordedLinkBtn").addEventListener("click", function() {
+        //     var menu = document.getElementById("recordedLinkMenu");
+        //     if (menu.style.display === "none" || menu.style.display === "") {
+        //         menu.style.display = "block";
+        //     } else {
+        //         menu.style.display = "none";
+        //     }
+        // });
 
-        // Make menu disappear after submission
-        document.getElementById("liveLinkSubmitBtn").addEventListener("click", function() {
-            var menu = document.getElementById("liveLinkMenu");
-            menu.style.display = "none";
-        });
+        // // Make menu disappear after submission
+        // document.getElementById("liveLinkSubmitBtn").addEventListener("click", function() {
+        //     var menu = document.getElementById("liveLinkMenu");
+        //     menu.style.display = "none";
+        // });
 
-        document.getElementById("recordedLinkSubmitBtn").addEventListener("click", function() {
-            var menu = document.getElementById("recordedLinkMenu");
-            menu.style.display = "none";
-        });
+        // document.getElementById("recordedLinkSubmitBtn").addEventListener("click", function() {
+        //     var menu = document.getElementById("recordedLinkMenu");
+        //     menu.style.display = "none";
+        // });
+        
     </script>
 </body>
 </html>
