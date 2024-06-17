@@ -2,7 +2,7 @@
 
 @media only screen and (max-width:600px){
     /* body{
-        width: 400px;
+        width: auto;
     } */
 
     /* .contentofThePolicy{
@@ -13,8 +13,57 @@
         margin: 0px;
     } */
 
+    .dont-display-onlarge-screens{
+        /* handle side menu here */
+        display: block;
+        /* margin-left: 180px; */
+        position: absolute;
+        left: 240px;
+        right: 10px;
+        
+    }
+
+    .page-section{
+        display: none;
+    }
+    .dropdown-menu-itmes{
+        padding: 10px;
+        z-index: 1000;
+
+    }
+
+    .dont-display-onlarge-screens:hover{
+        .page-section{
+            /* width: 100px; */
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-family: 'Poppins', sans-serif;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #0d0a2c;
+            align-items: center;
+            padding: 30px;
+            /* margin-top: 50px; */
+            font-size: larger;
+            position: absolute;
+            left:  -60px;
+            right: 20px;
+            top: 13px;
+        }
+        .page{
+            padding: 10px 0px;
+
+
+        }
+        .onsmall-screen-page{
+            padding-bottom: 10px;
+        }
+
+    }
+
     .banner-section{
-        width: auto;
+        /* width: auto; */
+        flex: 1fr;
         background-size: auto;
         
     }
@@ -50,7 +99,9 @@
         background-color: white;
         width: 130px;
         color: #0d0a2c;
-        left: 2px;
+        /* left: -10px; */
+        right: 40px;
+        top: -20px;
     }
 
     /* banner  styling  */
@@ -135,12 +186,17 @@
     }
 
     .comming_soon{
-        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 50px 0px;
     }
 
     .coming-soon-school-container{
-        width: 100px;
-        height: 100px;
+        flex: 1fr;
+        width: 400px;
+        height: 200px;
         perspective: 1000px;
         
     }
@@ -263,6 +319,18 @@
 /* handle tablet sizes  */
 
 @media only screen and (min-width:601px ) and (max-width:1024px){
+
+    .dont-display-onlarge-screens{
+        /* handle side menu section here */
+        display: none;
+    }
+
+    .page-section{
+        margin-left: 80px;
+        justify-content: space-between;
+    }
+
+
     .banner-section{
         width: auto;
         background-size: auto;
@@ -299,7 +367,7 @@
 
     .page:hover .dropdown-menu{
         background-color: white;
-        width: 130px;
+        width: 330px;
         color: #0d0a2c;
         left: 2px;
     }
@@ -565,6 +633,10 @@
 
 /* For large screens (e.g., desktops) */
 @media only screen and (min-width: 1025px) and (max-width: 1440px){
+    .dont-display-onlarge-screens{
+        /* handle side menu section here */
+        display: none;
+    }
     .banner-section{
         width: auto;
         background-size: auto;

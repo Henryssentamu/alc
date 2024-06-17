@@ -67,6 +67,45 @@
 			</div>
 
 		</div>
+		<!-- this section only appear on small screens -->
+		<div class="dont-display-onlarge-screens">
+			<!-- side bar menu on smaller screen side -->
+			<div class="drop-down-image-icon">
+				<img src="../static/icons/menuicon.png">
+			</div>
+			<div class="page-section">
+				<div class="page  onsmall-screen-page">
+					Schools
+					<div class="dropdown-menu">
+						<a href="{{url_for('schoolSoftwareEngineering')}}" class="dropdown-menu-itmes">software Engineering</a>
+						<!-- <a href="{{url_for('homePage')}}"  class="dropdown-menu-itmes">Artifical Intellegence</a> -->
+						<!-- <a href="{{url_for('homePage')}}" class="dropdown-menu-itmes">Database Management</a> -->
+						<a href="{{url_for('schoolDataScience')}}" class="dropdown-menu-itmes">Data Science</a>
+					</div>
+				</div>
+	
+				<div class="page">
+					<a href="{{url_for('admissionDetails')}}">Admissons</a>
+				</div>
+	
+				<!-- <div class="page">
+					<a href="{{url_for('homePage')}}">Partners</a>
+				</div> -->
+	
+				<div class="page">
+					<a href="{{url_for('aboutUsPage')}}">AboutUs</a>
+				</div>
+	
+				<div class="page">
+					<a href="{{url_for('contactPage')}}">Contact</a>
+				</div>
+				<div  class="page ">
+					<a class="account-login-section" href="{{url_for('login')}}">Login <span class="sperate-links">/</span></a>
+					<a class="account-login-section" href="{{url_for('registrationPage')}}"> SignUp</a>
+				</div>
+	
+			</div>
+		</div>
 	</header>
 	{% block body %}
 	<main class="body-container">
@@ -462,9 +501,9 @@
 				+256755981066
 			</div>
 			<div>
-				info@saikolearn.io
+				info@saikolearn.org
 			</div>
-			<div>study@saikolearn.io</div>
+			<div>admin@saikolearn.org</div>
 		</section>
 		<section class="social-media">
 			<div class="icon-section">
