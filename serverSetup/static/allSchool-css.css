@@ -299,6 +299,8 @@
     transform: rotateY(180deg);
 }
 
+
+
 /* scholarship section */
 .scholarship-section{
     margin: 100px 20px;
@@ -325,3 +327,204 @@
 /* .apply-for-scholarship-buttion{
     margin-top: 30px;
 } */
+
+
+
+
+
+
+/* reponsiveness */
+
+/* small screens */
+@media only screen and (max-width:600px){
+    .school-banner-section{
+        flex: 1fr;
+        background-size: auto;
+
+    }
+
+    .introduction-to-school{
+        width: auto;
+        top: 200px;
+        left: 30px;
+        padding: 5px 6px;
+
+    }
+    .welcome-to-school-message{
+        font-size: medium;
+        font-family: "Poppins";
+    }
+    /* main welcome to school sction */
+
+    .introduction-to-programe{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding:70px 10px;
+        
+    }
+    .message{
+        font-family: "Poppins";
+        padding: 10px 10px;
+        text-align: center;
+        font-size: large;
+        font-weight: 500;
+        line-height: normal;
+
+    }
+
+    .school-coordinator-section{
+        position: relative;
+
+    }
+
+    .school-coordinator-image{
+        position: absolute;
+        left: -90px;
+    }
+
+    .school-coordinator-name-details{
+        position: absolute;
+        left: -30px;
+       
+
+    }
+    .coordinator-name{
+
+    }
+
+
+    /* intake calender section */
+
+    .intake-slides{
+        width: auto;
+        height: 270px;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        background-color: #0d0a2c;
+        margin: 60px 0px;
+        margin-bottom: 60px;
+    }
+
+    .intake-calender{
+        text-align: center;
+        font-size: medium;
+        color: white;
+        font-weight: bold;
+        font-family: "Poppins";
+        padding-top: 3px;
+    }
+
+    .intake-slide{
+        padding: 5px 0px;
+        margin: 20px;
+    }
+
+
+    /* courses under a school section */
+
+    .courses-under-school{
+        width: auto;
+        display: grid;
+        grid-template-columns: 1fr;
+        /* background-color: #002b5631; */
+        background: linear-gradient( to bottom, #d4e7ff 0%, #e8ffff 100%);
+        padding: 100px 10px;
+        position: relative;
+
+    }
+    .courses-under-school-heading{
+        position: absolute;
+        font-size: 26px;
+        font-family: "Poppins";
+        font-weight: bold;
+        left: 50px;
+        top: 20px;
+    }
+    .program-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 10px;
+        width: auto;
+        background-color: #002b56;
+        margin: 0px 0px;
+        box-shadow: 0px 0px 10px rgb(0, 0, 0);
+        margin-bottom: 70px;
+    }
+
+    .program-thumbnail{
+        width: 280px;
+        /* height: 228px; */
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    /* coming up courses  section*/
+
+    .coming-up-courses-section{
+        display: flex;
+        flex-direction: column;
+        margin: 50px 0px;
+        background-color: #0d0a2c;
+        padding: 67px 50px;
+        position: relative;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .coming-up-courses-details{
+        position: absolute;
+        top: 10px;
+        color: white;
+        left: 80px;
+    }
+
+    .coming-up-course-container{
+        flex: 1fr;
+        width: 330px;
+        height: 200px;
+        perspective: 1000px;
+        margin: 20px;
+
+        
+    }
+    
+    .coming-up-courses{
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.5s ease-in-out;
+    }
+
+    /* scholarship section */
+    .scholarship-section{
+        margin: 10px 0px;
+        display: flex;
+        flex-direction: column;
+        padding: 0px 10px;
+    }
+
+    .scholarship-details{
+        margin-top: 0px;
+        text-align: center;
+    }
+    
+    .details-on-scholarship{
+        width: 390px;
+        margin-right: 0px;
+        text-align: justify;
+        font-family: "Poppins";
+        padding: 2px 0px;
+        /* padding-right: 15px; */
+
+    }
+    
+    .scholarship-image{
+        width: 390px;
+    }
+    
+
+}

@@ -312,6 +312,10 @@
         display: grid;
         grid-template-columns: 1fr;
         padding: 100px 20px;
+        margin-top: 200px;
+    }
+    .register-message-on-footer{
+        margin: 0px;
     }
 }
 
@@ -596,7 +600,7 @@
 
     .register{
         height: 150px;
-        top: -75px;
+        top: -95px;
         right: 5px;
         left: 5px;
         padding: 10px;

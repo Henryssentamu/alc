@@ -505,3 +505,149 @@ td {
     flex: 1fr;
     color: #04a651;
   }
+
+  @media only screen and (max-width:600px){
+    body{
+      margin: 0px;
+      padding:  0px;
+      /* width: auto; */
+    }
+    .portal-header{
+      position: fixed;
+      left: 0px;
+      right: 0px;
+      top: 0px;
+      bottom:650px;
+      /* background-color: #4CAF50; */
+      /* z-index: 3000px; */
+  
+
+    }
+
+    .left-side-bar{
+      display:  none;
+    }
+    .right-side-bar{
+      display: none;
+    }
+
+    .header-main{
+      display: none;
+    }
+
+
+    /* drop down menu */
+    .drop-down-content{
+      left: -30px;
+      
+    }
+
+    /* middle section */
+    .main-body{
+      /* display: grid;
+      grid-template-columns: 1fr 4fr 1fr; */
+      z-index: 0;
+    }
+
+  .middle-section{
+    position: absolute;
+    display:  flex;
+    flex-direction: column;
+    left: 0px;
+    width: auto;
+    top: 55px;
+    background-color: white;
+    align-content: center;
+    justify-content: space-between;
+    padding: 5px 30px;
+  }
+  /* calender css section  */
+
+  .calender-section{
+    flex: 1fr;
+    width: auto;
+  }
+  table {
+    border-collapse: collapse;
+    width: auto;
+  }
+
+  th, td {
+    border: 1px solid black;
+    padding: 3px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  td {
+    height: 100px;
+  }
+
+  .today {
+    background-color: #4CAF50;
+  }
+    .calender-section{
+      flex: 1fr;
+    }
+
+
+    .student-course-section{
+      margin: 15px 5px;
+      flex: 1fr;
+      display: grid;
+      grid-template-columns:1fr;
+      /* align-items: center; */
+      justify-content: space-between; 
+    }
+
+  /* generated course css */
+
+    .generated-course{
+      display: flex;
+      flex-direction:  column;
+      background-color: rgba(219, 216, 216, 0.752);
+      border-radius: 12px;
+      border: solid 1px gray;
+      align-items: center;
+      justify-content: space-between;
+      /* margin-left: 5px; */
+      margin: 10px 5px;
+    }
+
+    .course-image-section{
+      flex: 1fr;
+    }
+    .course-image{
+      width: 200px;
+    }
+
+    .course-titles{
+      flex: 1fr;
+      color: #04a651;
+    }
+
+
+    /* dropdown menu */
+
+    .drop-down-menu:hover .drop-down-content{
+      /* color: #0d0a2c;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+      width: 80px;
+      height: 80px;
+      align-items: center;
+      justify-content: space-between; */
+      /* z-index: 500; */
+      
+     
+    
+    }
+  
+   
+   
+
+  }
