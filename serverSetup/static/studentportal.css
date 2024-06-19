@@ -508,12 +508,14 @@ td {
 
   @media only screen and (max-width:600px){
     body{
+      position: relative;
       margin: 0px;
       padding:  0px;
       /* width: auto; */
     }
     .portal-header{
-      position: fixed;
+      position: absolute; 
+      /* position: fixed; */
       left: 0px;
       right: 0px;
       top: 0px;
@@ -537,9 +539,24 @@ td {
 
 
     /* drop down menu */
-    .drop-down-content{
-      left: -30px;
+    .drop-down-menu{
+      flex: 1fr;
+      position: absolute;
+      left: 150px;
+  
       
+      
+    }
+    .drop-down-content{
+      position: absolute;
+      background-color: #0d0a2c;
+      z-index: 5000;
+      
+      left: -30px;
+    }
+
+    .drop-down-content a{
+      color: white;
     }
 
     /* middle section */
@@ -560,6 +577,7 @@ td {
     align-content: center;
     justify-content: space-between;
     padding: 5px 30px;
+    z-index: -1;
   }
   /* calender css section  */
 
@@ -633,17 +651,7 @@ td {
     /* dropdown menu */
 
     .drop-down-menu:hover .drop-down-content{
-      /* color: #0d0a2c;
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
-      width: 80px;
-      height: 80px;
-      align-items: center;
-      justify-content: space-between; */
-      /* z-index: 500; */
-      
-     
+      z-index: 5000;
     
     }
   
